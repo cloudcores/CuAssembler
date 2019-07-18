@@ -3,7 +3,7 @@
 from CuAsm.CuInsAssemblerRepos import CuInsAssemblerRepos
 from CuAsm.CuInsFeeder import CuInsFeeder
 
-sassname = 'TestData/CUDA-threadFenceReduction.sm_75.sass'
+sassname = 'TestData/Mandelbrot.sm_75.sass'
 
 # initialize a feeder with sass
 feeder = CuInsFeeder(sassname)
@@ -17,6 +17,6 @@ repos.update(feeder)
 # reset the feeder back to start
 feeder.restart()
 
-# verify the repos 
+# verify the repos
 # actually the codes is already verifed during repos construction
 repos.verify(feeder)
