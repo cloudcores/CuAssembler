@@ -4,14 +4,17 @@ import sympy
 from sympy import Matrix # Needed by repr
 from sympy.core.numbers import Rational
 from io import StringIO, BytesIO
+from .CuSMVersion import CuSMVersion
+from .common import reprList
 
 class CuInsAssembler():
     '''CuInsAssembler is the assembler handles the values and weights of one type of instruction.'''
 
-    def __init__(self, inskey, d=None):
-        '''Initializer.
+    def __init__(self, inskey, d=None, arch='sm_75'):
+        ''' Initializer.
 
-        inskey is mandatory, d is for initialization from saved repr.'''
+            inskey is mandatory, d is for initialization from saved repr.
+        '''
 
         self.m_InsKey = inskey
         if d is not None:
@@ -25,20 +28,27 @@ class CuInsAssembler():
             self.m_PSolFac = None
             self.m_ValNullMat = []
             self.m_Rhs = None
+            self.m_InsRecords = []
+            self.m_Arch = CuSMVersion(arch)
 
     def initFromDict(self, d):
-        self.m_InsKey = d['InsKey']
-        self.m_InsRepos = d['InsRepos']
+        self.m_InsKey     = d['InsKey']
+        self.m_InsRepos   = d['InsRepos']
         self.m_InsModiSet = d['InsModiSet']
 
-        self.m_ValMatrix = d['ValMatrix']
-        self.m_PSol = d['PSol']
-        self.m_PSolFac = d['PSolFac']
+        self.m_ValMatrix  = d['ValMatrix']
+        self.m_PSol       = d['PSol']
+        self.m_PSolFac    = d['PSolFac']
         self.m_ValNullMat = d['ValNullMat']
-        self.m_Rhs = d['Rhs']
+        self.m_Rhs        = d['Rhs']
+        self.m_InsRecords = d['InsRecords']
+        self.m_Arch       = d['Arch']
 
     def expandModiSet(self, modi):
-        ''' Push in new modifiers.'''
+        ''' Push in new modifiers.
+        
+            NOTE: the order matters, since every modi has its own value.
+        '''
 
         updated = False
         for m in modi:
@@ -48,24 +58,53 @@ class CuInsAssembler():
 
         return updated
 
-    def push(self, vals, modi, code):
+    def canAssemble(self, vals, modi):
+        """ Check whether the input code can be assembled with current info.
+
+        Args:
+            vals ([int list]): value list in integers
+            modi ([str list]): modifier list in strings
+
+        Returns:
+            (None , None) : input can be assembled
+            (brief, info) : brief in ['NewModi', 'NewVals'], info gives the detailed info
+        """
+
+        if not all([m in self.m_InsModiSet for m in modi]):
+            brief = 'NewModi'
+            info = 'Unknown modifiers: (%s)' % (set(modi) - set(self.m_InsModiSet.keys()))
+            return brief, info
+        else:
+            insval = vals.copy()
+            insval.extend([1 if m in modi else 0 for m in self.m_InsModiSet])
+            insvec = sympy.Matrix(insval)
+
+            if self.m_ValNullMat is not None:
+                insrhs = self.m_ValNullMat * insvec
+                if not all([v==0 for v in insrhs]):
+                    return 'NewVals', 'Insufficient basis, try gathering more instructions!'
+
+        return None, None
+
+    def push(self, vals, modi, code, ins_info):
         ''' Push in a new instruction.
 
-        When its code can be assembled, verify the result,
-        otherwise add new information to current assembler.
-        @return:
-            "NewInfo" for new information
-            "Verified" for no new information, but the results is consistent
-            False for inconsistent assembling result
+            When its code can be assembled, verify the result,
+            otherwise add new information to current assembler.
+            @return:
+                "NewInfo" for new information
+                "Verified" for no new information, but the results is consistent
+                False for inconsistent assembling result
         '''
 
         if not all([m in self.m_InsModiSet for m in modi]):
             # If new instruction contains unknown modifier,
             # it's never possible to be assembled by current assembler.
-            print("Pushing with new modi (%s)..." % self.m_InsKey)
+            print('Pushing with new modi (%s, %-20s): %s' % (self.m_Arch.formatCode(code), self.m_InsKey, ins_info))
             updated = self.expandModiSet(modi)
             self.m_InsRepos.append((vals, modi, code))
             self.buildMatrix()
+            self.m_InsRecords.append(ins_info)
             return 'NewModi'
         else:
             # If the vals of new instruction lies in the null space of
@@ -85,11 +124,11 @@ class CuInsAssembler():
                 inscode = self.m_PSol.dot(insvec) / self.m_PSolFac
 
                 if inscode != code:
-                    print("InputCode: 0x%032x" % code)
+                    print("InputCode : %s" % self.m_Arch.formatCode(code))
                     try:
-                        print("AsmCode  : 0x%032x" % inscode)
+                        print("AsmCode   : %s" % self.m_Arch.formatCode(inscode))
                     except:
-                        print("AsmCode  : (%s)!" % str(inscode))
+                        print("AsmCode   : (%s)!" % str(inscode))
 
                     # print(self.__repr__())
                     # raise Exception("Inconsistent instruction code!")
@@ -99,8 +138,9 @@ class CuInsAssembler():
                     return 'Verified'
 
             else:
-                print("Pushing with new vals (%s)..." % self.m_InsKey)
+                print('Pushing with new vals (%s, %-20s): %s' % (self.m_Arch.formatCode(code), self.m_InsKey, ins_info))
                 self.m_InsRepos.append((vals, modi, code))
+                self.m_InsRecords.append(ins_info)
                 self.buildMatrix()
                 return 'NewVals'
 
@@ -190,7 +230,7 @@ class CuInsAssembler():
     def getMatrixDenomLCM(self, M):
         ''' Get lcm of matrix denominator.
 
-        In sympy, operations of fractionals seem much slower than integers.
+        In sympy, operation of fractionals seems much slower than integers.
         Thus we multiply a fraction matrix with the LCM of all denominators,
         then divide the result with the LCM.
         '''
@@ -209,15 +249,25 @@ class CuInsAssembler():
         '''
         sio = StringIO()
 
-        sio.write('CuInsAssembler("", {"InsKey" : %s, ' % repr(self.m_InsKey) )
-        sio.write('"InsRepos" : %s, ' % repr(self.m_InsRepos))
-        sio.write('"InsModiSet" : %s, ' % repr(self.m_InsModiSet))
+        sio.write('CuInsAssembler("", {"InsKey" : %s, \n' % repr(self.m_InsKey) )
+        # sio.write('  "InsRepos" : %s, \n' % repr(self.m_InsRepos))
+        sio.write('  "InsRepos" : ')
+        reprList(sio, self.m_InsRepos)
+        sio.write(', \n')
 
-        sio.write('"ValMatrix" : %s, ' % repr(self.m_ValMatrix))
-        sio.write('"PSol" : %s, ' % repr(self.m_PSol))
-        sio.write('"PSolFac" : %s, ' % repr(self.m_PSolFac))
-        sio.write('"ValNullMat" : %s, ' % repr(self.m_ValNullMat))
-        sio.write('"Rhs" : %s }) ' % repr(self.m_Rhs))
+        sio.write('  "InsModiSet" : %s, \n' % repr(self.m_InsModiSet))
+        sio.write('  "ValMatrix" : %s, \n' % repr(self.m_ValMatrix))
+        sio.write('  "PSol" : %s, \n' % repr(self.m_PSol))
+        sio.write('  "PSolFac" : %s, \n' % repr(self.m_PSolFac))
+        sio.write('  "ValNullMat" : %s, \n' % repr(self.m_ValNullMat))
+        #sio.write('  "InsRecords" : %s, \n' % repr(self.m_InsRecords))
+
+        sio.write('  "InsRecords" : ')
+        reprList(sio, self.m_InsRecords)
+        sio.write(', \n')
+
+        sio.write('  "Rhs" : %s, \n' % repr(self.m_Rhs))
+        sio.write('  "Arch" : %s })' % repr(self.m_Arch))
 
         return sio.getvalue()
 

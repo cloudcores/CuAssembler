@@ -4,349 +4,459 @@ from elftools.elf.elffile import ELFFile
 from elftools.elf.structs import ELFStructs
 
 from subprocess import check_output
-from .Turing_Assembler import CuInsFeeder, CuInsParser, CuKernelAssembler
-from io import StringIO
-import re
-from hashlib import blake2b
 
-import logging
+from .CuSMVersion import CuSMVersion
+from .CuNVInfo import CuNVInfo
+from .common import splitAsmSection, bytes2Asm, stringBytes2Asm, decodeCtrlCodes
+from .config import Config
+
+from io import StringIO, BytesIO
+from collections import OrderedDict
+
 import sys
-
-# logging.basicConfig(filename="CubinFile.log", filemode="w",
-#     format="%(asctime)s %(name)s:%(levelname)s:%(message)s",
-#     datefmt="%d-%M-%Y %H:%M:%S", level=logging.DEBUG)
-
-logging.basicConfig(stream=sys.stdout, level=logging.WARNING)
+import re
 
 class CubinFile():
-    def __init__(self):
-        self.clear()
-        self.m_CuKernelAsm = None
+    ''' CubinFile class for cubin files, mainly used for saving as cuasm.
 
-    def clear(self):
-        self.m_ELFStructs = ELFStructs(little_endian=True, elfclass=64)
-        self.m_ELFStructs.create_basic_structs()
-        self.m_ELFStructs.create_advanced_structs()
+    '''
 
-        self.m_ELFFileHeader = None
-        self.m_ELFSections = []
-        self.m_ELFSegments = []
-        self.m_CodeDict = {}
+    def __init__(self, cubinname):
+        self.__mCubinName = cubinname
+        self.loadCubin(cubinname)
 
-    def initCuKernelAsm(self, asmreposname="InsAsmRepos.txt"):
-        self.m_CuKernelAsm = CuKernelAssembler(asmreposname)
+    def __reset(self):
+        self.__mELFFileHeader = None
+        self.__mELFSections = OrderedDict()
+        self.__mELFSegments = []
+        self.__mELFSegmentRange = []
+
+        self.__mAsmLines = None
+        self.__mAsmSectionMarkers = {}
+        self.__mCubinBytes = None       #
+
+        self.m_SMVersion = None
+        self.m_VirtualSMVersion = None
+        self.m_ToolKitVersion = None
 
     def loadCubin(self, binname):
-        self.clear()
-        with open(binname, 'rb') as fin:
-            ef = ELFFile(fin)
-            self.m_ELFStructs = ef.structs
-            self.m_ELFFileHeader = ef.header
+        self.__reset()
 
-            for sec in ef.iter_sections():
-                self.m_ELFSections.append((sec.name, sec.header, sec.data()))
+        sec_start_dict = {}
+        sec_end_dict = {}
+
+        with open(binname, 'rb') as fin:
+            self.__mCubinBytes = fin.read()
+
+        with BytesIO(self.__mCubinBytes) as bio:
+            ef = ELFFile(bio)
+            self.__mELFFileHeader = ef.header
+
+            # Example: type=2, abi=7, sm=86, toolkit=111, flags = 0x500556
+            # flags>>16 = 0x50 = 80, means virtual arch compute_80
+            # flags&0xff = 0x56 = 86, means sm_86
+            vsm_version = (self.__mELFFileHeader['e_flags']>>16)&0xff
+            sm_version = self.__mELFFileHeader['e_flags']&0xff
+            self.m_SMVersion = CuSMVersion(sm_version)
+            self.m_VirtualSMVersion = vsm_version
+            self.m_ToolKitVersion = self.__mELFFileHeader['e_version']
+
+            sh_index = self.__mELFFileHeader['e_ehsize']
+            sh_edgelist = []
+            for isec, sec in enumerate(ef.iter_sections()):
+                self.__mELFSections[sec.name]= sec.header, sec.data()
+
+                # build section start/end offset dict
+                # only for determine the coverage of segments
+                sh_align = sec.header['sh_addralign']
+                sh_size = sec.header['sh_size']
+                if sh_align==0:
+                    sh_edgelist.append((0, 0, sec.name))
+                    continue
+                elif (sh_align>0) and (sh_index % sh_align != 0):
+                    sh_index = ((sh_index + sh_align -1 ) // sh_align) * sh_align
+                
+                sh_start = sh_index
+                sh_end = sh_index + sh_size
+                sh_index += sh_size
+                sh_edgelist.append((sh_start, sh_end, sec.name))
+                # print('%8d(0x%4x)  %8d(0x%4x)  %s'%(sh_start, sh_start, sh_end, sh_end, sec.name))
+
+
+            for sh_start, sh_end, sname in sh_edgelist:
+                sec_start_dict[sh_start] = sname
+                sec_end_dict[sh_end] = sname
 
             for seg in ef.iter_segments():
-                self.m_ELFSegments.append(seg.header)
+                self.__mELFSegments.append(seg.header)
+                
+        for segh in self.__mELFSegments:
+            if segh['p_type'] == 'PT_LOAD': # only P_LOAD type needs range
+                p0 = segh['p_offset']
+                p1 = p0 + segh['p_memsz'] # filesz will not count NOBITS sections
 
-        self.__loadCubinCode(binname)
+                if p0 not in sec_start_dict or p1 not in sec_end_dict:
+                    raise Exception('The segment range (0x%x, 0x%x) doesnot align with sections!'%(p0, p1))
 
-    def __loadCubinCode(self, binname):
-        sass = check_output("cuobjdump -sass "+binname).decode()
-        sasslines = sass.splitlines()
+                sec_start = sec_start_dict[p0]
+                sec_end = sec_end_dict[p1]
+                self.__mELFSegmentRange.append((sec_start, sec_end))
+            else:
+                self.__mELFSegmentRange.append((None,None))
 
-        kname_pattern = re.compile(r'^\s*Function : (\w+)\b')
-        kstart_pattern = re.compile(r'^\s*\.headerflags\b')
-        kend_pattern = re.compile(r'^\s*\.+\s*$')
+        # get disassembly from nvdisasm
+        # TODO: check availablity of nvdisasm
+        asmtext = check_output([Config.NVDISASM_PATH, binname]).decode()
 
-        kdict = {}
-        kname = ''
-        kconts = ''
-        doGather = False
-        for line in sasslines:
-            res = kname_pattern.match(line)
+        self.__mAsmLines = asmtext.splitlines()
+
+        # split asm text into sections, according to .section directive
+        # the file header line range is in key "$FileHeader"
+        self.__mAsmSectionMarkers = splitAsmSection(self.__mAsmLines)
+
+    def __writeFileHeaderAsm(self, stream, ident='\t'):
+        ''' generate file header asm.
+
+        In cuasm parser, most of the fields will be loaded from a default header.
+        But some of them can be set or modified by user in assembly.
+
+        typedef struct
+        {
+            unsigned char e_ident[16]; /* ELF identification */
+            Elf64_Half e_type;         /* Object file type */
+            Elf64_Half e_machine;      /* Machine type */
+            Elf64_Word e_version;      /* Object file version */
+            Elf64_Addr e_entry;        /* Entry point address */
+            Elf64_Off e_phoff;         /* Program header offset */
+            Elf64_Off e_shoff;         /* Section header offset */
+            Elf64_Word e_flags;        /* Processor-specific flags */
+            Elf64_Half e_ehsize;       /* ELF header size */
+            Elf64_Half e_phentsize;    /* Size of program header entry */
+            Elf64_Half e_phnum;        /* Number of program header entries */
+            Elf64_Half e_shentsize;    /* Size of section header entry */
+            Elf64_Half e_shnum;        /* Number of section header entries */
+            Elf64_Half e_shstrndx;     /* Section name string table index */
+        } Elf64_Ehdr;
+
+        A file header sample:
+        Container({'e_ident': Container({'EI_MAG': [127, 69, 76, 70],
+            'EI_CLASS': 'ELFCLASS64', 'EI_DATA': 'ELFDATA2LSB',
+            'EI_VERSION': 'EV_CURRENT', 'EI_OSABI': 51, 'EI_ABIVERSION': 7}),
+            'e_type': 'ET_EXEC', 'e_machine': 'EM_CUDA',
+            'e_version': 111, 'e_entry': 0, 'e_phoff': 12224,
+            'e_shoff': 10176, 'e_flags': 4916555, 'e_ehsize': 64,
+            'e_phentsize': 56, 'e_phnum': 3, 'e_shentsize': 64,
+            'e_shnum': 32, 'e_shstrndx': 1})
+        '''
+
+        fheader = self.__mELFFileHeader
+        m0, m1 = self.__mAsmSectionMarkers['$FileHeader']
+        # stream.writelines('\n'.join(self.__mAsmLines[m0:m1])) # usually only header flags and elftype
+        stream.write(ident + '// All file header info is kept as is (unless offset/size attributes)\n')
+        stream.write(ident + '// The original header flags is not complete, thus discarded. \n')
+        for line in self.__mAsmLines[m0:m1]:
+            stream.write(ident + '// ' + line + '\n')
+
+        stream.write(ident + '.__elf_ident_osabi      %d\n'%fheader['e_ident']['EI_OSABI'])
+        stream.write(ident + '.__elf_ident_abiversion %d\n'%fheader['e_ident']['EI_ABIVERSION'])
+        stream.write(ident + '.__elf_type             %s\n'%fheader['e_type'])
+        stream.write(ident + '.__elf_machine          %s\n'%fheader['e_machine'])
+        stream.write(ident + '.__elf_version          %d \t\t// CUDA toolkit version \n'%fheader['e_version'])
+        stream.write(ident + '.__elf_entry            %d \t\t// entry point address \n'%fheader['e_entry'])
+        stream.write(ident + '.__elf_phoff            0x%x \t\t// program header offset, maybe updated by assembler\n'%fheader['e_phoff'])
+        stream.write(ident + '.__elf_shoff            0x%x \t\t// section header offset, maybe updated by assembler\n'%fheader['e_shoff'])
+
+        vsmversion = (fheader['e_flags']>>16)&0xff
+        smversion = fheader['e_flags']&0xff
+        stream.write(ident + '.__elf_flags            0x%x \t\t// Flags, SM_%d(0x%x), COMPUTE_%d(0x%x) \n'%(fheader['e_flags'], smversion, smversion, vsmversion, vsmversion))
+        stream.write(ident + '.__elf_ehsize           %d \t\t// elf header size \n'%fheader['e_ehsize'])
+        stream.write(ident + '.__elf_phentsize        %d \t\t// program entry size\n'%fheader['e_phentsize'])
+        stream.write(ident + '.__elf_phnum            %d \t\t// number of program entries\n'%fheader['e_phnum'])
+        stream.write(ident + '.__elf_shentsize        %d \t\t// section entry size\n'%fheader['e_shentsize'])
+        stream.write(ident + '.__elf_shnum            %d \t\t// number of sections, currently no sections can be appended/removed\n'%fheader['e_shnum'])
+        stream.write(ident + '.__elf_shstrndx         %d \t\t// Section name string table index \n'%fheader['e_shstrndx'])
+        stream.write('\n')
+
+    def __writeSectionHeaderAsm(self, stream, secname, header, ident='\t'):
+        ''' Generate section header assembly according to header.
+
+            (Only ELF64 is supported here)
+            typedef struct
+            {
+                Elf64_Word  sh_name;      /* Section name               */
+                Elf64_Word  sh_type;      /* Section type               */
+                Elf64_Xword sh_flags;     /* Section attributes         */
+                Elf64_Addr  sh_addr;      /* Virtual address in memory  */
+                Elf64_Off   sh_offset;    /* Offset in file             */
+                Elf64_Xword sh_size;      /* Size of section            */
+                Elf64_Word  sh_link;      /* Link to other section      */
+                Elf64_Word  sh_info;      /* Miscellaneous information  */
+                Elf64_Xword sh_addralign; /* Address alignment boundary */
+                Elf64_Xword sh_entsize;   /* Size of entries, if section has table */
+            } Elf64_Shdr;
+
+            A sample input:
+            {'sh_name': 11, 'sh_type': 'SHT_STRTAB', 'sh_flags': 0, 'sh_addr': 0,
+            'sh_offset': 808, 'sh_size': 1061, 'sh_link': 0, 'sh_info': 0,
+            'sh_addralign': 1, 'sh_entsize': 0})
+
+            Fields required: name, type, flags, link, info, addralign, entsize
+            Fields filled by assembler: addr(?), offset, size
+        '''
+
+        # stream.write('\t.section  "%s", %s, %s\n'%(secname, header['sh_flags'], header['sh_type']))
+        stream.write(ident + '.__section_name         0x%x \t// offset in .shstrtab\n' % header['sh_name'])
+        stream.write(ident + '.__section_type         %s\n'%header['sh_type'])
+        stream.write(ident + '.__section_flags        0x%x\n'%header['sh_flags'])
+        stream.write(ident + '.__section_addr         0x%x\n'%header['sh_addr'])
+        stream.write(ident + '.__section_offset       0x%x \t// maybe updated by assembler\n'%header['sh_offset'])
+        stream.write(ident + '.__section_size         0x%x \t// maybe updated by assembler\n'%header['sh_size'])
+        stream.write(ident + '.__section_link         %d\n'%header['sh_link'])
+        stream.write(ident + '.__section_info         0x%x\n'%header['sh_info'])
+        stream.write(ident + '.__section_entsize      %d\n'%header['sh_entsize'])
+        stream.write(ident + '.align                %d \t// equivalent to set sh_addralign\n'%header['sh_addralign'])
+
+    def __writeCodeSectionAsm(self, stream, secname):
+        ''' Rewrite the code sections in assembly
+
+        Tasks:
+            1. add control codes
+            2. Add some offset labels
+                such as EIATTR_COOP_GROUP_INSTR_OFFSETS, no way to recover from assembly.
+            3. (TODO) Special treatment of some instructions.
+                such as FSEL with NAN operand
+                and some instructions missing assembly text (Maybe a bug of nvdisasm?)
+        '''
+        # get assembly lines according to current text section
+        mstart, mend = self.__mAsmSectionMarkers[secname]
+        asmlines = self.__mAsmLines[mstart:mend]
+
+        # extract nvinfo, get offset label dict
+        # some offset nvinfo cannot recover from assembly
+        # thus we need this label to keep them unaffected
+        kname = re.sub('^\.text\.', '', secname)
+        nvinfo_secname = '.nv.info.' + kname
+        if nvinfo_secname not in self.__mELFSections:
+            raise KeyError('Info section (%s) not found!'%nvinfo_secname)
+
+        nvinfo_data = self.__mELFSections[nvinfo_secname][1]
+        nvinfo = CuNVInfo(nvinfo_data, self.m_SMVersion)
+        offset_labels = nvinfo.getOffsetLabelDict(kname)
+
+        # get code bytes of current text section
+        codeheader = self.__mELFSections[secname][0]
+        codebytes = self.__mELFSections[secname][1]
+
+        ctrl_code_list, ins_code_list = self.m_SMVersion.splitControlCodes(codebytes)
+
+        # Example : "/*0300*/                   IMAD.U32 R5, RZ, RZ, UR6 ;"
+        m_ins = re.compile(r'^\s*\/\*([0-9a-f]+)\*\/\s+.*')
+
+        pidx = -1
+        stream.write(asmlines[0] + '\n') # asmline[0] contains .section declaration
+        self.__writeSectionHeaderAsm(stream, secname, codeheader)
+
+        for line in asmlines[1:]: # first line with .section already written
+            res = m_ins.match(line)
             if res is not None:
-                kname = res.groups()[0]
-                # print('NewKernel: ' + kname)
-                continue
-            elif kstart_pattern.match(line):
-                doGather = True
-            elif kend_pattern.match(line):
-                doGather = False
-                kdict[kname] = kconts
-                kconts = ''
+                addr = int(res.groups()[0], 16) # instruction address(offset)
 
-            if doGather:
-                kconts += line + '\n'
+                # add offset label
+                if addr in offset_labels:
+                    stream.write('  ' + offset_labels[addr] + ':\n')
 
-        self.m_CodeDict = self.transKernelCode(kdict)
+                # generate control code strings
+                # NOTE: the addr comments do not matter, it will be ignored by assembler.
+                # TODO (DONE!): check missing instructions, idx should be with stride 1
+                idx = self.m_SMVersion.getInsIndexFromOffset(addr)
+                if idx-pidx != 1:
+                    print("!!! Missing instruction before %s:0x%x"%(secname, addr))
+                for iIns in range(pidx+1, idx):
+                    ccode = ctrl_code_list[iIns]
+                    cstr  = decodeCtrlCodes(ccode)
 
-    @staticmethod
-    def transKernelCode(kdict):
-        tdict = {}
-        for k in kdict:
-            codes = kdict[k] #.splitlines()
-            sio = StringIO(codes)
-            insfeeder = CuInsFeeder(sio)
-            kins = [ins for ins in insfeeder]
-            tdict[k] = kins
+                    icode = ins_code_list[iIns]
+                    istr  = '    UNDEF 0x%x; // Missing instructions, not disassembled' % icode
 
-        return tdict
+                    stream.write('      [%s] %s\n'%(cstr, istr) )
 
-    @staticmethod
-    def genKernelText(tdict):
-        sio = StringIO()
-        #sio.write('\n')
-        spattern = re.compile('^\s*(@\S+)?\s*(.*;)\s*$')
-        for addr, code, s, ctrlcodes in tdict:
-            fullcode = code + (ctrlcodes<<105)
-            c0 = fullcode & ((1<<64) - 1)
-            c1 = fullcode >> 64
-            cstr = CuKernelAssembler.decodeCtrlCodes(ctrlcodes)
+                pidx = idx
 
-            # align predicate and main part of instructions
-            res = spattern.match(s)
-            spred = res.groups()[0]
-            if spred is None:
-                spred = ''
-            smain = res.groups()[1]
+                ccode = ctrl_code_list[idx]
+                cstr  = decodeCtrlCodes(ccode)
 
-            sio.write('L%05x: [%s]  %6s %-72s /* 0x%016x; 0x%016x */\n'
-                      % (addr, cstr, spred, smain, c0, c1))
-        return sio.getvalue()
+                stream.write('      [%s] %s\n'%(cstr, line) )
+            else:
+                # 2 spaces for code folding
+                stream.write('  ' + line+'\n')
 
-    @staticmethod
-    def bytes2hex(bs, linewidth=32):
-        length = len(bs)
-        if length == 0:
-            return ''
+    def __writeExplicitSectionAsm(self, stream, secname):
+        ''' Write sections explicitly defined in nvdisasm output.
 
-        sio = StringIO()
-        for i in range(0, length, linewidth):
-            sio.write(bs[i:min(i+linewidth, length)].hex() + '\n')
+        Most of those assembly texts are copied, just add some section header info.
+        '''
+        m0, m1 = self.__mAsmSectionMarkers[secname]
+        stream.write(self.__mAsmLines[m0]+'\n')  # declaration first
 
-        return sio.getvalue()
+        header, _ = self.__mELFSections[secname]
+        self.__writeSectionHeaderAsm(stream, secname, header) # followed by section info
 
-    def __hexsign(self, bytes):
-        h = blake2b(digest_size=16, key=b'Cubin ELF Secret Key')
-        h.update(bytes)
-        return h.hexdigest()
+        # 2 spaces is for identation, thus all section contents can be collapsed
+        stream.write('  ' + '\n  '.join(self.__mAsmLines[m0+1:m1])) # followed by section data
 
-    @staticmethod
-    def dict2comment(d):
-        sio = StringIO()
-        for k in d:
-            sio.write('# %16s : %s\n' %(k, d[k]))
-        return sio.getvalue()
+    def __writeImplicitSectionAsm(self, stream, secname):
+        ''' Write implicit sections not shown in nvdisasm output.
+            Such as .shstrtab, .strtab, .symtab, .rel*, etc.
+
+            Ideally they can be generated from assembly inputs, but some entries in
+            .shstrtab/.strtab/.symtab seem not referenced in nvdisasm output.
+            And it's difficult to check the correctness and dig the hidden correlations.
+            Thus we just keep it as is, since in most cases we do not need to modify them.
+
+            All contents of relocation sections (.rel.*, .rela.*) will be generated by assembler.
+            Size of symbols may be updated if necessary.
+        '''
+        header, data = self.__mELFSections[secname]
+
+        bio = BytesIO(self.__mCubinBytes)
+        ef = ELFFile(bio)
+
+        if secname == '.shstrtab' or secname == '.strtab':
+            stream.write('\t.section  "%s", %s, %s\n'%(secname, header['sh_flags'], header['sh_type']))
+            stream.write('\t// all strings in %s section will be kept as is.\n'%secname)
+            self.__writeSectionHeaderAsm(stream, secname, header)
+            stream.write(stringBytes2Asm(data, label=secname))
+        elif secname == '.symtab':
+            stream.write('\t.section  "%s", %s, %s\n'%(secname, header['sh_flags'], header['sh_type']))
+            stream.write('\t// all symbols in .symtab sections will be kept\n')
+            stream.write('\t// but the symbol size may be changed accordingly\n')
+            self.__writeSectionHeaderAsm(stream, secname, header)
+
+            sym_entsize = header['sh_entsize']
+            nsym = header['sh_size'] // sym_entsize
+            sym_section = ef.get_section_by_name('.symtab')
+
+            isym = 0
+            for sym in sym_section.iter_symbols():
+                stream.write('    // Symbol[%d] "%s": %s\n'%(isym, sym.name, sym.entry))
+                stream.write(bytes2Asm(data[isym*sym_entsize:(isym+1)*sym_entsize], addr_offset=isym*sym_entsize))
+                stream.write('\n')
+                isym += 1
+
+        elif secname == '':
+            stream.write('\t// there will always be an empty section at index 0\n')
+            stream.write('\t.section  "%s", %s, %s\n'%(secname, header['sh_flags'], header['sh_type']))
+            self.__writeSectionHeaderAsm(stream, secname, header)
+
+        elif secname.startswith('.rel'):
+            stream.write('\t.section  "%s", %s, %s\n'%(secname, header['sh_flags'], header['sh_type']))
+            stream.write('\t// all relocation sections will be dynamically generated by assembler \n')
+            stream.write('\t// but most of the section header will be kept as is.\n')
+            self.__writeSectionHeaderAsm(stream, secname, header)
+
+            rel_section = ef.get_section_by_name(secname)
+            sym_section = ef.get_section_by_name('.symtab')
+            rel_entsize = header['sh_entsize']
+            nrel = rel_section.num_relocations()
+
+            irel = 0
+            for rel in rel_section.iter_relocations():
+                symname = sym_section.get_symbol(rel.entry['r_info_sym']).name
+                stream.write('    // Relocation[%d] : %s, %s\n'%(irel, symname, rel.entry))
+                irel += 1
+
+        else:
+            raise Exception('Unknown implicit section %s !'%secname)
+
+    def __writeSegmentHeaderAsm(self, stream, segheader, segrange):
+        '''
+        typedef struct
+        {
+            Elf64_Word  p_type;    /* Type of segment */
+            Elf64_Word  p_flags;   /* Segment attributes */
+            Elf64_Off   p_offset;  /* Offset in file */
+            Elf64_Addr  p_vaddr;   /* Virtual address in memory */
+            Elf64_Addr  p_paddr;   /* Reserved */
+            Elf64_Xword p_filesz;  /* Size of segment in file */
+            Elf64_Xword p_memsz;   /* Size of segment in memory */
+            Elf64_Xword p_align;   /* Alignment of segment */
+        } Elf64_Phdr;
+        '''
+
+        stream.write('// Program segment %s, %s \n' % (segheader['p_type'], segheader['p_flags']))
+        stream.write('  .__segment  "%s", %s \n' % (segheader['p_type'], segheader['p_flags']))
+        stream.write('  .__segment_offset  0x%x   \t\t// maybe updated by assembler \n' % (segheader['p_offset']))
+        stream.write('  .__segment_vaddr   0x%x   \t\t// Seems always 0? \n' % (segheader['p_vaddr']))
+        stream.write('  .__segment_paddr   0x%x   \t\t// ??? \n' % (segheader['p_paddr']))
+        stream.write('  .__segment_filesz  0x%x   \t\t// file size, maybe updated by assembler \n' % (segheader['p_filesz']))
+        stream.write('  .__segment_memsz   0x%x   \t\t// file size + nobits sections, maybe updated by assembler \n' % (segheader['p_memsz']))
+        stream.write('  .__segment_align     %d   \t\t//  \n' % (segheader['p_align']))
+        if segrange[0] is not None:
+            stream.write('  .__segment_startsection    "%s"  \t\t// first section in this segment \n' % (segrange[0]))
+            stream.write('  .__segment_endsection      "%s"  \t\t// last  section in this segment \n' % (segrange[1]))
+        stream.write('\n')
 
     def saveAsCuAsm(self, asmname):
+        ''' Saving current cubin as cuasm file.
+
+        section entry tables : kept as is, offset/size may change
+        segment entry tables : kept as is, offset/size may change
+
+        .fileheader   : kept as is, offset for section/program header may change
+        .shstrtab     : kept as is
+        .strtab       : kept as is
+        .symtab       : kept as is, size may change
+
+        .debug_frame  : currently kept as is
+
+        .nv.info      : usually kept as is, contents user modifiable
+        .nv.info.*    : updated by assembler, contents user modifiable
+
+        .nv.constant* : usually kept as is, contents user modifiable
+
+        .text.*       : code sections, user modifiable
+
+        Some optional sections:
+        .rel.*        : relocation, dynamically generated by assembler
+        .rela.*       : relocation with add, dynamically generated by assembler
+        .nv.global.init: contents user modifiable
+        .nv.global : Nobits, kept as is.
+
+        '''
         with open(asmname, 'w+') as fout:
             # output file header
-            fout.write('# file header \n')
-            h2 = self.m_ELFFileHeader.copy()
-            fhcont = self.m_ELFStructs.Elf_Ehdr.build(h2)
-            fhcont_hex = self.bytes2hex(fhcont)
-            fhsign = self.__hexsign(fhcont)
+            fout.write('// --------------------- FileHeader --------------------------\n')
+            self.__writeFileHeaderAsm(fout)
 
-            fout.write('.FileHeader {"Signature":"%s", "Type":"Data"}\n' % fhsign)
-            fout.write(self.dict2comment(self.m_ELFFileHeader))
-            fout.write(fhcont_hex + '\n')
+            fout.write('\n')
+            fout.write('  //-------------------------------------------------\n')
+            fout.write('  //------------ END of FileHeader ------------------\n')
+            fout.write('  //-------------------------------------------------\n\n\n')
 
             # output sections
-            for name, header, data in self.m_ELFSections:
-                shcont = self.m_ELFStructs.Elf_Shdr.build(header)
-                shcont_hex = self.bytes2hex(shcont)
-                shcont_sign = self.__hexsign(shcont)
-
-                fout.write('# section %s\n' % name)
-                fout.write('.SectionHeader {"Signature":"%s", "Type":"Data", "Name":"%s"}\n'
-                           % (shcont_sign, name) )
-                fout.write(self.dict2comment(header))
-                fout.write(shcont_hex + '\n')
-
-                if name.startswith('.text.'):
-                    kname = name.replace('.text.','')
-                    codes = self.m_CodeDict[kname]
-                    shdata_hex = self.genKernelText(codes)
-                    dtype="Code"
-                else:
-                    shdata_hex = self.bytes2hex(data)
-                    dtype="Data"
-
-                shdata_sign = self.__hexsign(data)
-                fout.write('.SectionData {"Signature":"%s", "Type":"%s"}\n' % (shdata_sign, dtype))
-                fout.write(shdata_hex + '\n')
-
-            # output segments
-            for segheader in self.m_ELFSegments:
-                seghcont = self.m_ELFStructs.Elf_Phdr.build(segheader)
-                seghcont_hex = self.bytes2hex(seghcont)
-
-                seghcont_sign = self.__hexsign(seghcont)
-                fout.write('# segment \n')
-                fout.write('.SegmentHeader {"Signature":"%s", "Type":"Data"}\n' % seghcont_sign)
-                fout.write(self.dict2comment(segheader))
-                fout.write(seghcont_hex + '\n')
-
-    def loadFromCuAsm(self, asmname):
-        self.clear()
-
-        if self.m_CuKernelAsm is None:
-            raise Exception("No kernel assembler is available!")
-
-        secheader_list = []
-        secname_list = [] #
-        secdata_list = []
-
-        segheader_list = []
-
-        m_comment = re.compile(r'^\s*(#.*)?$') # comment or empty line
-        m_directive = re.compile(r'^\s*(\.\w+)\s+(\{.*\})') # directive (startwith ".")
-
-        skipfun = lambda s: m_comment.match(s) is not None
-        stopfun = lambda s: m_directive.match(s) is not None
-
-        with open(asmname, 'r') as fin:
-            lines = fin.readlines()
-
-        idx = 0
-        while idx<len(lines):
-            line = lines[idx]
-            if m_comment.match(line) is not None: # skip comment
-                idx += 1
-                continue
-            else:
-                res = m_directive.match(line)
-                if res is not None:
-                    directive = res.groups()[0]
-                    attrs = eval(res.groups()[1])
-                    if attrs['Type'] == 'Data':
-                        data, idx = self.gatherData(lines, idx+1, skipfun, stopfun)
-                        if self.__hexsign(data) != attrs['Signature']:
-                            # print(self.__hexsign(data))
-                            # print(attrs['Signature'])
-                            raise Exception('%s:%d Data signature not match!' % (asmname, idx))
-                    elif attrs['Type'] == 'Code':
-                        codes, idx = self.gatherCode(lines, idx+1, skipfun, stopfun)
-                        data = self.m_CuKernelAsm.assembleCuAsm(codes)
+            for secname in self.__mELFSections:
+                fout.write('\n// --------------------- %-32s --------------------------\n'%secname)
+                # for sections in assembly, write the assembly
+                if secname in self.__mAsmSectionMarkers:
+                    if secname.startswith('.text.'):
+                        self.__writeCodeSectionAsm(fout, secname)
                     else:
-                        raise Exception('%s:%d Unknown directive with attribute Type="%s"!' % (asmname, idx, attrs['Type']))
+                        self.__writeExplicitSectionAsm(fout, secname)
+                else: # for implicit sections, write raw strings/bytes
+                    self.__writeImplicitSectionAsm(fout, secname)
 
-                    if directive == '.FileHeader':
-                        logging.info("%s:%d Loading file header..." % (asmname, idx))
-                        self.m_ELFFileHeader = self.m_ELFStructs.Elf_Ehdr.parse(data)
-                    elif directive == '.SectionHeader':
-                        logging.info("%s:%d Loading section header..." % (asmname, idx))
-                        if len(secheader_list) != len(secdata_list):
-                            raise Exception('%s:%d Unmatched section header!' %(asmname, idx))
-                        secheader_list.append(data)
-                        secname_list.append(attrs['Name'])
-                    elif directive == '.SectionData':
-                        logging.info("%s:%d Loading section data..." % (asmname, idx))
-                        if len(secheader_list)-len(secdata_list) != 1:
-                            raise Exception('%s:%d Unmatched section data!' %(asmname, idx))
-                        secdata_list.append(data)
-                    elif directive == '.SegmentHeader':
-                        logging.info("%s:%d Loading segment section..." % (asmname, idx))
-                        if len(segheader_list)>3:
-                            raise Exception('%s:%d Extra segment header!' %(asmname, idx))
-                        segheader_list.append(data)
-                    else:
-                        raise Exception('Unknown directive %s' % directive)
-                else: # something wrong here, gatherCode/gatherData should stop at directives
-                    raise Exception("Directive not found!")
+            fout.write('\n')
+            fout.write('  //-------------------------------------------------\n')
+            fout.write('  //---------------- END of sections ----------------\n')
+            fout.write('  //-------------------------------------------------\n\n\n')
 
-        # gather section headers and data
-        self.m_ELFSections = [(sname, self.m_ELFStructs.Elf_Shdr.parse(sh), sd)
-                                for sname, sh, sd in zip(secname_list, secheader_list, secdata_list)]
-        self.m_ELFSegments = [self.m_ELFStructs.Elf_Phdr.parse(sh) for sh in segheader_list ]
+            for segheader,segrange in zip(self.__mELFSegments, self.__mELFSegmentRange):
+                self.__writeSegmentHeaderAsm(fout, segheader, segrange)
 
-        # do layouts
-
-    @staticmethod
-    def gatherData(lines, idx, skipfun, stopfun):
-        data = b''
-        for i in range(idx, len(lines)):
-            if skipfun(lines[i]):
-                continue
-            elif stopfun(lines[i]):
-                break
-            else:
-                data += bytearray.fromhex(lines[i])
-
-        return data, i
-
-    @staticmethod
-    def gatherCode(lines, idx, skipfun, stopfun):
-        codes = []
-        for i in range(idx, len(lines)):
-            if skipfun(lines[i]):
-                continue
-            elif stopfun(lines[i]):
-                break
-            else:
-                codes.append(lines[i])
-        return codes, i
-
-    def saveAsCubin(self, binname):
-        with open(binname,'wb') as fout:
-            # write file identifier and elf header
-            fheader = self.m_ELFStructs.Elf_Ehdr.build(self.m_ELFFileHeader)
-            logging.info("Writing file header (%8d @ %8d)."%(len(fheader), fout.tell()))
-            fout.write(fheader)
-
-            # write datas
-            for name, header, data in self.m_ELFSections:
-                align = header['sh_addralign']
-                curpos = fout.tell()
-                if align>0 and curpos % align != 0:
-                    padlen = ( (curpos+align-1) // align)*align
-                    npad = padlen - curpos
-                    logging.info("Writing section pad data (%8d @ %8d)."%(npad, fout.tell()))
-                    fout.write(b'\x00' * npad)
-
-                logging.info("Writing section data (%8d @ %8d)."%(len(data),fout.tell()))
-                logging.info("   HeaderPos: %8d." % header['sh_offset'])
-                fout.write(data)
-
-            # write section header
-            for name,header,data in self.m_ELFSections:
-                fdata = self.m_ELFStructs.Elf_Shdr.build(header)
-                logging.info("Writing section header (%8d @ %8d)."%(len(fdata),fout.tell()))
-                fout.write(fdata)
-
-            # write segment header
-            for header in self.m_ELFSegments:
-                fdata = self.m_ELFStructs.Elf_Phdr.build(header)
-                logging.info("Writing program header (%8d @ %8d)."%(len(fdata),fout.tell()))
-                fout.write(fdata)
-
-            fout.close()
-
+            fout.write('\n')
+            fout.write('  //-------------------------------------------------\n')
+            fout.write('  //---------------- END of segments ----------------\n')
+            fout.write('  //-------------------------------------------------\n\n\n')
 
 if __name__ == '__main__':
-
-    fdir = 'G:\\Temp\\CubinTest\\'
-    binname = r'D:\Programs\VisualStudio\CubinProbe\CubinProbe\x64\Release\kernel.compute_75.sm_75.cubin'
-
-    from glob import iglob
-    for binname in iglob(fdir + "*.sm_75.cubin"):
-        print('Processing %s...' % binname)
-        cf = CubinFile()
-        cf.initCuKernelAsm()
-        cf.loadCubin(binname)
-
-        asmname = binname.replace('.cubin', '.cuasm')
-        print('Saving to %s...' % asmname)
-        cf.saveAsCuAsm(asmname)
-
-        cf2 = CubinFile()
-        cf2.initCuKernelAsm()
-
-        print('Loading from %s...' % asmname)
-        cf2.loadFromCuAsm(asmname)
-
-        binname2 = binname + '2'
-        print('Saving %s...' % binname2)
-        cf2.saveAsCubin(binname2)
-
+    pass

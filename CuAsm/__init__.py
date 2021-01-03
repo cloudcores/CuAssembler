@@ -4,3 +4,4 @@ author = 'cloudcores'
 author_email='yangrc.chn@hotmail.com'
 license='MIT'
 description='An unofficial cuda assembler'
+
