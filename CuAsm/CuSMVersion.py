@@ -89,6 +89,12 @@ class CuSMVersion(object):
         
         return instance
 
+    def getMajor(self):
+        return self.__mMajor
+    
+    def getMinor(self):
+        return self.__mMinor
+
     def getVersionNumber(self):
         return self.__mVersion
 
@@ -237,14 +243,12 @@ class CuSMVersion(object):
             return ival, modi
 
     def splitIntImmeModifier(self, ins_parser, int_val):
-        if self.__mMajor>6:
+        if self.__mMajor<=6 and (not ins_parser.m_InsOp.endswith('32I')) and ((int_val & 0x80000) != 0):
+            new_val = int_val - (int_val & 0x80000)
+            modi = ['ImplicitNegIntImme']
+            return new_val, modi
+        else:
             return int_val, []
-
-        if not ins_parser.m_InsOp.endswith('32I'):
-            if (int_val & 0x80000) != 0:
-                new_val = int_val - (int_val & 0x80000)
-                modi = ['ImplicitNegIntImme']
-                return new_val, modi
 
     def formatCode(self, code):
         if self.__mMajor<=6:
@@ -429,6 +433,7 @@ class CuSMVersion(object):
     
         return version
 
+    
 def testOffset():
     v5 = CuSMVersion(52)
     v7 = CuSMVersion(75)

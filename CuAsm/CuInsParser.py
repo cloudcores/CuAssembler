@@ -271,15 +271,17 @@ class CuInsParser():
             but negtive ints may depend on the type.
             Currently we try to let the coefficient determined by the code, not predetermined.
 
-            TODO: Some ALU instructions such as IADD3 in sm5x/6x, the sign bit will be moved to the modifier.
-                  If the sign bit is explicitly show (such as -0x1), it can be handled by 'NegIntImme'.
-                  But if it's implicitly defined (0xfffff, 20bit used, but int imme has only 19bit)
+            TODO(Done): 
+                Some ALU instructions such as IADD3 in sm5x/6x, the sign bit will be moved to the modifier.
+                If the sign bit is explicitly show (such as -0x1), it can be handled by 'NegIntImme'.
+                But if it's implicitly defined (such as 0xfffff, 20bit used, but int imme has only 19bit),
+                we need to handle it seperately.
         '''
 
         i = int(s, 16)
 
         if i>=0:
-            return [i], []
+            return self.m_SMVersion.splitIntImmeModifier(self, i)
         else:
             return [i], ['NegIntImme']
 
@@ -319,7 +321,7 @@ class CuInsParser():
             Zero immediate will be appended if not present.
             It's harmless if there is no such field, since the value will always be 0.
 
-            TODO: what for [R0.U32+UR4.U64] ?? Could in another order?
+            TODO(Done): what for [R0.U32+UR4.U64] ?? Could in another order?
                   May need extra tag in modifiers?
         '''
 
@@ -338,8 +340,14 @@ class CuInsParser():
                 ttype, tval, tmodi = self.__parseIndexedToken(ts)
                 optype += ttype
                 opval.extend(tval)
-                opmodi.extend(tmodi)
 
+                # The modifier is prefixed by type
+                # Thus     [R0.U32+UR4.U64] => ['R.U32', 'UR.U64']
+                # (If any) [R0.U64+UR4.U32] => ['R.U64', 'UR.U32']
+                opmodi.extend([ (ttype+'.'+m) for m in tmodi])
+
+        # Pad with zero immediate if not present
+        # Harmless even if it does not support immediates
         if not optype.endswith('I'):
             optype += 'I'
             opval.append(0)
@@ -349,10 +357,10 @@ class CuInsParser():
     def __specialTreatment(self):
         ''' Special treatments after parsing.
 
-        Handle exceptions that cannot processed with current approach.
+            Handle exceptions that cannot processed with current approach.
 
-        TODO: Use dict mapping to subroutines, rather than if/else
-              How??? F2F may need several special treatments...
+            TODO: Use dict mapping to subroutines, rather than if/else
+                How??? F2F may need several special treatments...
         '''
 
         if self.m_InsOp == 'PLOP3': # immLut for PLOP3 is encoded with seperating 5+3 bits
