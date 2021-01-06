@@ -38,11 +38,11 @@ def verifyReposFromFile(sassname, reposfile, arch='sm_75'):
     repos.verify(feeder)
 
 if __name__ == '__main__':
-    sassname = r'G:\Repos\Tests\Programs\cudatest.sm_75.sass'
+    sassname = r'G:\Repos\Tests\Programs\cudatest.sm_86.sass'
     #sassname = r"G:\Temp\cudnn64_7.sm_50.sass"
-    reposfile = r'G:\Repos\CuInsAsmRepos.sm_75.txt'
+    reposfile = r'G:\Repos\CuInsAsmRepos.sm_86.txt'
 
-    arch = 'sm_75'
+    arch = 'sm_86'
 
     constructReposFromFile(sassname, reposfile, arch=arch)
     print('### Construction done!')

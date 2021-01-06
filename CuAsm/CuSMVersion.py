@@ -246,9 +246,9 @@ class CuSMVersion(object):
         if self.__mMajor<=6 and (not ins_parser.m_InsOp.endswith('32I')) and ((int_val & 0x80000) != 0):
             new_val = int_val - (int_val & 0x80000)
             modi = ['ImplicitNegIntImme']
-            return new_val, modi
+            return [new_val], modi
         else:
-            return int_val, []
+            return [int_val], []
 
     def formatCode(self, code):
         if self.__mMajor<=6:

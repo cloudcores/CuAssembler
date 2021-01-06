@@ -262,9 +262,11 @@ class CuInsAssembler():
         sio.write('  "ValNullMat" : %s, \n' % repr(self.m_ValNullMat))
         #sio.write('  "InsRecords" : %s, \n' % repr(self.m_InsRecords))
 
-        sio.write('  "InsRecords" : ')
-        reprList(sio, self.m_InsRecords)
-        sio.write(', \n')
+        sio.write('  "InsRecords" : [')
+        #reprList(sio, self.m_InsRecords)
+        for addr, code, s in self.m_InsRecords:
+            sio.write('(%#08x, %s, "%s"),\n'%(addr, self.m_Arch.formatCode(code), s))
+        sio.write('], \n')
 
         sio.write('  "Rhs" : %s, \n' % repr(self.m_Rhs))
         sio.write('  "Arch" : %s })' % repr(self.m_Arch))
