@@ -137,7 +137,7 @@ class CuInsAssemblerRepos():
         '''
 
         tmp_ins_asm_dict = {}
-        feeder = CuInsAssemblerRepos.iterRecords()
+        feeder = self.iterRecords()
 
         self.update(feeder, tmp_ins_asm_dict)
         self.m_InsAsmDict = tmp_ins_asm_dict
