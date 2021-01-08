@@ -126,7 +126,8 @@ def splitAsmSection(lines):
                 markers.append(iline)  
             markers.append(iline)
 
-    markers.append(len(lines)-1)
+    # 
+    markers.append(len(lines))
 
     section_markers = {}
     section_markers['$FileHeader'] = (markers[0], markers[1])  # File header parts
