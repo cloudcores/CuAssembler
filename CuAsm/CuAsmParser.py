@@ -618,6 +618,7 @@ class CuAsmParser(object):
             '.type'              : self.__dir_type,                  # set symbol type
             '.size'              : self.__dir_size,                  # set symbol size
             '.global'            : self.__dir_global,                # declare a global symbol
+            '.weak'              : self.__dir_weak,                  # declare a weak symbol
             '.zero'              : self.__dir_zero,                  # emit zero bytes
             '.other'             : self.__dir_other,                 # set symbol other 
             # supplementary directives defined by cuasm
@@ -1119,7 +1120,9 @@ class CuAsmParser(object):
                 sec_file_range[sec.name] = (file_offset, file_offset+size)
                 file_offset += size
         
-        # FIXME: alignment for headers?
+        # FIXME: better alignment for headers?
+        p_align = self.__mSegmentList[0]['align']
+        file_offset, fpadsize = alignTo(file_offset, p_align)
         self.__updateSectionPadding(prev_sec, fpadsize)
 
         SecHeaderLen = len(self.__mSectionDict) * Config.CubinELFStructs.Elf_Shdr.sizeof()
@@ -1280,6 +1283,20 @@ class CuAsmParser(object):
 
         self.__mSymbolDict[symbol].isGlobal = True
 
+    def __dir_weak(self, args):
+        '''.weak defines a weak symbol.
+
+            A weak symbol is declared in current module, but defined in external module.
+        '''
+
+        self.__assertArgc('.weak', args, 1, allowMore=False)
+
+        symbol = args[0]
+        if symbol not in self.__mSymbolDict:
+            self.__mSymbolDict[symbol] = CuAsmSymbol(symbol)
+
+        self.__mSymbolDict[symbol].isGlobal = False
+
     def __dir_zero(self, args):
         '''.zero emit zeros of specified length (in bytes).'''
 
@@ -1309,7 +1326,7 @@ class CuAsmParser(object):
         self.__mSymbolDict[symbol].other = args[1]
 
     def __dir_elfheader(self, attrname, args):
-        self.__assertArgc('.elf_'+attrname, args, 1, allowMore=False)
+        self.__assertArgc('.__elf_'+attrname, args, 1, allowMore=False)
         self.__mCuAsmFile.fileHeader[attrname] = self.__cvtValue(args[0])
         if attrname == 'flags':
             flags = int(args[0], 16)
@@ -1321,20 +1338,20 @@ class CuAsmParser(object):
                 self.__mCuInsAsmRepos.setToDefaultInsAsmDict()
 
     def __dir_sectionheader(self, attrname, args):
-        self.__assertArgc('.section_'+attrname, args, 1, allowMore=False)
+        self.__assertArgc('.__section_'+attrname, args, 1, allowMore=False)
         self.__mCurrSection.header[attrname] = self.__cvtValue(args[0])
 
     def __dir_segment(self, args):
         self.__pushSectionSizeLabel()
 
-        self.__assertArgc('.segment', args, 2, allowMore=False)
+        self.__assertArgc('.__segment', args, 2, allowMore=False)
         segment = CuAsmSegment(args[0].strip('"'), args[1])
         self.__mSegmentList.append(segment)
         self.__mCurrSegment = segment
         self.__mCurrSection = None
 
     def __dir_segmentheader(self, attrname, args):
-        self.__assertArgc('.segment_'+attrname, args, 1, allowMore=False)
+        self.__assertArgc('.__segment_'+attrname, args, 1, allowMore=False)
         self.__mCurrSegment.header[attrname] = self.__cvtValue(args[0])
 
 #### Subroutines
