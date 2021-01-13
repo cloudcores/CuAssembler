@@ -12,8 +12,11 @@ from .CuKernelAssembler import CuKernelAssembler
 from .CuInsAssemblerRepos import CuInsAssemblerRepos
 from .CuSMVersion import CuSMVersion
 from .CuNVInfo import CuNVInfo
+from .CuAsmLogger import CuAsmLogger
+
 from .config import Config
 from .common import c_ControlCodesPattern, encodeCtrlCodes, splitAsmSection, alignTo, bytes2Asm
+
 
 m_hex    = re.compile(r'\b0x[a-fA-F0-9]+\b')
 m_int    = re.compile(r'\b[0-9]+\b')
@@ -688,6 +691,7 @@ class CuAsmParser(object):
         # self.__mStrList       = []  # string may have identical entries
         # self.__mShstrDict     = OrderedDict() # entries
 
+    @CuAsmLogger.logTimeIt
     def parse(self, fname):
         ''' Parsing input file
 
@@ -703,6 +707,8 @@ class CuAsmParser(object):
             - write to file/stream
         '''
         self.reset()
+
+        CuAsmLogger.logEntry('Parsing file %s'%fname)
 
         self.__mFilename = fname
         if not os.path.isfile(fname):
@@ -727,8 +733,10 @@ class CuAsmParser(object):
 
         self.__updateSymtab()
 
+    @CuAsmLogger.logTimeIt
     def saveAsCubin(self, fstream):
         if isinstance(fstream, str):
+
             fout = open(fstream, 'wb')
             needClose = True
         else:
@@ -758,10 +766,12 @@ class CuAsmParser(object):
         if needClose:
             fout.close()
 
+    
     def setInsAsmRepos(self, fname, arch):
         self.__mCuInsAsmRepos = CuInsAssemblerRepos(fname, arch=arch)
 
 #### Procedures, every function is a seperate parsing step.
+    @CuAsmLogger.logTimeIt
     def __preScan(self):
         ''' first scan to gather sections/symbol
             
@@ -825,7 +835,7 @@ class CuAsmParser(object):
             elif ltype == 'blank':
                 continue
         
-    
+    @CuAsmLogger.logTimeIt
     def __parseKernels(self):
         # scan text sections to assemble kernels
         section_markers = splitAsmSection(self.__mLines)
@@ -847,7 +857,8 @@ class CuAsmParser(object):
         nvinfo = CuNVInfo(sec.getData(), self.__mCuSMVersion)
         self.__mCuSMVersion.setRegCountInNVInfo(nvinfo, regnumdict)
         sec.setData(nvinfo.serialize())
-        
+
+    @CuAsmLogger.logTimeIt    
     def __buildInternalTables(self):
         ''' Build .shstrtab/.strtab/.symtab entries.
 
@@ -857,6 +868,7 @@ class CuAsmParser(object):
         self.__mSymtabDict = CuAsmSymbol.buildSymbolDict(self.__mStrtabDict,
                                                          self.__mSectionDict['.symtab'].getData())
 
+    @CuAsmLogger.logTimeIt
     def __parseKernelText(self, section, line_start, line_end):
         
         kasm = CuKernelAssembler(ins_asm_repos=self.__mCuInsAsmRepos, version=self.__mCuSMVersion)
@@ -909,7 +921,8 @@ class CuAsmParser(object):
         nvinfo = CuNVInfo(info_sec.getData(), self.__mCuSMVersion)
         nvinfo.updateNVInfoFromDict(offset_label_dict)
         info_sec.setData(nvinfo.serialize())
-        
+
+    @CuAsmLogger.logTimeIt
     def __sortSections(self):
         ''' Sort the sections. (TODO: Not implemented yet, all sections are kept as is.)
 
@@ -954,6 +967,7 @@ class CuAsmParser(object):
 
         pass
 
+    @CuAsmLogger.logTimeIt
     def __buildRelocationSections(self):
 
         relSecDict = defaultdict(lambda : [])
@@ -978,6 +992,7 @@ class CuAsmParser(object):
                 rel = rellist.pop() # FIFO of list
                 section.emitBytes(rel.buildEntry())
 
+    @CuAsmLogger.logTimeIt
     def __evalFixups(self):
         for i,fixup in enumerate(self.__mFixupList):
             try:
@@ -1059,6 +1074,7 @@ class CuAsmParser(object):
                 raise Exception('Error when evaluating fixup @line%d: expr=%s, msg=%s'
                                 %(fixup.lineno, fixup.expr, e.args))
 
+    @CuAsmLogger.logTimeIt
     def __updateSymtab(self):
         for s in self.__mSymtabDict:
             symid, syment = self.__mSymtabDict[s]
@@ -1075,6 +1091,7 @@ class CuAsmParser(object):
             else: # some symbols does not have corresponding labels, such as vprintf
                 pass
 
+    @CuAsmLogger.logTimeIt
     def __layoutSections(self):
         ''' Layout section data, do section padding if needed. Update section header.offset/size.
         
@@ -1121,7 +1138,7 @@ class CuAsmParser(object):
                 file_offset += size
         
         # FIXME: better alignment for headers?
-        p_align = self.__mSegmentList[0]['align']
+        p_align = self.__mSegmentList[0].header['align']
         file_offset, fpadsize = alignTo(file_offset, p_align)
         self.__updateSectionPadding(prev_sec, fpadsize)
 
