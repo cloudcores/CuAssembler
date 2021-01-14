@@ -4,12 +4,16 @@ import re
 import time
 import struct
 from .common import decodeCtrlCodes, encodeCtrlCodes, reprDict, reprList
+
 from .CuInsParser import CuInsParser
 from .CuInsAssembler import CuInsAssembler
 from .CuSMVersion import CuSMVersion
+from .CuAsmLogger import CuAsmLogger
+from .config import Config
+
 from io import StringIO
 from sympy import Matrix
-from .config import Config
+
 
 
 class CuInsAssemblerRepos():
@@ -58,6 +62,7 @@ class CuInsAssemblerRepos():
         code = insAsm.buildCode(ins_vals, ins_modi)
         return code
 
+    @CuAsmLogger.logTimeIt
     def verify(self, feeder):
         res = True
         t0 = time.time()
@@ -90,6 +95,7 @@ class CuInsAssemblerRepos():
 
         return res
 
+    @CuAsmLogger.logTimeIt
     def update(self, feeder, ins_asm_dict=None):
         ''' Update the input instruction assembler dict with input from feeder.
 
@@ -124,10 +130,12 @@ class CuInsAssemblerRepos():
         else:
             print("  ~%8.2f ins per second." % (cnt/(t1-t0)))
 
+    @CuAsmLogger.logTimeIt
     def save2file(self, fname):
         with open(fname, 'w') as fout:
             fout.write(self.__repr__())
 
+    @CuAsmLogger.logTimeIt
     def rebuild(self):
         ''' When the CuInsParser is updated, the meaning of ins value/modifier may have changed.
         
@@ -142,6 +150,7 @@ class CuInsAssemblerRepos():
         self.update(feeder, tmp_ins_asm_dict)
         self.m_InsAsmDict = tmp_ins_asm_dict
     
+    @CuAsmLogger.logTimeIt
     def merge(self, merge_source):
         ''' Merge instruction assembler from another source.
 

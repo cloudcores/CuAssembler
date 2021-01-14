@@ -33,7 +33,9 @@ def updateDictWithInput(din, dout, label='', kprefix=''):
     for k,v in din.items():
         kp = kprefix + k
         if kp not in dout:
-            print('Unknown header attribute (%s) for %s!!!'%(k,label))
+            # CuAsmLogger.logWarning('Unknown header attribute (%s) for %s!!!'%(k,label))
+            pass
+
         if isinstance(v, str):
             if m_hex.match(v):
                 vv = int(v, 16)
@@ -144,6 +146,7 @@ class CuAsmLabel(object):
         self.section = section
         self.offset = offset
         self.lineno = lineno
+        CuAsmLogger.logSubroutine('Line %6d: New Label "%s" at section "%s":%#x'%(lineno, name, section.name, offset))
 
     def __str__(self):
         s = 'Label @Line %4d in section %s : %-#7x(%6d)  %s'%(self.lineno, self.section.name, self.offset, self.offset, 
@@ -165,6 +168,8 @@ class CuAsmFixup(object):
         self.dtype = dtype
         self.expr = expr
         self.value = None
+
+        CuAsmLogger.logSubroutine('Line %6d: New Fixup "%s" at section "%s":%#x'%(lineno, expr, section.name, offset))
 
     def __str__(self):
         s = 'section=%s, offset=%d, lineno=%d, dtype=%s, expr=%s, value=%s'%(
@@ -466,6 +471,8 @@ class CuAsmRelocation(object):
         self.reltype    = reltype
         self.reladd     = reladd      # reladd=None means rel, otherwise rela
 
+        CuAsmLogger.logSubroutine('New Relocation "%s" at section "%s":%#x'%(relsymname, section.name, offset))
+
     def isRELA(self):
         return self.reladd is not None
 
@@ -581,7 +588,7 @@ class CuAsmParser(object):
     m_cppcomment = re.compile(r'//.*$')      # cpp style line comments
     m_ccomment = re.compile(r'\/\*.*?\*\/')  # c   style line
 
-    m_directive = re.compile(r'(\.[a-zA-Z0-9_]+)\s+(.*)')
+    m_directive = re.compile(r'(\.[a-zA-Z0-9_]+)\s*(.*)')
     m_label     = re.compile(r'([a-zA-Z0-9._$@#]+?)\s*:\s*(.*)')  # "#" for offset label auto rename
     m_symbol    = re.compile(r'[a-zA-Z0-9._$@]+') #???
 
@@ -712,7 +719,7 @@ class CuAsmParser(object):
 
         self.__mFilename = fname
         if not os.path.isfile(fname):
-            raise IOError("Cannot find file %s!!!"%fname)
+            raise self.__assert(False, "Cannot find input cuasm file %s!!!"%fname)
         else:
             with open(fname, 'r') as fin:
                 self.__mLines = fin.readlines()
@@ -736,14 +743,15 @@ class CuAsmParser(object):
     @CuAsmLogger.logTimeIt
     def saveAsCubin(self, fstream):
         if isinstance(fstream, str):
-
             fout = open(fstream, 'wb')
             needClose = True
+            CuAsmLogger.logEntry('Saving as cubin file %s...'%fstream)
         else:
             fout = fstream
             needClose = False
+            CuAsmLogger.logEntry('Saving as cubin file to stream...')
 
-        disppos = lambda s: print("%#x(%d) : %s"%(fout.tell(), fout.tell(), s))
+        disppos = lambda s: CuAsmLogger.logSubroutine("%#08x(%08d) : %s"%(fout.tell(), fout.tell(), s))
         # write ELF file header
         disppos('FileHeader')
         fout.write(self.__mCuAsmFile.buildFileHeader())
@@ -760,7 +768,7 @@ class CuAsmParser(object):
 
         # write segment headers
         for seg in self.__mSegmentList:
-            disppos('Seg')
+            disppos('Segment')
             fout.write(seg.build())
 
         if needClose:
@@ -771,7 +779,7 @@ class CuAsmParser(object):
         self.__mCuInsAsmRepos = CuInsAssemblerRepos(fname, arch=arch)
 
 #### Procedures, every function is a seperate parsing step.
-    @CuAsmLogger.logTimeIt
+    @CuAsmLogger.logTraceIt
     def __preScan(self):
         ''' first scan to gather sections/symbol
             
@@ -795,8 +803,6 @@ class CuAsmParser(object):
                 pos = self.__tellLocal()
 
                 label =  self.__checkNVInfoOffsetLabels(self.__mCurrSection, rlabel, pos)
-                
-                # print('New label %s @line %d.'%(label, self.__mLineNo))
                 
                 if label not in self.__mLabelDict:
                     self.__mLabelDict[label] = CuAsmLabel(label, self.__mCurrSection,
@@ -835,7 +841,7 @@ class CuAsmParser(object):
             elif ltype == 'blank':
                 continue
         
-    @CuAsmLogger.logTimeIt
+    @CuAsmLogger.logTraceIt
     def __parseKernels(self):
         # scan text sections to assemble kernels
         section_markers = splitAsmSection(self.__mLines)
@@ -858,7 +864,7 @@ class CuAsmParser(object):
         self.__mCuSMVersion.setRegCountInNVInfo(nvinfo, regnumdict)
         sec.setData(nvinfo.serialize())
 
-    @CuAsmLogger.logTimeIt    
+    @CuAsmLogger.logTraceIt    
     def __buildInternalTables(self):
         ''' Build .shstrtab/.strtab/.symtab entries.
 
@@ -868,9 +874,10 @@ class CuAsmParser(object):
         self.__mSymtabDict = CuAsmSymbol.buildSymbolDict(self.__mStrtabDict,
                                                          self.__mSectionDict['.symtab'].getData())
 
-    @CuAsmLogger.logTimeIt
+    @CuAsmLogger.logTraceIt
     def __parseKernelText(self, section, line_start, line_end):
-        
+        CuAsmLogger.logSubroutine('Parsing kernel text of "%s"...'%section.name)
+
         kasm = CuKernelAssembler(ins_asm_repos=self.__mCuInsAsmRepos, version=self.__mCuSMVersion)
 
         p_textline = re.compile(r'\[([\w:-]+)\](.*)')
@@ -899,7 +906,10 @@ class CuAsmParser(object):
             c_icode_s = self.__evalInstructionFixup(section, addr, icode_s)
             
             #print("Parsing %s : %s"%(ccode_s, c_icode_s))
-            kasm.push(addr, c_icode_s, ccode_s)
+            try:
+                kasm.push(addr, c_icode_s, ccode_s)
+            except Exception as e:
+                self.__assert(False, 'Error when assembling instruction "%s":%s'%(nline, e.args))
             
             ins_idx += 1
         
@@ -922,7 +932,7 @@ class CuAsmParser(object):
         nvinfo.updateNVInfoFromDict(offset_label_dict)
         info_sec.setData(nvinfo.serialize())
 
-    @CuAsmLogger.logTimeIt
+    @CuAsmLogger.logTraceIt
     def __sortSections(self):
         ''' Sort the sections. (TODO: Not implemented yet, all sections are kept as is.)
 
@@ -967,7 +977,7 @@ class CuAsmParser(object):
 
         pass
 
-    @CuAsmLogger.logTimeIt
+    @CuAsmLogger.logTraceIt
     def __buildRelocationSections(self):
 
         relSecDict = defaultdict(lambda : [])
@@ -992,7 +1002,7 @@ class CuAsmParser(object):
                 rel = rellist.pop() # FIFO of list
                 section.emitBytes(rel.buildEntry())
 
-    @CuAsmLogger.logTimeIt
+    @CuAsmLogger.logTraceIt
     def __evalFixups(self):
         for i,fixup in enumerate(self.__mFixupList):
             try:
@@ -1061,7 +1071,7 @@ class CuAsmParser(object):
                         elif fixup.dtype=='dword':
                             reltype='R_CUDA_64'
                         else:
-                            raise Exception('Unknown data type for relocation: %s'%fixup.dtype)
+                            self.__assert(False, 'Unknown data type for relocation: %s'%fixup.dtype)
 
                         rel = CuAsmRelocation(fixup.section, fixup.offset, symname, relsymid, reltype=reltype, reladd=None)
                         self.__mRelList.append(rel)
@@ -1071,10 +1081,10 @@ class CuAsmParser(object):
                         self.__updateSectionForFixup(fixup)
 
             except Exception as e:
-                raise Exception('Error when evaluating fixup @line%d: expr=%s, msg=%s'
+                self.__assert(False, 'Error when evaluating fixup @line%d: expr=%s, msg=%s'
                                 %(fixup.lineno, fixup.expr, e.args))
 
-    @CuAsmLogger.logTimeIt
+    @CuAsmLogger.logTraceIt
     def __updateSymtab(self):
         for s in self.__mSymtabDict:
             symid, syment = self.__mSymtabDict[s]
@@ -1091,7 +1101,7 @@ class CuAsmParser(object):
             else: # some symbols does not have corresponding labels, such as vprintf
                 pass
 
-    @CuAsmLogger.logTimeIt
+    @CuAsmLogger.logTraceIt
     def __layoutSections(self):
         ''' Layout section data, do section padding if needed. Update section header.offset/size.
         
@@ -1191,7 +1201,10 @@ class CuAsmParser(object):
         secname = args[0].strip('"')
 
         self.__assert(secname not in self.__mSectionDict, 'Redefinition of section "%s"!'%secname)
-        self.__mCurrSection = CuAsmSection(args[0].strip('"'), args[1], args[2])
+        self.__mCurrSection = CuAsmSection(secname, args[1], args[2])
+
+        CuAsmLogger.logSubroutine('Line %6d: New section "%s"'%(self.__mLineNo, secname))
+
         self.__mSectionDict[secname] = self.__mCurrSection
 
         if args[0].startswith('.text.'):
@@ -1298,6 +1311,8 @@ class CuAsmParser(object):
         if symbol not in self.__mSymbolDict:
             self.__mSymbolDict[symbol] = CuAsmSymbol(symbol)
 
+        CuAsmLogger.logSubroutine('Line %6d global symbol %s'%(self.__mLineNo, symbol))
+
         self.__mSymbolDict[symbol].isGlobal = True
 
     def __dir_weak(self, args):
@@ -1311,6 +1326,8 @@ class CuAsmParser(object):
         symbol = args[0]
         if symbol not in self.__mSymbolDict:
             self.__mSymbolDict[symbol] = CuAsmSymbol(symbol)
+        
+        CuAsmLogger.logSubroutine('Line %6d: New weak symbol "%s"'%(self.__mLineNo, symbol))
 
         self.__mSymbolDict[symbol].isGlobal = False
 
@@ -1374,8 +1391,9 @@ class CuAsmParser(object):
 #### Subroutines
     def __assert(self, flag, msg=''):
         if not flag:
-            raise Exception("File %s:%d: Assertion failed!\n  Message:\n    %s"
-                            % (self.__mFilename, self.__mLineNo, msg) )
+            full_msg = "File %s:%d: Assertion failed!\n  Message:\n    %s" % (self.__mFilename, self.__mLineNo, msg)
+            CuAsmLogger.logError(full_msg)
+            raise Exception(full_msg)
 
     def __assertArgc(self, cmd, args, argc, allowMore=True):
         ''' Check the number of arguments.'''
@@ -1442,12 +1460,17 @@ class CuAsmParser(object):
                index@(symbol)             symbol index          non-text
                (.Label)                   label offset
                (.L0-.L1)                  
+            
+            NOTE: This subroutine has no context info, making it hard to interprete
+                  thus all exceptions should be captured in __evalFixups, showing the full context
         '''
 
         # For expr: index@(symbol)
         if expr.startswith('index@'): # index of symbol
             symname = expr[6:].strip(' ()')
             index = self.__getSymbolIdx(symname)
+            if index is None:
+                raise Exception('Unknown symbol "%s"!!!'%symname)
             return index, (index, None, None)
         
         rexpr = expr.strip('`() ')
@@ -1568,6 +1591,7 @@ class CuAsmParser(object):
         bs = int.to_bytes(fixup.value, blen, 'little')
         fixup.section.updateForFixup(fixup.offset, bs)
 
+        CuAsmLogger.logSubroutine('Eval fixup "%s" @line%d to %#x'%(fixup.expr, fixup.lineno, fixup.value))
         # print(fixup)
 
     def __emitBytes(self, bs):
@@ -1824,6 +1848,7 @@ class CuAsmParser(object):
         for i, s in enumerate(self.__mSymtabDict):
             print('%3d  \t%s'%(i, s))
 
+    @CuAsmLogger.logTimeIt
     def saveCubinCmp(self, cubinname, sav_prefix):
         ''' A simple helper function to display current contents vs cubin in bytes. '''
 

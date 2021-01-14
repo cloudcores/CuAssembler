@@ -4,9 +4,16 @@ import logging
 import logging.handlers
 import sys
 import time
+import os
 
 
 class CuAsmLogger(object):
+    ''' A logger private to current module.
+
+        A customized logging style is used to show the progress better, 
+        without affecting the logging of other modules.
+
+    '''
     __LoggerRepos = {}
     __CurrLogger = None
     __IndentLevel = 0
@@ -21,6 +28,7 @@ class CuAsmLogger(object):
     # NOTSET    0 
 
     # Custom log levels
+
     ENTRY      = 35   # main entry of a module
     PROCEDURE  = 25   # procedures of some module
     SUBROUTINE = 15   # some internal subroutines
@@ -44,7 +52,12 @@ class CuAsmLogger(object):
             if len(log_file) == 0:
                 log_file = CuAsmLogger.getDefaultLoggerFile(name)
 
-            rfh = logging.handlers.RotatingFileHandler(log_file, mode='w', backupCount=file_backup_count)
+            rfh = logging.handlers.RotatingFileHandler(log_file, mode='a', backupCount=file_backup_count)
+
+            # default mode is 'a', but we may want a new log for every run, but still keeping old logs as backup.
+            if os.path.exists(log_file):
+                rfh.doRollover()
+
             rfh.setFormatter(fmt)
             rfh.setLevel(file_level)
             
@@ -71,17 +84,14 @@ class CuAsmLogger(object):
     def logDebug(msg, *args, **kwargs):
         CuAsmLogger.__CurrLogger.debug('   DEBUG - ' + msg, *args, **kwargs)
         
-
     @staticmethod
     def logInfo(msg, *args, **kwargs):
         CuAsmLogger.__CurrLogger.info('    INFO - ' + msg, *args, **kwargs)
         
-
     @staticmethod
     def logWarning(msg, *args, **kwargs):
         CuAsmLogger.__CurrLogger.warning(' WARNING - ' + msg, *args, **kwargs)
         
-
     @staticmethod
     def logError(msg, *args, **kwargs):
         CuAsmLogger.__CurrLogger.error('   ERROR - ' + msg, *args, **kwargs)
@@ -89,7 +99,6 @@ class CuAsmLogger(object):
     @staticmethod
     def logCritical(msg, *args, **kwargs):
         CuAsmLogger.__CurrLogger.critical('CRITICAL - ' + msg, *args, **kwargs)
-
 
     @staticmethod
     def logEntry(msg, *args, **kwargs):
@@ -111,14 +120,23 @@ class CuAsmLogger(object):
         
 
     @staticmethod
+    def logLiteral(msg, *args, **kwargs):
+        full_msg = '         - ' + CuAsmLogger.__IndentString + msg
+        CuAsmLogger.__CurrLogger.log(CuAsmLogger.PROCEDURE, full_msg, *args, **kwargs)
+        
+
+    @staticmethod
     def log(level, msg, *args, **kwargs):
         CuAsmLogger.__CurrLogger.log(level, msg, *args, **kwargs)
         
 
     @staticmethod
     def logTimeIt(func):
+        ''' Logging of a (usually) long running function.
+
+        '''
         def wrapper(*args, **kwargs):
-            CuAsmLogger.logProcedure('Running %s...'%func.__qualname__)
+            CuAsmLogger.logLiteral('Running %s...'%func.__qualname__)
             CuAsmLogger.incIndent()
             
             t0 = time.time()
@@ -126,30 +144,58 @@ class CuAsmLogger(object):
             t1 = time.time()
 
             CuAsmLogger.decIndent()
-            CuAsmLogger.logProcedure('Func %s completed! Time=%8.4f secs.'%(func.__qualname__, t1-t0))
+            CuAsmLogger.logLiteral('Func %s completed! Time=%8.4f secs.'%(func.__qualname__, t1-t0))
             
             return ret
 
         return wrapper
     
     @staticmethod
+    def logIndentIt(func):
+        '''
+        '''
+        def wrapper(*args, **kwargs):
+            CuAsmLogger.incIndent()
+            ret = func(*args, **kwargs)
+            CuAsmLogger.decIndent()
+            
+            return ret
+
+        return wrapper
+
+    @staticmethod
+    def logTraceIt(func):
+        '''
+        '''
+        def wrapper(*args, **kwargs):
+            CuAsmLogger.logLiteral('Running %s...'%func.__qualname__)
+            CuAsmLogger.incIndent()
+            
+            ret = func(*args, **kwargs)
+            CuAsmLogger.decIndent()
+
+            return ret
+
+        return wrapper
+
+    @staticmethod
     def incIndent():
         CuAsmLogger.__IndentLevel += 1
-        CuAsmLogger.__IndentString = '  ' * CuAsmLogger.__IndentLevel
+        CuAsmLogger.__IndentString = '    ' * CuAsmLogger.__IndentLevel
 
     @staticmethod
     def decIndent():
         CuAsmLogger.__IndentLevel -= 1
         if CuAsmLogger.__IndentLevel < 0:
             CuAsmLogger.__IndentLevel = 0
-        CuAsmLogger.__IndentString = '  ' * CuAsmLogger.__IndentLevel
+        CuAsmLogger.__IndentString = '    ' * CuAsmLogger.__IndentLevel
     
     @staticmethod
     def resetIndent(val):
         if val<0:
             val = 0
         CuAsmLogger.__IndentLevel = val
-        CuAsmLogger.__IndentString = '  ' * CuAsmLogger.__IndentLevel
+        CuAsmLogger.__IndentString = '    ' * CuAsmLogger.__IndentLevel
 
 # Init a default logger when the module is imported
 CuAsmLogger.initLogger()
