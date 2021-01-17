@@ -58,6 +58,19 @@ class CubinFile():
             ef = ELFFile(bio)
             self.__mELFFileHeader = ef.header
 
+            if ef.header['e_type'] != 'ET_EXEC':
+                msg = 'Currently only ET_EXEC type of elf is supported! %s given...' % ef.header['e_type']
+                CuAsmLogger.logError(msg)
+                raise Exception(msg)
+            elif ef.header['e_shoff'] == ef.header['e_ehsize']:
+                msg = 'Abnormal elf layout detected! Section headers directly follow elf header.'
+                CuAsmLogger.logError(msg)
+                raise Exception(msg)
+            elif ef.header['e_phoff'] == 0 or ef.header['e_phnum'] == 0:
+                msg = 'Abnormal elf layout detected! No program header found!'
+                CuAsmLogger.logError(msg)
+                raise Exception(msg)
+
             # Example: type=2, abi=7, sm=86, toolkit=111, flags = 0x500556
             # flags>>16 = 0x50 = 80, means virtual arch compute_80
             # flags&0xff = 0x56 = 86, means sm_86
@@ -87,7 +100,6 @@ class CubinFile():
                 sh_index += sh_size
                 sh_edgelist.append((sh_start, sh_end, sec.name))
                 # print('%8d(0x%4x)  %8d(0x%4x)  %s'%(sh_start, sh_start, sh_end, sh_end, sec.name))
-
 
             for sh_start, sh_end, sname in sh_edgelist:
                 sec_start_dict[sh_start] = sname

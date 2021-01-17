@@ -24,7 +24,6 @@ class CuInsAssemblerRepos():
 
     def __init__(self, InsAsmDict={}, arch='sm_75'):
         
-        self.arch = arch
         self.__mSMVersion = CuSMVersion(arch)
         self.m_InsParser = CuInsParser(arch)
 
@@ -198,6 +197,9 @@ class CuInsAssemblerRepos():
             pred_ins_info = self.__mSMVersion.genPredCode(ins_info)
             if pred_ins_info is not None:
                 yield pred_ins_info[0], pred_ins_info[1], pred_ins_info[2], 0
+
+    def getSMVersion(self):
+        return self.__mSMVersion
 
     def __repr__(self):
         sio = StringIO()

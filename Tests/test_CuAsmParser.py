@@ -3,14 +3,14 @@ from CuAsm.CuAsmParser import CuAsmParser
 import time
 
 if __name__ == '__main__':
-    fname = r'G:\Repos\Tests\Programs\cudatest.7.sm_75.cuasm'
 
-    bname = r'G:\Repos\Tests\Programs\cudatest.7.sm_75.cubin'
+    fprefix = 'G:\\Work\\CuAssembler\\TestData\\CuTest\\cudatest.7.sm_75'
 
-    reposfile = r'G:\Repos\CuInsAsmRepos.sm_75.txt'
+    fname = fprefix + '.cuasm'
+    bname = fprefix + '.cubin'
+    sname = fprefix + '_new.cubin'
+
     cap = CuAsmParser()
-    cap.setInsAsmRepos(reposfile, arch='sm_75')
-
     cap.parse(fname)
 
 
@@ -27,7 +27,5 @@ if __name__ == '__main__':
     #cap.dispRelocationList()
     #cap.dispLabelDict()
 
-    cap.saveAsCubin(r'G:\Repos\Tests\Programs\new_cudatest.7.sm_75.cubin')
-
-    sav_prefix = r'G:\Repos\Tests\Programs\cudatest.7.sm_75'
-    cap.saveCubinCmp(bname, sav_prefix)
+    cap.saveAsCubin(sname)
+    cap.saveCubinCmp(bname, fprefix)

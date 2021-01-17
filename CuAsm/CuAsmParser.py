@@ -4,6 +4,7 @@ import re
 import os
 from io import BytesIO
 from collections import OrderedDict, defaultdict
+
 from elftools.elf.elffile import ELFFile
 from elftools.elf.structs import ELFStructs
 
@@ -16,7 +17,6 @@ from .CuAsmLogger import CuAsmLogger
 
 from .config import Config
 from .common import c_ControlCodesPattern, encodeCtrlCodes, splitAsmSection, alignTo, bytes2Asm
-
 
 m_hex    = re.compile(r'\b0x[a-fA-F0-9]+\b')
 m_int    = re.compile(r'\b[0-9]+\b')
@@ -611,6 +611,9 @@ class CuAsmParser(object):
 
 #### constructors, and parsing entries
     def __init__(self):
+
+        self.__mCuInsAsmRepos = None
+
         # directive dict
         self.__dirDict = {
             # predefined directives in nvdisasm
@@ -691,7 +694,6 @@ class CuAsmParser(object):
         self.__mNVInfoOffsetLabels  = {} # key:sectionname, value: tuple(NVInfo_Attr, prefix)
         self.__mInsIndex      = 0   # Current instruction index
         self.__mCuSMVersion   = None
-        # self.__mCuInsAsmRepos = None
 
         # TODO: not implemented yet
         # current all the entries are copied from cubin
@@ -704,10 +706,10 @@ class CuAsmParser(object):
 
             General parsing work flow:
             - scan whole file, gathering file headers, section headers/contents, segment headers
-            build fixup lists, split kernel text sections for kernel assembler.
+              build fixup lists, split kernel text sections for kernel assembler.
             - build internal tables, such as .shstrtab, .strtab. .symtab (Currently just copied)
             - build kernel text sections, update .nv.info sections if necessary.
-            update relocations if there are any.
+              update relocations if there are any.
             - evaluate fixups, patching the bytes of corresponding section data.
             - build relocation sections
             - layout sections, update file header, section header, segment header accordingly
@@ -1112,25 +1114,17 @@ class CuAsmParser(object):
         # initialize the offset as the ELF header size
         elfheadersize = Config.CubinELFStructs.Elf_Ehdr.sizeof()
         file_offset = elfheadersize
-        mem_offset = elfheadersize
 
-        sec_file_range = OrderedDict()
-        sec_mem_range = OrderedDict()
         prev_sec = None
         for isec, sec in self.__mSectionDict.items():
             # skip the first NULL section
-            if isec==0:
+            if sec.name == '':
                 continue
 
             size = sec.getDataSize()
             align = sec.addralign
 
-            file_offset, fpadsize = alignTo(file_offset, align)
-            mem_offset, mpadsize = alignTo(mem_offset, align)
-
-            # FIXME: This treatment is weird, but the text sections seems always aligned
-            #        and last label of .text section seems to be the padded offset. 
-            self.__updateSectionPadding(prev_sec, fpadsize)
+            file_offset = self.__updateSectionPadding(prev_sec, file_offset, align)
             prev_sec = sec
 
             sec.offset = file_offset
@@ -1138,19 +1132,16 @@ class CuAsmParser(object):
             sec.header['offset'] = sec.offset
             sec.header['size'] = sec.size
             
-            sec_mem_range[sec.name] = (mem_offset, mem_offset+size)
-            mem_offset += size
-            if sec.header['type'] == 'SHT_NOBITS':
-                sec_file_range[sec.name] = (file_offset, file_offset)
-                
-            else:
-                sec_file_range[sec.name] = (file_offset, file_offset+size)
+            if sec.header['type'] != 'SHT_NOBITS':
                 file_offset += size
         
         # FIXME: better alignment for headers?
         p_align = self.__mSegmentList[0].header['align']
-        file_offset, fpadsize = alignTo(file_offset, p_align)
-        self.__updateSectionPadding(prev_sec, fpadsize)
+        file_offset = self.__updateSectionPadding(prev_sec, file_offset, p_align)
+
+        # Current only the normal order is support:
+        #      ELFHeader -> SectionData -> SectionHeader -> SegmentHeader
+        # Other orders may be possible, but not supported yet.
 
         SecHeaderLen = len(self.__mSectionDict) * Config.CubinELFStructs.Elf_Shdr.sizeof()
         self.__mCuAsmFile.fileHeader['shoff'] = file_offset
@@ -1163,19 +1154,18 @@ class CuAsmParser(object):
                 seg.header['memsz'] = seg.header['filesz']
 
             elif seg.header['type'] == 'PT_LOAD':
-                seg_foffset = sec_file_range[seg.header['startsection']][0]
-                seg_fend = sec_file_range[seg.header['endsection']][1]
-                
-                seg_moffset = sec_mem_range[seg.header['startsection']][0]
-                seg_mend = sec_mem_range[seg.header['endsection']][1]
-
-                seg.header['offset'] = seg_foffset
-                seg.header['filesz'] = seg_fend - seg_foffset
-                seg.header['memsz'] = seg_mend - seg_moffset
+                # if startsection is empty, this segment is empty
+                # Seems a convention of compiler?
+                if seg.header['startsection'] != '':
+                    seg_off, filesz, memsz = self.__calcSegmentRange(seg.header['startsection'], seg.header['endsection'])
+                    seg.header['offset'] = seg_off
+                    seg.header['filesz'] = filesz
+                    seg.header['memsz'] = memsz
 
             else:
-                # raise Exception('Unknown segment type %s!'%seg.header['type'])
-                pass
+                msg = 'Unknown segment type %s!'%seg.header['type']
+                CuAsmLogger.logError(msg)
+                raise Exception(msg)
 
             # update header
             seg.updateHeader()
@@ -1367,7 +1357,12 @@ class CuAsmParser(object):
             smversion = flags & 0xff
             self.__mCuSMVersion = CuSMVersion(smversion)
 
-            if self.__mCuInsAsmRepos is None:
+            if (not hasattr(self, '__mCuInsAsmRepos') 
+                or self.__mCuInsAsmRepos is None 
+                or (self.__mCuInsAsmRepos.getSMVersion() != self.__mCuSMVersion) ):
+
+                CuAsmLogger.logSubroutine('Setting CuInsAsmRepos to default dict...')
+                
                 self.__mCuInsAsmRepos = CuInsAssemblerRepos(arch=self.__mCuSMVersion)
                 self.__mCuInsAsmRepos.setToDefaultInsAsmDict()
 
@@ -1678,35 +1673,72 @@ class CuAsmParser(object):
         npad = size // len(padbytes)
         return npad * padbytes
 
-    def __updateSectionPadding(self, sec, padsize):
+    def __updateSectionPadding(self, sec, file_offset, align):
         ''' Update section padding with size.
         
             For text sections: padding to the original section data, update size
             For other sections: padding to seperate padbytes, keep size unchanged
-            For nobits sections: do nothing
+            For nobits sections: do nothing.
         '''
-        if sec is None:
-            return
 
-        if padsize == 0:
-            sec.updateHeader()
-            return
+        if sec is None:
+            return file_offset
 
         if sec.name.startswith('.text'):
-            sec.emitPadding(self.__genSectionPaddingBytes(sec, padsize))
+            align = max(align, sec.addralign)
+
+            file_offset, fpadsize = alignTo(file_offset, align)
+
+            sec.emitPadding(self.__genSectionPaddingBytes(sec, fpadsize))
             sec.size = sec.getDataSize()
             sec.header['size'] = sec.size
-
-            # update size label offset, it will be used in symbol size evaluation.
+            
+            # FIXME: This treatment is weird, but the text sections seems always aligned
+            #        and last label of .text section seems to be the padded offset. 
+            # 
+            # Update size label offset, it will be used in symbol size evaluation.
             # I don't quite understand why it's this way, but let's just keep it as is.
             if sec.name in self.__mSecSizeLabel:
                 sizelabel = self.__mSecSizeLabel[sec.name]
                 sizelabel.offset = sec.size
         else:
-            sec.padsize = padsize
-            sec.padbytes = padsize * b'\x00'
+            file_offset, fpadsize = alignTo(file_offset, align)
+
+            sec.padsize = fpadsize
+            sec.padbytes = fpadsize * b'\x00'
         
         sec.updateHeader()
+
+        return file_offset
+
+    def __calcSegmentRange(self, sec_start, sec_end):
+
+        inRange = False
+        seg_off = 0
+        filesz = 0
+        memsz = 0
+
+        for sname, sec in self.__mSectionDict.items():
+            if sname == sec_start:
+                inRange = True
+                seg_off = sec.offset
+                f_off = seg_off
+                m_off = seg_off
+
+            if inRange:
+                psize = sec.getPaddedDataSize()
+                m_off += psize
+                if sec.header['type'] != 'SHT_NOBITS':
+                    f_off += psize
+
+                if sname == sec_end:
+                    inRange = False
+                    break
+        
+        filesz = f_off - seg_off
+        memsz = m_off - seg_off
+
+        return seg_off, filesz, memsz
 
     def __checkNVInfoOffsetLabels(self, section, labelname, offset):
         ''' Check whether the label is a NVInfoOffsetLabel, push to label offset dict if necessary.

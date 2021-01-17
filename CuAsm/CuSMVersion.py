@@ -135,8 +135,10 @@ class CuSMVersion(object):
         ''' Merge control codes with instructions.
 
             padding_align = None means no padding
-                          = N bytes means padding to N bytes boundary (usually 128)
+                          = N bytes means padding to N bytes boundary (usually 32/128)
         '''
+        if padding_align is None:
+            padding_align = self.getTextSectionSizeUnit()
 
         if self.__mMajor <= 6:
             return CuSMVersion.mergeControlCodes_5x_6x(ins_code_list, ctrl_code_list, padding_align)
@@ -183,6 +185,16 @@ class CuSMVersion(object):
         else:
             return self.RelMaps_7x_8x[key]
  
+    def getTextSectionSizeUnit(self):
+        ''' The text section should be padded to integer multiple of this unit.
+
+            NOTE: This is different from the section align, which is applied to offset, not size.
+        '''
+        if self.__mMajor <= 6:
+            return 32
+        else:
+            return 128
+
     def setRegCountInNVInfo(self, nvinfo, reg_count_dict):
         ''' Update NVInfo for regcount, only for SM_70 and above.
 
