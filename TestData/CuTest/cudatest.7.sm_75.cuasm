@@ -1,0 +1,3349 @@
+// --------------------- FileHeader --------------------------
+	// All file header info is kept as is (unless offset/size attributes)
+	// The original header flags is not complete, thus discarded. 
+	// 	.headerflags	@"EF_CUDA_TEXMODE_UNIFIED EF_CUDA_64BIT_ADDRESS EF_CUDA_SM75 EF_CUDA_VIRTUAL_SM(EF_CUDA_SM75)"
+	// 	.elftype	@"ET_EXEC"
+	// 
+	// 
+	.__elf_ident_osabi      51
+	.__elf_ident_abiversion 7
+	.__elf_type             ET_EXEC
+	.__elf_machine          EM_CUDA
+	.__elf_version          111 		// CUDA toolkit version 
+	.__elf_entry            0 		// entry point address 
+	.__elf_phoff            0x4ae0 		// program header offset, maybe updated by assembler
+	.__elf_shoff            0x40e0 		// section header offset, maybe updated by assembler
+	.__elf_flags            0x4b054b 		// Flags, SM_75(0x4b), COMPUTE_75(0x4b) 
+	.__elf_ehsize           64 		// elf header size 
+	.__elf_phentsize        56 		// program entry size
+	.__elf_phnum            3 		// number of program entries
+	.__elf_shentsize        64 		// section entry size
+	.__elf_shnum            40 		// number of sections, currently no sections can be appended/removed
+	.__elf_shstrndx         1 		// Section name string table index 
+
+
+  //-------------------------------------------------
+  //------------ END of FileHeader ------------------
+  //-------------------------------------------------
+
+
+
+// ---------------------                                  --------------------------
+	// there will always be an empty section at index 0
+	.section  "", 0, SHT_NULL
+	.__section_name         0x0 	// offset in .shstrtab
+	.__section_type         SHT_NULL
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x0 	// maybe updated by assembler
+	.__section_size         0x0 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x0
+	.__section_entsize      0
+	.align                0 	// equivalent to set sh_addralign
+
+// --------------------- .shstrtab                        --------------------------
+	.section  ".shstrtab", 0, SHT_STRTAB
+	// all strings in .shstrtab section will be kept as is.
+	.__section_name         0x1 	// offset in .shstrtab
+	.__section_type         SHT_STRTAB
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x40 	// maybe updated by assembler
+	.__section_size         0x418 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x0
+	.__section_entsize      0
+	.align                1 	// equivalent to set sh_addralign
+    // .shstrtab[0] = b'\x00' 
+    /*0000*/ .byte 0x00
+
+    // .shstrtab[1] = b'.shstrtab\x00' 
+    /*0001*/ .byte 0x2e, 0x73, 0x68, 0x73, 0x74, 0x72, 0x74, 0x61
+    /*0009*/ .byte 0x62, 0x00
+
+    // .shstrtab[2] = b'.strtab\x00' 
+    /*000b*/ .byte 0x2e, 0x73, 0x74, 0x72, 0x74, 0x61, 0x62, 0x00
+
+    // .shstrtab[3] = b'.symtab\x00' 
+    /*0013*/ .byte 0x2e, 0x73, 0x79, 0x6d, 0x74, 0x61, 0x62, 0x00
+
+    // .shstrtab[4] = b'.symtab_shndx\x00' 
+    /*001b*/ .byte 0x2e, 0x73, 0x79, 0x6d, 0x74, 0x61, 0x62, 0x5f
+    /*0023*/ .byte 0x73, 0x68, 0x6e, 0x64, 0x78, 0x00
+
+    // .shstrtab[5] = b'.nv.info\x00' 
+    /*0029*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*0031*/ .byte 0x00
+
+    // .shstrtab[6] = b'.text._Z7argtestPiS_S_\x00' 
+    /*0032*/ .byte 0x2e, 0x74, 0x65, 0x78, 0x74, 0x2e, 0x5f, 0x5a
+    /*003a*/ .byte 0x37, 0x61, 0x72, 0x67, 0x74, 0x65, 0x73, 0x74
+    /*0042*/ .byte 0x50, 0x69, 0x53, 0x5f, 0x53, 0x5f, 0x00
+
+    // .shstrtab[7] = b'.nv.info._Z7argtestPiS_S_\x00' 
+    /*0049*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*0051*/ .byte 0x2e, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67, 0x74
+    /*0059*/ .byte 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f, 0x53
+    /*0061*/ .byte 0x5f, 0x00
+
+    // .shstrtab[8] = b'.nv.shared._Z7argtestPiS_S_\x00' 
+    /*0063*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x73, 0x68, 0x61, 0x72
+    /*006b*/ .byte 0x65, 0x64, 0x2e, 0x5f, 0x5a, 0x37, 0x61, 0x72
+    /*0073*/ .byte 0x67, 0x74, 0x65, 0x73, 0x74, 0x50, 0x69, 0x53
+    /*007b*/ .byte 0x5f, 0x53, 0x5f, 0x00
+
+    // .shstrtab[9] = b'.nv.constant3\x00' 
+    /*007f*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*0087*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x33, 0x00
+
+    // .shstrtab[10] = b'.nv.global\x00' 
+    /*008d*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x67, 0x6c, 0x6f, 0x62
+    /*0095*/ .byte 0x61, 0x6c, 0x00
+
+    // .shstrtab[11] = b'.nv.global.init\x00' 
+    /*0098*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x67, 0x6c, 0x6f, 0x62
+    /*00a0*/ .byte 0x61, 0x6c, 0x2e, 0x69, 0x6e, 0x69, 0x74, 0x00
+
+    // .shstrtab[12] = b'.nv.constant2._Z7argtestPiS_S_\x00' 
+    /*00a8*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*00b0*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x32, 0x2e, 0x5f, 0x5a
+    /*00b8*/ .byte 0x37, 0x61, 0x72, 0x67, 0x74, 0x65, 0x73, 0x74
+    /*00c0*/ .byte 0x50, 0x69, 0x53, 0x5f, 0x53, 0x5f, 0x00
+
+    // .shstrtab[13] = b'.rel.text._Z7argtestPiS_S_\x00' 
+    /*00c7*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x2e, 0x74, 0x65, 0x78
+    /*00cf*/ .byte 0x74, 0x2e, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67
+    /*00d7*/ .byte 0x74, 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f
+    /*00df*/ .byte 0x53, 0x5f, 0x00
+
+    // .shstrtab[14] = b'.rela.text._Z7argtestPiS_S_\x00' 
+    /*00e2*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x61, 0x2e, 0x74, 0x65
+    /*00ea*/ .byte 0x78, 0x74, 0x2e, 0x5f, 0x5a, 0x37, 0x61, 0x72
+    /*00f2*/ .byte 0x67, 0x74, 0x65, 0x73, 0x74, 0x50, 0x69, 0x53
+    /*00fa*/ .byte 0x5f, 0x53, 0x5f, 0x00
+
+    // .shstrtab[15] = b'.nv.constant0._Z7argtestPiS_S_\x00' 
+    /*00fe*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*0106*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x30, 0x2e, 0x5f, 0x5a
+    /*010e*/ .byte 0x37, 0x61, 0x72, 0x67, 0x74, 0x65, 0x73, 0x74
+    /*0116*/ .byte 0x50, 0x69, 0x53, 0x5f, 0x53, 0x5f, 0x00
+
+    // .shstrtab[16] = b'.text._Z11shared_testfPf\x00' 
+    /*011d*/ .byte 0x2e, 0x74, 0x65, 0x78, 0x74, 0x2e, 0x5f, 0x5a
+    /*0125*/ .byte 0x31, 0x31, 0x73, 0x68, 0x61, 0x72, 0x65, 0x64
+    /*012d*/ .byte 0x5f, 0x74, 0x65, 0x73, 0x74, 0x66, 0x50, 0x66
+    /*0135*/ .byte 0x00
+
+    // .shstrtab[17] = b'.nv.info._Z11shared_testfPf\x00' 
+    /*0136*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*013e*/ .byte 0x2e, 0x5f, 0x5a, 0x31, 0x31, 0x73, 0x68, 0x61
+    /*0146*/ .byte 0x72, 0x65, 0x64, 0x5f, 0x74, 0x65, 0x73, 0x74
+    /*014e*/ .byte 0x66, 0x50, 0x66, 0x00
+
+    // .shstrtab[18] = b'.nv.shared._Z11shared_testfPf\x00' 
+    /*0152*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x73, 0x68, 0x61, 0x72
+    /*015a*/ .byte 0x65, 0x64, 0x2e, 0x5f, 0x5a, 0x31, 0x31, 0x73
+    /*0162*/ .byte 0x68, 0x61, 0x72, 0x65, 0x64, 0x5f, 0x74, 0x65
+    /*016a*/ .byte 0x73, 0x74, 0x66, 0x50, 0x66, 0x00
+
+    // .shstrtab[19] = b'.nv.constant0._Z11shared_testfPf\x00' 
+    /*0170*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*0178*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x30, 0x2e, 0x5f, 0x5a
+    /*0180*/ .byte 0x31, 0x31, 0x73, 0x68, 0x61, 0x72, 0x65, 0x64
+    /*0188*/ .byte 0x5f, 0x74, 0x65, 0x73, 0x74, 0x66, 0x50, 0x66
+    /*0190*/ .byte 0x00
+
+    // .shstrtab[20] = b'.text._Z11nvinfo_testiiPi\x00' 
+    /*0191*/ .byte 0x2e, 0x74, 0x65, 0x78, 0x74, 0x2e, 0x5f, 0x5a
+    /*0199*/ .byte 0x31, 0x31, 0x6e, 0x76, 0x69, 0x6e, 0x66, 0x6f
+    /*01a1*/ .byte 0x5f, 0x74, 0x65, 0x73, 0x74, 0x69, 0x69, 0x50
+    /*01a9*/ .byte 0x69, 0x00
+
+    // .shstrtab[21] = b'.nv.info._Z11nvinfo_testiiPi\x00' 
+    /*01ab*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*01b3*/ .byte 0x2e, 0x5f, 0x5a, 0x31, 0x31, 0x6e, 0x76, 0x69
+    /*01bb*/ .byte 0x6e, 0x66, 0x6f, 0x5f, 0x74, 0x65, 0x73, 0x74
+    /*01c3*/ .byte 0x69, 0x69, 0x50, 0x69, 0x00
+
+    // .shstrtab[22] = b'.nv.shared._Z11nvinfo_testiiPi\x00' 
+    /*01c8*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x73, 0x68, 0x61, 0x72
+    /*01d0*/ .byte 0x65, 0x64, 0x2e, 0x5f, 0x5a, 0x31, 0x31, 0x6e
+    /*01d8*/ .byte 0x76, 0x69, 0x6e, 0x66, 0x6f, 0x5f, 0x74, 0x65
+    /*01e0*/ .byte 0x73, 0x74, 0x69, 0x69, 0x50, 0x69, 0x00
+
+    // .shstrtab[23] = b'.nv.constant0._Z11nvinfo_testiiPi\x00' 
+    /*01e7*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*01ef*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x30, 0x2e, 0x5f, 0x5a
+    /*01f7*/ .byte 0x31, 0x31, 0x6e, 0x76, 0x69, 0x6e, 0x66, 0x6f
+    /*01ff*/ .byte 0x5f, 0x74, 0x65, 0x73, 0x74, 0x69, 0x69, 0x50
+    /*0207*/ .byte 0x69, 0x00
+
+    // .shstrtab[24] = b'.text._Z5childPii\x00' 
+    /*0209*/ .byte 0x2e, 0x74, 0x65, 0x78, 0x74, 0x2e, 0x5f, 0x5a
+    /*0211*/ .byte 0x35, 0x63, 0x68, 0x69, 0x6c, 0x64, 0x50, 0x69
+    /*0219*/ .byte 0x69, 0x00
+
+    // .shstrtab[25] = b'.nv.info._Z5childPii\x00' 
+    /*021b*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*0223*/ .byte 0x2e, 0x5f, 0x5a, 0x35, 0x63, 0x68, 0x69, 0x6c
+    /*022b*/ .byte 0x64, 0x50, 0x69, 0x69, 0x00
+
+    // .shstrtab[26] = b'.nv.shared._Z5childPii\x00' 
+    /*0230*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x73, 0x68, 0x61, 0x72
+    /*0238*/ .byte 0x65, 0x64, 0x2e, 0x5f, 0x5a, 0x35, 0x63, 0x68
+    /*0240*/ .byte 0x69, 0x6c, 0x64, 0x50, 0x69, 0x69, 0x00
+
+    // .shstrtab[27] = b'.rel.text._Z5childPii\x00' 
+    /*0247*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x2e, 0x74, 0x65, 0x78
+    /*024f*/ .byte 0x74, 0x2e, 0x5f, 0x5a, 0x35, 0x63, 0x68, 0x69
+    /*0257*/ .byte 0x6c, 0x64, 0x50, 0x69, 0x69, 0x00
+
+    // .shstrtab[28] = b'.nv.constant0._Z5childPii\x00' 
+    /*025d*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*0265*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x30, 0x2e, 0x5f, 0x5a
+    /*026d*/ .byte 0x35, 0x63, 0x68, 0x69, 0x6c, 0x64, 0x50, 0x69
+    /*0275*/ .byte 0x69, 0x00
+
+    // .shstrtab[29] = b'.text._Z10local_testiiPi\x00' 
+    /*0277*/ .byte 0x2e, 0x74, 0x65, 0x78, 0x74, 0x2e, 0x5f, 0x5a
+    /*027f*/ .byte 0x31, 0x30, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x5f
+    /*0287*/ .byte 0x74, 0x65, 0x73, 0x74, 0x69, 0x69, 0x50, 0x69
+    /*028f*/ .byte 0x00
+
+    // .shstrtab[30] = b'.nv.info._Z10local_testiiPi\x00' 
+    /*0290*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*0298*/ .byte 0x2e, 0x5f, 0x5a, 0x31, 0x30, 0x6c, 0x6f, 0x63
+    /*02a0*/ .byte 0x61, 0x6c, 0x5f, 0x74, 0x65, 0x73, 0x74, 0x69
+    /*02a8*/ .byte 0x69, 0x50, 0x69, 0x00
+
+    // .shstrtab[31] = b'.nv.shared._Z10local_testiiPi\x00' 
+    /*02ac*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x73, 0x68, 0x61, 0x72
+    /*02b4*/ .byte 0x65, 0x64, 0x2e, 0x5f, 0x5a, 0x31, 0x30, 0x6c
+    /*02bc*/ .byte 0x6f, 0x63, 0x61, 0x6c, 0x5f, 0x74, 0x65, 0x73
+    /*02c4*/ .byte 0x74, 0x69, 0x69, 0x50, 0x69, 0x00
+
+    // .shstrtab[32] = b'.nv.constant0._Z10local_testiiPi\x00' 
+    /*02ca*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*02d2*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x30, 0x2e, 0x5f, 0x5a
+    /*02da*/ .byte 0x31, 0x30, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x5f
+    /*02e2*/ .byte 0x74, 0x65, 0x73, 0x74, 0x69, 0x69, 0x50, 0x69
+    /*02ea*/ .byte 0x00
+
+    // .shstrtab[33] = b'.text._Z4test6float4PS_\x00' 
+    /*02eb*/ .byte 0x2e, 0x74, 0x65, 0x78, 0x74, 0x2e, 0x5f, 0x5a
+    /*02f3*/ .byte 0x34, 0x74, 0x65, 0x73, 0x74, 0x36, 0x66, 0x6c
+    /*02fb*/ .byte 0x6f, 0x61, 0x74, 0x34, 0x50, 0x53, 0x5f, 0x00
+
+    // .shstrtab[34] = b'.nv.info._Z4test6float4PS_\x00' 
+    /*0303*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*030b*/ .byte 0x2e, 0x5f, 0x5a, 0x34, 0x74, 0x65, 0x73, 0x74
+    /*0313*/ .byte 0x36, 0x66, 0x6c, 0x6f, 0x61, 0x74, 0x34, 0x50
+    /*031b*/ .byte 0x53, 0x5f, 0x00
+
+    // .shstrtab[35] = b'.nv.shared._Z4test6float4PS_\x00' 
+    /*031e*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x73, 0x68, 0x61, 0x72
+    /*0326*/ .byte 0x65, 0x64, 0x2e, 0x5f, 0x5a, 0x34, 0x74, 0x65
+    /*032e*/ .byte 0x73, 0x74, 0x36, 0x66, 0x6c, 0x6f, 0x61, 0x74
+    /*0336*/ .byte 0x34, 0x50, 0x53, 0x5f, 0x00
+
+    // .shstrtab[36] = b'.nv.constant0._Z4test6float4PS_\x00' 
+    /*033b*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*0343*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x30, 0x2e, 0x5f, 0x5a
+    /*034b*/ .byte 0x34, 0x74, 0x65, 0x73, 0x74, 0x36, 0x66, 0x6c
+    /*0353*/ .byte 0x6f, 0x61, 0x74, 0x34, 0x50, 0x53, 0x5f, 0x00
+
+    // .shstrtab[37] = b'.debug_frame\x00' 
+    /*035b*/ .byte 0x2e, 0x64, 0x65, 0x62, 0x75, 0x67, 0x5f, 0x66
+    /*0363*/ .byte 0x72, 0x61, 0x6d, 0x65, 0x00
+
+    // .shstrtab[38] = b'.rel.nv.global.init\x00' 
+    /*0368*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x2e, 0x6e, 0x76, 0x2e
+    /*0370*/ .byte 0x67, 0x6c, 0x6f, 0x62, 0x61, 0x6c, 0x2e, 0x69
+    /*0378*/ .byte 0x6e, 0x69, 0x74, 0x00
+
+    // .shstrtab[39] = b'.rela.nv.constant2._Z7argtestPiS_S_\x00' 
+    /*037c*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x61, 0x2e, 0x6e, 0x76
+    /*0384*/ .byte 0x2e, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x61, 0x6e
+    /*038c*/ .byte 0x74, 0x32, 0x2e, 0x5f, 0x5a, 0x37, 0x61, 0x72
+    /*0394*/ .byte 0x67, 0x74, 0x65, 0x73, 0x74, 0x50, 0x69, 0x53
+    /*039c*/ .byte 0x5f, 0x53, 0x5f, 0x00
+
+    // .shstrtab[40] = b'.rel.nv.constant2._Z7argtestPiS_S_\x00' 
+    /*03a0*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x2e, 0x6e, 0x76, 0x2e
+    /*03a8*/ .byte 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x74
+    /*03b0*/ .byte 0x32, 0x2e, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67
+    /*03b8*/ .byte 0x74, 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f
+    /*03c0*/ .byte 0x53, 0x5f, 0x00
+
+    // .shstrtab[41] = b'.rel.nv.constant0._Z7argtestPiS_S_\x00' 
+    /*03c3*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x2e, 0x6e, 0x76, 0x2e
+    /*03cb*/ .byte 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x74
+    /*03d3*/ .byte 0x30, 0x2e, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67
+    /*03db*/ .byte 0x74, 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f
+    /*03e3*/ .byte 0x53, 0x5f, 0x00
+
+    // .shstrtab[42] = b'.rel.debug_frame\x00' 
+    /*03e6*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x2e, 0x64, 0x65, 0x62
+    /*03ee*/ .byte 0x75, 0x67, 0x5f, 0x66, 0x72, 0x61, 0x6d, 0x65
+    /*03f6*/ .byte 0x00
+
+    // .shstrtab[43] = b'.rela.debug_frame\x00' 
+    /*03f7*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x61, 0x2e, 0x64, 0x65
+    /*03ff*/ .byte 0x62, 0x75, 0x67, 0x5f, 0x66, 0x72, 0x61, 0x6d
+    /*0407*/ .byte 0x65, 0x00
+
+    // .shstrtab[44] = b'.nv.rel.action\x00' 
+    /*0409*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x72, 0x65, 0x6c, 0x2e
+    /*0411*/ .byte 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x00
+
+
+// --------------------- .strtab                          --------------------------
+	.section  ".strtab", 0, SHT_STRTAB
+	// all strings in .strtab section will be kept as is.
+	.__section_name         0xb 	// offset in .shstrtab
+	.__section_type         SHT_STRTAB
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x458 	// maybe updated by assembler
+	.__section_size         0x783 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x0
+	.__section_entsize      0
+	.align                1 	// equivalent to set sh_addralign
+    // .strtab[0] = b'\x00' 
+    /*0000*/ .byte 0x00
+
+    // .strtab[1] = b'.shstrtab\x00' 
+    /*0001*/ .byte 0x2e, 0x73, 0x68, 0x73, 0x74, 0x72, 0x74, 0x61
+    /*0009*/ .byte 0x62, 0x00
+
+    // .strtab[2] = b'.strtab\x00' 
+    /*000b*/ .byte 0x2e, 0x73, 0x74, 0x72, 0x74, 0x61, 0x62, 0x00
+
+    // .strtab[3] = b'.symtab\x00' 
+    /*0013*/ .byte 0x2e, 0x73, 0x79, 0x6d, 0x74, 0x61, 0x62, 0x00
+
+    // .strtab[4] = b'.symtab_shndx\x00' 
+    /*001b*/ .byte 0x2e, 0x73, 0x79, 0x6d, 0x74, 0x61, 0x62, 0x5f
+    /*0023*/ .byte 0x73, 0x68, 0x6e, 0x64, 0x78, 0x00
+
+    // .strtab[5] = b'.nv.info\x00' 
+    /*0029*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*0031*/ .byte 0x00
+
+    // .strtab[6] = b'_Z7argtestPiS_S_\x00' 
+    /*0032*/ .byte 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67, 0x74, 0x65
+    /*003a*/ .byte 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f, 0x53, 0x5f
+    /*0042*/ .byte 0x00
+
+    // .strtab[7] = b'.text._Z7argtestPiS_S_\x00' 
+    /*0043*/ .byte 0x2e, 0x74, 0x65, 0x78, 0x74, 0x2e, 0x5f, 0x5a
+    /*004b*/ .byte 0x37, 0x61, 0x72, 0x67, 0x74, 0x65, 0x73, 0x74
+    /*0053*/ .byte 0x50, 0x69, 0x53, 0x5f, 0x53, 0x5f, 0x00
+
+    // .strtab[8] = b'.nv.info._Z7argtestPiS_S_\x00' 
+    /*005a*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*0062*/ .byte 0x2e, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67, 0x74
+    /*006a*/ .byte 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f, 0x53
+    /*0072*/ .byte 0x5f, 0x00
+
+    // .strtab[9] = b'.nv.shared._Z7argtestPiS_S_\x00' 
+    /*0074*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x73, 0x68, 0x61, 0x72
+    /*007c*/ .byte 0x65, 0x64, 0x2e, 0x5f, 0x5a, 0x37, 0x61, 0x72
+    /*0084*/ .byte 0x67, 0x74, 0x65, 0x73, 0x74, 0x50, 0x69, 0x53
+    /*008c*/ .byte 0x5f, 0x53, 0x5f, 0x00
+
+    // .strtab[10] = b'texRef2d\x00' 
+    /*0090*/ .byte 0x74, 0x65, 0x78, 0x52, 0x65, 0x66, 0x32, 0x64
+    /*0098*/ .byte 0x00
+
+    // .strtab[11] = b'texRef1d\x00' 
+    /*0099*/ .byte 0x74, 0x65, 0x78, 0x52, 0x65, 0x66, 0x31, 0x64
+    /*00a1*/ .byte 0x00
+
+    // .strtab[12] = b'inputSurfRef\x00' 
+    /*00a2*/ .byte 0x69, 0x6e, 0x70, 0x75, 0x74, 0x53, 0x75, 0x72
+    /*00aa*/ .byte 0x66, 0x52, 0x65, 0x66, 0x00
+
+    // .strtab[13] = b'outputSurfRef\x00' 
+    /*00af*/ .byte 0x6f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x53, 0x75
+    /*00b7*/ .byte 0x72, 0x66, 0x52, 0x65, 0x66, 0x00
+
+    // .strtab[14] = b'.nv.constant3\x00' 
+    /*00bd*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*00c5*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x33, 0x00
+
+    // .strtab[15] = b'C1\x00' 
+    /*00cb*/ .byte 0x43, 0x31, 0x00
+
+    // .strtab[16] = b'C2\x00' 
+    /*00ce*/ .byte 0x43, 0x32, 0x00
+
+    // .strtab[17] = b'C3\x00' 
+    /*00d1*/ .byte 0x43, 0x33, 0x00
+
+    // .strtab[18] = b'.nv.global\x00' 
+    /*00d4*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x67, 0x6c, 0x6f, 0x62
+    /*00dc*/ .byte 0x61, 0x6c, 0x00
+
+    // .strtab[19] = b'GlobalC1\x00' 
+    /*00df*/ .byte 0x47, 0x6c, 0x6f, 0x62, 0x61, 0x6c, 0x43, 0x31
+    /*00e7*/ .byte 0x00
+
+    // .strtab[20] = b'GlobalC2\x00' 
+    /*00e8*/ .byte 0x47, 0x6c, 0x6f, 0x62, 0x61, 0x6c, 0x43, 0x32
+    /*00f0*/ .byte 0x00
+
+    // .strtab[21] = b'.nv.global.init\x00' 
+    /*00f1*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x67, 0x6c, 0x6f, 0x62
+    /*00f9*/ .byte 0x61, 0x6c, 0x2e, 0x69, 0x6e, 0x69, 0x74, 0x00
+
+    // .strtab[22] = b'flist\x00' 
+    /*0101*/ .byte 0x66, 0x6c, 0x69, 0x73, 0x74, 0x00
+
+    // .strtab[23] = b'$str\x00' 
+    /*0107*/ .byte 0x24, 0x73, 0x74, 0x72, 0x00
+
+    // .strtab[24] = b'__cudart_i2opi_f\x00' 
+    /*010c*/ .byte 0x5f, 0x5f, 0x63, 0x75, 0x64, 0x61, 0x72, 0x74
+    /*0114*/ .byte 0x5f, 0x69, 0x32, 0x6f, 0x70, 0x69, 0x5f, 0x66
+    /*011c*/ .byte 0x00
+
+    // .strtab[25] = b'vprintf\x00' 
+    /*011d*/ .byte 0x76, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x66, 0x00
+
+    // .strtab[26] = b'.nv.constant2._Z7argtestPiS_S_\x00' 
+    /*0125*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*012d*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x32, 0x2e, 0x5f, 0x5a
+    /*0135*/ .byte 0x37, 0x61, 0x72, 0x67, 0x74, 0x65, 0x73, 0x74
+    /*013d*/ .byte 0x50, 0x69, 0x53, 0x5f, 0x53, 0x5f, 0x00
+
+    // .strtab[27] = b'__ocg_const\x00' 
+    /*0144*/ .byte 0x5f, 0x5f, 0x6f, 0x63, 0x67, 0x5f, 0x63, 0x6f
+    /*014c*/ .byte 0x6e, 0x73, 0x74, 0x00
+
+    // .strtab[28] = b'$_Z7argtestPiS_S_$_Z2f1ii\x00' 
+    /*0150*/ .byte 0x24, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67, 0x74
+    /*0158*/ .byte 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f, 0x53
+    /*0160*/ .byte 0x5f, 0x24, 0x5f, 0x5a, 0x32, 0x66, 0x31, 0x69
+    /*0168*/ .byte 0x69, 0x00
+
+    // .strtab[29] = b'$_Z7argtestPiS_S_$_Z2f2ii\x00' 
+    /*016a*/ .byte 0x24, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67, 0x74
+    /*0172*/ .byte 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f, 0x53
+    /*017a*/ .byte 0x5f, 0x24, 0x5f, 0x5a, 0x32, 0x66, 0x32, 0x69
+    /*0182*/ .byte 0x69, 0x00
+
+    // .strtab[30] = b'$_Z7argtestPiS_S_$_Z2f3ii\x00' 
+    /*0184*/ .byte 0x24, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67, 0x74
+    /*018c*/ .byte 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f, 0x53
+    /*0194*/ .byte 0x5f, 0x24, 0x5f, 0x5a, 0x32, 0x66, 0x33, 0x69
+    /*019c*/ .byte 0x69, 0x00
+
+    // .strtab[31] = b'$_Z7argtestPiS_S_$_Z2f4ii\x00' 
+    /*019e*/ .byte 0x24, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67, 0x74
+    /*01a6*/ .byte 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f, 0x53
+    /*01ae*/ .byte 0x5f, 0x24, 0x5f, 0x5a, 0x32, 0x66, 0x34, 0x69
+    /*01b6*/ .byte 0x69, 0x00
+
+    // .strtab[32] = b'$_Z7argtestPiS_S_$_Z2f5ii\x00' 
+    /*01b8*/ .byte 0x24, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67, 0x74
+    /*01c0*/ .byte 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f, 0x53
+    /*01c8*/ .byte 0x5f, 0x24, 0x5f, 0x5a, 0x32, 0x66, 0x35, 0x69
+    /*01d0*/ .byte 0x69, 0x00
+
+    // .strtab[33] = b'$_Z7argtestPiS_S_$_Z2f6ii\x00' 
+    /*01d2*/ .byte 0x24, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67, 0x74
+    /*01da*/ .byte 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f, 0x53
+    /*01e2*/ .byte 0x5f, 0x24, 0x5f, 0x5a, 0x32, 0x66, 0x36, 0x69
+    /*01ea*/ .byte 0x69, 0x00
+
+    // .strtab[34] = b'$_Z7argtestPiS_S_$_Z2f7ii\x00' 
+    /*01ec*/ .byte 0x24, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67, 0x74
+    /*01f4*/ .byte 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f, 0x53
+    /*01fc*/ .byte 0x5f, 0x24, 0x5f, 0x5a, 0x32, 0x66, 0x37, 0x69
+    /*0204*/ .byte 0x69, 0x00
+
+    // .strtab[35] = b'.rel.text._Z7argtestPiS_S_\x00' 
+    /*0206*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x2e, 0x74, 0x65, 0x78
+    /*020e*/ .byte 0x74, 0x2e, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67
+    /*0216*/ .byte 0x74, 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f
+    /*021e*/ .byte 0x53, 0x5f, 0x00
+
+    // .strtab[36] = b'.rela.text._Z7argtestPiS_S_\x00' 
+    /*0221*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x61, 0x2e, 0x74, 0x65
+    /*0229*/ .byte 0x78, 0x74, 0x2e, 0x5f, 0x5a, 0x37, 0x61, 0x72
+    /*0231*/ .byte 0x67, 0x74, 0x65, 0x73, 0x74, 0x50, 0x69, 0x53
+    /*0239*/ .byte 0x5f, 0x53, 0x5f, 0x00
+
+    // .strtab[37] = b'$_Z7argtestPiS_S_$ShMem_d\x00' 
+    /*023d*/ .byte 0x24, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67, 0x74
+    /*0245*/ .byte 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f, 0x53
+    /*024d*/ .byte 0x5f, 0x24, 0x53, 0x68, 0x4d, 0x65, 0x6d, 0x5f
+    /*0255*/ .byte 0x64, 0x00
+
+    // .strtab[38] = b'.nv.constant0._Z7argtestPiS_S_\x00' 
+    /*0257*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*025f*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x30, 0x2e, 0x5f, 0x5a
+    /*0267*/ .byte 0x37, 0x61, 0x72, 0x67, 0x74, 0x65, 0x73, 0x74
+    /*026f*/ .byte 0x50, 0x69, 0x53, 0x5f, 0x53, 0x5f, 0x00
+
+    // .strtab[39] = b'_param\x00' 
+    /*0276*/ .byte 0x5f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x00
+
+    // .strtab[40] = b'$BINDLESS$_Z7argtestPiS_S_$texRef2d\x00' 
+    /*027d*/ .byte 0x24, 0x42, 0x49, 0x4e, 0x44, 0x4c, 0x45, 0x53
+    /*0285*/ .byte 0x53, 0x24, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67
+    /*028d*/ .byte 0x74, 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f
+    /*0295*/ .byte 0x53, 0x5f, 0x24, 0x74, 0x65, 0x78, 0x52, 0x65
+    /*029d*/ .byte 0x66, 0x32, 0x64, 0x00
+
+    // .strtab[41] = b'$BINDLESS$_Z7argtestPiS_S_$texRef1d\x00' 
+    /*02a1*/ .byte 0x24, 0x42, 0x49, 0x4e, 0x44, 0x4c, 0x45, 0x53
+    /*02a9*/ .byte 0x53, 0x24, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67
+    /*02b1*/ .byte 0x74, 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f
+    /*02b9*/ .byte 0x53, 0x5f, 0x24, 0x74, 0x65, 0x78, 0x52, 0x65
+    /*02c1*/ .byte 0x66, 0x31, 0x64, 0x00
+
+    // .strtab[42] = b'$BINDLESS$_Z7argtestPiS_S_$inputSurfRef\x00' 
+    /*02c5*/ .byte 0x24, 0x42, 0x49, 0x4e, 0x44, 0x4c, 0x45, 0x53
+    /*02cd*/ .byte 0x53, 0x24, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67
+    /*02d5*/ .byte 0x74, 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f
+    /*02dd*/ .byte 0x53, 0x5f, 0x24, 0x69, 0x6e, 0x70, 0x75, 0x74
+    /*02e5*/ .byte 0x53, 0x75, 0x72, 0x66, 0x52, 0x65, 0x66, 0x00
+
+    // .strtab[43] = b'$BINDLESS$_Z7argtestPiS_S_$outputSurfRef\x00' 
+    /*02ed*/ .byte 0x24, 0x42, 0x49, 0x4e, 0x44, 0x4c, 0x45, 0x53
+    /*02f5*/ .byte 0x53, 0x24, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67
+    /*02fd*/ .byte 0x74, 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f
+    /*0305*/ .byte 0x53, 0x5f, 0x24, 0x6f, 0x75, 0x74, 0x70, 0x75
+    /*030d*/ .byte 0x74, 0x53, 0x75, 0x72, 0x66, 0x52, 0x65, 0x66
+    /*0315*/ .byte 0x00
+
+    // .strtab[44] = b'_Z11shared_testfPf\x00' 
+    /*0316*/ .byte 0x5f, 0x5a, 0x31, 0x31, 0x73, 0x68, 0x61, 0x72
+    /*031e*/ .byte 0x65, 0x64, 0x5f, 0x74, 0x65, 0x73, 0x74, 0x66
+    /*0326*/ .byte 0x50, 0x66, 0x00
+
+    // .strtab[45] = b'.text._Z11shared_testfPf\x00' 
+    /*0329*/ .byte 0x2e, 0x74, 0x65, 0x78, 0x74, 0x2e, 0x5f, 0x5a
+    /*0331*/ .byte 0x31, 0x31, 0x73, 0x68, 0x61, 0x72, 0x65, 0x64
+    /*0339*/ .byte 0x5f, 0x74, 0x65, 0x73, 0x74, 0x66, 0x50, 0x66
+    /*0341*/ .byte 0x00
+
+    // .strtab[46] = b'.nv.info._Z11shared_testfPf\x00' 
+    /*0342*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*034a*/ .byte 0x2e, 0x5f, 0x5a, 0x31, 0x31, 0x73, 0x68, 0x61
+    /*0352*/ .byte 0x72, 0x65, 0x64, 0x5f, 0x74, 0x65, 0x73, 0x74
+    /*035a*/ .byte 0x66, 0x50, 0x66, 0x00
+
+    // .strtab[47] = b'.nv.shared._Z11shared_testfPf\x00' 
+    /*035e*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x73, 0x68, 0x61, 0x72
+    /*0366*/ .byte 0x65, 0x64, 0x2e, 0x5f, 0x5a, 0x31, 0x31, 0x73
+    /*036e*/ .byte 0x68, 0x61, 0x72, 0x65, 0x64, 0x5f, 0x74, 0x65
+    /*0376*/ .byte 0x73, 0x74, 0x66, 0x50, 0x66, 0x00
+
+    // .strtab[48] = b'$___ZZ11shared_testfPfE7ShMem_s__568\x00' 
+    /*037c*/ .byte 0x24, 0x5f, 0x5f, 0x5f, 0x5a, 0x5a, 0x31, 0x31
+    /*0384*/ .byte 0x73, 0x68, 0x61, 0x72, 0x65, 0x64, 0x5f, 0x74
+    /*038c*/ .byte 0x65, 0x73, 0x74, 0x66, 0x50, 0x66, 0x45, 0x37
+    /*0394*/ .byte 0x53, 0x68, 0x4d, 0x65, 0x6d, 0x5f, 0x73, 0x5f
+    /*039c*/ .byte 0x5f, 0x35, 0x36, 0x38, 0x00
+
+    // .strtab[49] = b'$_Z11shared_testfPf$ShMem_d\x00' 
+    /*03a1*/ .byte 0x24, 0x5f, 0x5a, 0x31, 0x31, 0x73, 0x68, 0x61
+    /*03a9*/ .byte 0x72, 0x65, 0x64, 0x5f, 0x74, 0x65, 0x73, 0x74
+    /*03b1*/ .byte 0x66, 0x50, 0x66, 0x24, 0x53, 0x68, 0x4d, 0x65
+    /*03b9*/ .byte 0x6d, 0x5f, 0x64, 0x00
+
+    // .strtab[50] = b'.nv.constant0._Z11shared_testfPf\x00' 
+    /*03bd*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*03c5*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x30, 0x2e, 0x5f, 0x5a
+    /*03cd*/ .byte 0x31, 0x31, 0x73, 0x68, 0x61, 0x72, 0x65, 0x64
+    /*03d5*/ .byte 0x5f, 0x74, 0x65, 0x73, 0x74, 0x66, 0x50, 0x66
+    /*03dd*/ .byte 0x00
+
+    // .strtab[51] = b'_Z11nvinfo_testiiPi\x00' 
+    /*03de*/ .byte 0x5f, 0x5a, 0x31, 0x31, 0x6e, 0x76, 0x69, 0x6e
+    /*03e6*/ .byte 0x66, 0x6f, 0x5f, 0x74, 0x65, 0x73, 0x74, 0x69
+    /*03ee*/ .byte 0x69, 0x50, 0x69, 0x00
+
+    // .strtab[52] = b'.text._Z11nvinfo_testiiPi\x00' 
+    /*03f2*/ .byte 0x2e, 0x74, 0x65, 0x78, 0x74, 0x2e, 0x5f, 0x5a
+    /*03fa*/ .byte 0x31, 0x31, 0x6e, 0x76, 0x69, 0x6e, 0x66, 0x6f
+    /*0402*/ .byte 0x5f, 0x74, 0x65, 0x73, 0x74, 0x69, 0x69, 0x50
+    /*040a*/ .byte 0x69, 0x00
+
+    // .strtab[53] = b'.nv.info._Z11nvinfo_testiiPi\x00' 
+    /*040c*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*0414*/ .byte 0x2e, 0x5f, 0x5a, 0x31, 0x31, 0x6e, 0x76, 0x69
+    /*041c*/ .byte 0x6e, 0x66, 0x6f, 0x5f, 0x74, 0x65, 0x73, 0x74
+    /*0424*/ .byte 0x69, 0x69, 0x50, 0x69, 0x00
+
+    // .strtab[54] = b'.nv.shared._Z11nvinfo_testiiPi\x00' 
+    /*0429*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x73, 0x68, 0x61, 0x72
+    /*0431*/ .byte 0x65, 0x64, 0x2e, 0x5f, 0x5a, 0x31, 0x31, 0x6e
+    /*0439*/ .byte 0x76, 0x69, 0x6e, 0x66, 0x6f, 0x5f, 0x74, 0x65
+    /*0441*/ .byte 0x73, 0x74, 0x69, 0x69, 0x50, 0x69, 0x00
+
+    // .strtab[55] = b'$_Z11nvinfo_testiiPi$ShMem_d\x00' 
+    /*0448*/ .byte 0x24, 0x5f, 0x5a, 0x31, 0x31, 0x6e, 0x76, 0x69
+    /*0450*/ .byte 0x6e, 0x66, 0x6f, 0x5f, 0x74, 0x65, 0x73, 0x74
+    /*0458*/ .byte 0x69, 0x69, 0x50, 0x69, 0x24, 0x53, 0x68, 0x4d
+    /*0460*/ .byte 0x65, 0x6d, 0x5f, 0x64, 0x00
+
+    // .strtab[56] = b'.nv.constant0._Z11nvinfo_testiiPi\x00' 
+    /*0465*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*046d*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x30, 0x2e, 0x5f, 0x5a
+    /*0475*/ .byte 0x31, 0x31, 0x6e, 0x76, 0x69, 0x6e, 0x66, 0x6f
+    /*047d*/ .byte 0x5f, 0x74, 0x65, 0x73, 0x74, 0x69, 0x69, 0x50
+    /*0485*/ .byte 0x69, 0x00
+
+    // .strtab[57] = b'_Z5childPii\x00' 
+    /*0487*/ .byte 0x5f, 0x5a, 0x35, 0x63, 0x68, 0x69, 0x6c, 0x64
+    /*048f*/ .byte 0x50, 0x69, 0x69, 0x00
+
+    // .strtab[58] = b'.text._Z5childPii\x00' 
+    /*0493*/ .byte 0x2e, 0x74, 0x65, 0x78, 0x74, 0x2e, 0x5f, 0x5a
+    /*049b*/ .byte 0x35, 0x63, 0x68, 0x69, 0x6c, 0x64, 0x50, 0x69
+    /*04a3*/ .byte 0x69, 0x00
+
+    // .strtab[59] = b'.nv.info._Z5childPii\x00' 
+    /*04a5*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*04ad*/ .byte 0x2e, 0x5f, 0x5a, 0x35, 0x63, 0x68, 0x69, 0x6c
+    /*04b5*/ .byte 0x64, 0x50, 0x69, 0x69, 0x00
+
+    // .strtab[60] = b'.nv.shared._Z5childPii\x00' 
+    /*04ba*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x73, 0x68, 0x61, 0x72
+    /*04c2*/ .byte 0x65, 0x64, 0x2e, 0x5f, 0x5a, 0x35, 0x63, 0x68
+    /*04ca*/ .byte 0x69, 0x6c, 0x64, 0x50, 0x69, 0x69, 0x00
+
+    // .strtab[61] = b'.rel.text._Z5childPii\x00' 
+    /*04d1*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x2e, 0x74, 0x65, 0x78
+    /*04d9*/ .byte 0x74, 0x2e, 0x5f, 0x5a, 0x35, 0x63, 0x68, 0x69
+    /*04e1*/ .byte 0x6c, 0x64, 0x50, 0x69, 0x69, 0x00
+
+    // .strtab[62] = b'$_Z5childPii$ShMem_d\x00' 
+    /*04e7*/ .byte 0x24, 0x5f, 0x5a, 0x35, 0x63, 0x68, 0x69, 0x6c
+    /*04ef*/ .byte 0x64, 0x50, 0x69, 0x69, 0x24, 0x53, 0x68, 0x4d
+    /*04f7*/ .byte 0x65, 0x6d, 0x5f, 0x64, 0x00
+
+    // .strtab[63] = b'.nv.constant0._Z5childPii\x00' 
+    /*04fc*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*0504*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x30, 0x2e, 0x5f, 0x5a
+    /*050c*/ .byte 0x35, 0x63, 0x68, 0x69, 0x6c, 0x64, 0x50, 0x69
+    /*0514*/ .byte 0x69, 0x00
+
+    // .strtab[64] = b'_Z10local_testiiPi\x00' 
+    /*0516*/ .byte 0x5f, 0x5a, 0x31, 0x30, 0x6c, 0x6f, 0x63, 0x61
+    /*051e*/ .byte 0x6c, 0x5f, 0x74, 0x65, 0x73, 0x74, 0x69, 0x69
+    /*0526*/ .byte 0x50, 0x69, 0x00
+
+    // .strtab[65] = b'.text._Z10local_testiiPi\x00' 
+    /*0529*/ .byte 0x2e, 0x74, 0x65, 0x78, 0x74, 0x2e, 0x5f, 0x5a
+    /*0531*/ .byte 0x31, 0x30, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x5f
+    /*0539*/ .byte 0x74, 0x65, 0x73, 0x74, 0x69, 0x69, 0x50, 0x69
+    /*0541*/ .byte 0x00
+
+    // .strtab[66] = b'.nv.info._Z10local_testiiPi\x00' 
+    /*0542*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*054a*/ .byte 0x2e, 0x5f, 0x5a, 0x31, 0x30, 0x6c, 0x6f, 0x63
+    /*0552*/ .byte 0x61, 0x6c, 0x5f, 0x74, 0x65, 0x73, 0x74, 0x69
+    /*055a*/ .byte 0x69, 0x50, 0x69, 0x00
+
+    // .strtab[67] = b'.nv.shared._Z10local_testiiPi\x00' 
+    /*055e*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x73, 0x68, 0x61, 0x72
+    /*0566*/ .byte 0x65, 0x64, 0x2e, 0x5f, 0x5a, 0x31, 0x30, 0x6c
+    /*056e*/ .byte 0x6f, 0x63, 0x61, 0x6c, 0x5f, 0x74, 0x65, 0x73
+    /*0576*/ .byte 0x74, 0x69, 0x69, 0x50, 0x69, 0x00
+
+    // .strtab[68] = b'$_Z10local_testiiPi$ShMem_d\x00' 
+    /*057c*/ .byte 0x24, 0x5f, 0x5a, 0x31, 0x30, 0x6c, 0x6f, 0x63
+    /*0584*/ .byte 0x61, 0x6c, 0x5f, 0x74, 0x65, 0x73, 0x74, 0x69
+    /*058c*/ .byte 0x69, 0x50, 0x69, 0x24, 0x53, 0x68, 0x4d, 0x65
+    /*0594*/ .byte 0x6d, 0x5f, 0x64, 0x00
+
+    // .strtab[69] = b'.nv.constant0._Z10local_testiiPi\x00' 
+    /*0598*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*05a0*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x30, 0x2e, 0x5f, 0x5a
+    /*05a8*/ .byte 0x31, 0x30, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x5f
+    /*05b0*/ .byte 0x74, 0x65, 0x73, 0x74, 0x69, 0x69, 0x50, 0x69
+    /*05b8*/ .byte 0x00
+
+    // .strtab[70] = b'_Z4test6float4PS_\x00' 
+    /*05b9*/ .byte 0x5f, 0x5a, 0x34, 0x74, 0x65, 0x73, 0x74, 0x36
+    /*05c1*/ .byte 0x66, 0x6c, 0x6f, 0x61, 0x74, 0x34, 0x50, 0x53
+    /*05c9*/ .byte 0x5f, 0x00
+
+    // .strtab[71] = b'.text._Z4test6float4PS_\x00' 
+    /*05cb*/ .byte 0x2e, 0x74, 0x65, 0x78, 0x74, 0x2e, 0x5f, 0x5a
+    /*05d3*/ .byte 0x34, 0x74, 0x65, 0x73, 0x74, 0x36, 0x66, 0x6c
+    /*05db*/ .byte 0x6f, 0x61, 0x74, 0x34, 0x50, 0x53, 0x5f, 0x00
+
+    // .strtab[72] = b'.nv.info._Z4test6float4PS_\x00' 
+    /*05e3*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*05eb*/ .byte 0x2e, 0x5f, 0x5a, 0x34, 0x74, 0x65, 0x73, 0x74
+    /*05f3*/ .byte 0x36, 0x66, 0x6c, 0x6f, 0x61, 0x74, 0x34, 0x50
+    /*05fb*/ .byte 0x53, 0x5f, 0x00
+
+    // .strtab[73] = b'.nv.shared._Z4test6float4PS_\x00' 
+    /*05fe*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x73, 0x68, 0x61, 0x72
+    /*0606*/ .byte 0x65, 0x64, 0x2e, 0x5f, 0x5a, 0x34, 0x74, 0x65
+    /*060e*/ .byte 0x73, 0x74, 0x36, 0x66, 0x6c, 0x6f, 0x61, 0x74
+    /*0616*/ .byte 0x34, 0x50, 0x53, 0x5f, 0x00
+
+    // .strtab[74] = b'$_Z4test6float4PS_$ShMem_d\x00' 
+    /*061b*/ .byte 0x24, 0x5f, 0x5a, 0x34, 0x74, 0x65, 0x73, 0x74
+    /*0623*/ .byte 0x36, 0x66, 0x6c, 0x6f, 0x61, 0x74, 0x34, 0x50
+    /*062b*/ .byte 0x53, 0x5f, 0x24, 0x53, 0x68, 0x4d, 0x65, 0x6d
+    /*0633*/ .byte 0x5f, 0x64, 0x00
+
+    // .strtab[75] = b'.nv.constant0._Z4test6float4PS_\x00' 
+    /*0636*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*063e*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x30, 0x2e, 0x5f, 0x5a
+    /*0646*/ .byte 0x34, 0x74, 0x65, 0x73, 0x74, 0x36, 0x66, 0x6c
+    /*064e*/ .byte 0x6f, 0x61, 0x74, 0x34, 0x50, 0x53, 0x5f, 0x00
+
+    // .strtab[76] = b'.debug_frame\x00' 
+    /*0656*/ .byte 0x2e, 0x64, 0x65, 0x62, 0x75, 0x67, 0x5f, 0x66
+    /*065e*/ .byte 0x72, 0x61, 0x6d, 0x65, 0x00
+
+    // .strtab[77] = b'$funcID$_Z2f1ii\x00' 
+    /*0663*/ .byte 0x24, 0x66, 0x75, 0x6e, 0x63, 0x49, 0x44, 0x24
+    /*066b*/ .byte 0x5f, 0x5a, 0x32, 0x66, 0x31, 0x69, 0x69, 0x00
+
+    // .strtab[78] = b'.rel.nv.global.init\x00' 
+    /*0673*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x2e, 0x6e, 0x76, 0x2e
+    /*067b*/ .byte 0x67, 0x6c, 0x6f, 0x62, 0x61, 0x6c, 0x2e, 0x69
+    /*0683*/ .byte 0x6e, 0x69, 0x74, 0x00
+
+    // .strtab[79] = b'$funcID$_Z2f2ii\x00' 
+    /*0687*/ .byte 0x24, 0x66, 0x75, 0x6e, 0x63, 0x49, 0x44, 0x24
+    /*068f*/ .byte 0x5f, 0x5a, 0x32, 0x66, 0x32, 0x69, 0x69, 0x00
+
+    // .strtab[80] = b'$funcID$_Z2f3ii\x00' 
+    /*0697*/ .byte 0x24, 0x66, 0x75, 0x6e, 0x63, 0x49, 0x44, 0x24
+    /*069f*/ .byte 0x5f, 0x5a, 0x32, 0x66, 0x33, 0x69, 0x69, 0x00
+
+    // .strtab[81] = b'$funcID$_Z2f4ii\x00' 
+    /*06a7*/ .byte 0x24, 0x66, 0x75, 0x6e, 0x63, 0x49, 0x44, 0x24
+    /*06af*/ .byte 0x5f, 0x5a, 0x32, 0x66, 0x34, 0x69, 0x69, 0x00
+
+    // .strtab[82] = b'$funcID$_Z2f5ii\x00' 
+    /*06b7*/ .byte 0x24, 0x66, 0x75, 0x6e, 0x63, 0x49, 0x44, 0x24
+    /*06bf*/ .byte 0x5f, 0x5a, 0x32, 0x66, 0x35, 0x69, 0x69, 0x00
+
+    // .strtab[83] = b'$funcID$_Z2f6ii\x00' 
+    /*06c7*/ .byte 0x24, 0x66, 0x75, 0x6e, 0x63, 0x49, 0x44, 0x24
+    /*06cf*/ .byte 0x5f, 0x5a, 0x32, 0x66, 0x36, 0x69, 0x69, 0x00
+
+    // .strtab[84] = b'$funcID$_Z2f7ii\x00' 
+    /*06d7*/ .byte 0x24, 0x66, 0x75, 0x6e, 0x63, 0x49, 0x44, 0x24
+    /*06df*/ .byte 0x5f, 0x5a, 0x32, 0x66, 0x37, 0x69, 0x69, 0x00
+
+    // .strtab[85] = b'.rela.nv.constant2._Z7argtestPiS_S_\x00' 
+    /*06e7*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x61, 0x2e, 0x6e, 0x76
+    /*06ef*/ .byte 0x2e, 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x61, 0x6e
+    /*06f7*/ .byte 0x74, 0x32, 0x2e, 0x5f, 0x5a, 0x37, 0x61, 0x72
+    /*06ff*/ .byte 0x67, 0x74, 0x65, 0x73, 0x74, 0x50, 0x69, 0x53
+    /*0707*/ .byte 0x5f, 0x53, 0x5f, 0x00
+
+    // .strtab[86] = b'.rel.nv.constant2._Z7argtestPiS_S_\x00' 
+    /*070b*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x2e, 0x6e, 0x76, 0x2e
+    /*0713*/ .byte 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x74
+    /*071b*/ .byte 0x32, 0x2e, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67
+    /*0723*/ .byte 0x74, 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f
+    /*072b*/ .byte 0x53, 0x5f, 0x00
+
+    // .strtab[87] = b'.rel.nv.constant0._Z7argtestPiS_S_\x00' 
+    /*072e*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x2e, 0x6e, 0x76, 0x2e
+    /*0736*/ .byte 0x63, 0x6f, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x74
+    /*073e*/ .byte 0x30, 0x2e, 0x5f, 0x5a, 0x37, 0x61, 0x72, 0x67
+    /*0746*/ .byte 0x74, 0x65, 0x73, 0x74, 0x50, 0x69, 0x53, 0x5f
+    /*074e*/ .byte 0x53, 0x5f, 0x00
+
+    // .strtab[88] = b'.rel.debug_frame\x00' 
+    /*0751*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x2e, 0x64, 0x65, 0x62
+    /*0759*/ .byte 0x75, 0x67, 0x5f, 0x66, 0x72, 0x61, 0x6d, 0x65
+    /*0761*/ .byte 0x00
+
+    // .strtab[89] = b'.rela.debug_frame\x00' 
+    /*0762*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x61, 0x2e, 0x64, 0x65
+    /*076a*/ .byte 0x62, 0x75, 0x67, 0x5f, 0x66, 0x72, 0x61, 0x6d
+    /*0772*/ .byte 0x65, 0x00
+
+    // .strtab[90] = b'.nv.rel.action\x00' 
+    /*0774*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x72, 0x65, 0x6c, 0x2e
+    /*077c*/ .byte 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x00
+
+
+// --------------------- .symtab                          --------------------------
+	.section  ".symtab", 0, SHT_SYMTAB
+	// all symbols in .symtab sections will be kept
+	// but the symbol size may be changed accordingly
+	.__section_name         0x13 	// offset in .shstrtab
+	.__section_type         SHT_SYMTAB
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0xbe0 	// maybe updated by assembler
+	.__section_size         0x450 	// maybe updated by assembler
+	.__section_link         2
+	.__section_info         0x22
+	.__section_entsize      24
+	.align                8 	// equivalent to set sh_addralign
+    // Symbol[0] "": Container({'st_name': 0, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_NOTYPE'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
+    /*0000*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0008*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0010*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[1] ".text._Z7argtestPiS_S_": Container({'st_name': 67, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 0, 'st_size': 0})
+    /*0018*/ .byte 0x43, 0x00, 0x00, 0x00, 0x03, 0x00, 0x1a, 0x00
+    /*0020*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0028*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[2] ".nv.constant3": Container({'st_name': 189, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 18, 'st_value': 0, 'st_size': 0})
+    /*0030*/ .byte 0xbd, 0x00, 0x00, 0x00, 0x03, 0x00, 0x12, 0x00
+    /*0038*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0040*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[3] "C1": Container({'st_name': 203, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 18, 'st_value': 0, 'st_size': 44})
+    /*0048*/ .byte 0xcb, 0x00, 0x00, 0x00, 0x01, 0x00, 0x12, 0x00
+    /*0050*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0058*/ .byte 0x2c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[4] "C2": Container({'st_name': 206, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 18, 'st_value': 44, 'st_size': 260})
+    /*0060*/ .byte 0xce, 0x00, 0x00, 0x00, 0x01, 0x00, 0x12, 0x00
+    /*0068*/ .byte 0x2c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0070*/ .byte 0x04, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[5] "C3": Container({'st_name': 209, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 18, 'st_value': 304, 'st_size': 17})
+    /*0078*/ .byte 0xd1, 0x00, 0x00, 0x00, 0x01, 0x00, 0x12, 0x00
+    /*0080*/ .byte 0x30, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0088*/ .byte 0x11, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[6] ".nv.global": Container({'st_name': 212, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 34, 'st_value': 0, 'st_size': 0})
+    /*0090*/ .byte 0xd4, 0x00, 0x00, 0x00, 0x03, 0x00, 0x22, 0x00
+    /*0098*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*00a0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[7] "GlobalC1": Container({'st_name': 223, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 34, 'st_value': 0, 'st_size': 28})
+    /*00a8*/ .byte 0xdf, 0x00, 0x00, 0x00, 0x01, 0x00, 0x22, 0x00
+    /*00b0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*00b8*/ .byte 0x1c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[8] "GlobalC2": Container({'st_name': 232, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 34, 'st_value': 28, 'st_size': 132})
+    /*00c0*/ .byte 0xe8, 0x00, 0x00, 0x00, 0x01, 0x00, 0x22, 0x00
+    /*00c8*/ .byte 0x1c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*00d0*/ .byte 0x84, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[9] ".nv.global.init": Container({'st_name': 241, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 32, 'st_value': 0, 'st_size': 0})
+    /*00d8*/ .byte 0xf1, 0x00, 0x00, 0x00, 0x03, 0x00, 0x20, 0x00
+    /*00e0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*00e8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[10] "flist": Container({'st_name': 257, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 32, 'st_value': 0, 'st_size': 56})
+    /*00f0*/ .byte 0x01, 0x01, 0x00, 0x00, 0x01, 0x00, 0x20, 0x00
+    /*00f8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0100*/ .byte 0x38, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[11] "$str": Container({'st_name': 263, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 32, 'st_value': 80, 'st_size': 12})
+    /*0108*/ .byte 0x07, 0x01, 0x00, 0x00, 0x01, 0x00, 0x20, 0x00
+    /*0110*/ .byte 0x50, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0118*/ .byte 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[12] "__cudart_i2opi_f": Container({'st_name': 268, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 32, 'st_value': 56, 'st_size': 24})
+    /*0120*/ .byte 0x0c, 0x01, 0x00, 0x00, 0x01, 0x00, 0x20, 0x00
+    /*0128*/ .byte 0x38, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0130*/ .byte 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[13] ".nv.constant2._Z7argtestPiS_S_": Container({'st_name': 293, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 19, 'st_value': 0, 'st_size': 0})
+    /*0138*/ .byte 0x25, 0x01, 0x00, 0x00, 0x03, 0x00, 0x13, 0x00
+    /*0140*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0148*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[14] "$_Z7argtestPiS_S_$_Z2f1ii": Container({'st_name': 336, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 2368, 'st_size': 16})
+    /*0150*/ .byte 0x50, 0x01, 0x00, 0x00, 0x02, 0x00, 0x1a, 0x00
+    /*0158*/ .byte 0x40, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0160*/ .byte 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[15] "$_Z7argtestPiS_S_$_Z2f2ii": Container({'st_name': 362, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 2384, 'st_size': 16})
+    /*0168*/ .byte 0x6a, 0x01, 0x00, 0x00, 0x02, 0x00, 0x1a, 0x00
+    /*0170*/ .byte 0x50, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0178*/ .byte 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[16] "$_Z7argtestPiS_S_$_Z2f3ii": Container({'st_name': 388, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 2400, 'st_size': 16})
+    /*0180*/ .byte 0x84, 0x01, 0x00, 0x00, 0x02, 0x00, 0x1a, 0x00
+    /*0188*/ .byte 0x60, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0190*/ .byte 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[17] "$_Z7argtestPiS_S_$_Z2f4ii": Container({'st_name': 414, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 2416, 'st_size': 16})
+    /*0198*/ .byte 0x9e, 0x01, 0x00, 0x00, 0x02, 0x00, 0x1a, 0x00
+    /*01a0*/ .byte 0x70, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*01a8*/ .byte 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[18] "$_Z7argtestPiS_S_$_Z2f5ii": Container({'st_name': 440, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 2432, 'st_size': 32})
+    /*01b0*/ .byte 0xb8, 0x01, 0x00, 0x00, 0x02, 0x00, 0x1a, 0x00
+    /*01b8*/ .byte 0x80, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*01c0*/ .byte 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[19] "$_Z7argtestPiS_S_$_Z2f6ii": Container({'st_name': 466, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 2464, 'st_size': 480})
+    /*01c8*/ .byte 0xd2, 0x01, 0x00, 0x00, 0x02, 0x00, 0x1a, 0x00
+    /*01d0*/ .byte 0xa0, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*01d8*/ .byte 0xe0, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[20] "$_Z7argtestPiS_S_$_Z2f7ii": Container({'st_name': 492, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 2944, 'st_size': 512})
+    /*01e0*/ .byte 0xec, 0x01, 0x00, 0x00, 0x02, 0x00, 0x1a, 0x00
+    /*01e8*/ .byte 0x80, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*01f0*/ .byte 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[21] ".nv.constant0._Z7argtestPiS_S_": Container({'st_name': 599, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 20, 'st_value': 0, 'st_size': 0})
+    /*01f8*/ .byte 0x57, 0x02, 0x00, 0x00, 0x03, 0x00, 0x14, 0x00
+    /*0200*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0208*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[22] ".text._Z11shared_testfPf": Container({'st_name': 809, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 27, 'st_value': 0, 'st_size': 0})
+    /*0210*/ .byte 0x29, 0x03, 0x00, 0x00, 0x03, 0x00, 0x1b, 0x00
+    /*0218*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0220*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[23] ".nv.shared._Z11shared_testfPf": Container({'st_name': 862, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 35, 'st_value': 0, 'st_size': 0})
+    /*0228*/ .byte 0x5e, 0x03, 0x00, 0x00, 0x03, 0x00, 0x23, 0x00
+    /*0230*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0238*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[24] ".nv.constant0._Z11shared_testfPf": Container({'st_name': 957, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 21, 'st_value': 0, 'st_size': 0})
+    /*0240*/ .byte 0xbd, 0x03, 0x00, 0x00, 0x03, 0x00, 0x15, 0x00
+    /*0248*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0250*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[25] ".text._Z11nvinfo_testiiPi": Container({'st_name': 1010, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 28, 'st_value': 0, 'st_size': 0})
+    /*0258*/ .byte 0xf2, 0x03, 0x00, 0x00, 0x03, 0x00, 0x1c, 0x00
+    /*0260*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0268*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[26] ".nv.constant0._Z11nvinfo_testiiPi": Container({'st_name': 1125, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 22, 'st_value': 0, 'st_size': 0})
+    /*0270*/ .byte 0x65, 0x04, 0x00, 0x00, 0x03, 0x00, 0x16, 0x00
+    /*0278*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0280*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[27] ".text._Z5childPii": Container({'st_name': 1171, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 29, 'st_value': 0, 'st_size': 0})
+    /*0288*/ .byte 0x93, 0x04, 0x00, 0x00, 0x03, 0x00, 0x1d, 0x00
+    /*0290*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0298*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[28] ".nv.constant0._Z5childPii": Container({'st_name': 1276, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 23, 'st_value': 0, 'st_size': 0})
+    /*02a0*/ .byte 0xfc, 0x04, 0x00, 0x00, 0x03, 0x00, 0x17, 0x00
+    /*02a8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*02b0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[29] ".text._Z10local_testiiPi": Container({'st_name': 1321, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 30, 'st_value': 0, 'st_size': 0})
+    /*02b8*/ .byte 0x29, 0x05, 0x00, 0x00, 0x03, 0x00, 0x1e, 0x00
+    /*02c0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*02c8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[30] ".nv.constant0._Z10local_testiiPi": Container({'st_name': 1432, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 24, 'st_value': 0, 'st_size': 0})
+    /*02d0*/ .byte 0x98, 0x05, 0x00, 0x00, 0x03, 0x00, 0x18, 0x00
+    /*02d8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*02e0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[31] ".text._Z4test6float4PS_": Container({'st_name': 1483, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 31, 'st_value': 0, 'st_size': 0})
+    /*02e8*/ .byte 0xcb, 0x05, 0x00, 0x00, 0x03, 0x00, 0x1f, 0x00
+    /*02f0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*02f8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[32] ".nv.constant0._Z4test6float4PS_": Container({'st_name': 1590, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 25, 'st_value': 0, 'st_size': 0})
+    /*0300*/ .byte 0x36, 0x06, 0x00, 0x00, 0x03, 0x00, 0x19, 0x00
+    /*0308*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0310*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[33] ".debug_frame": Container({'st_name': 1622, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 4, 'st_value': 0, 'st_size': 0})
+    /*0318*/ .byte 0x56, 0x06, 0x00, 0x00, 0x03, 0x00, 0x04, 0x00
+    /*0320*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0328*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[34] ".nv.rel.action": Container({'st_name': 1908, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 12, 'st_value': 0, 'st_size': 0})
+    /*0330*/ .byte 0x74, 0x07, 0x00, 0x00, 0x03, 0x00, 0x0c, 0x00
+    /*0338*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0340*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[35] "_Z7argtestPiS_S_": Container({'st_name': 50, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 0, 'st_size': 3456})
+    /*0348*/ .byte 0x32, 0x00, 0x00, 0x00, 0x12, 0x10, 0x1a, 0x00
+    /*0350*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0358*/ .byte 0x80, 0x0d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[36] "texRef2d": Container({'st_name': 144, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_LOOS'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
+    /*0360*/ .byte 0x90, 0x00, 0x00, 0x00, 0x1a, 0x00, 0x00, 0x00
+    /*0368*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0370*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[37] "texRef1d": Container({'st_name': 153, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_LOOS'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
+    /*0378*/ .byte 0x99, 0x00, 0x00, 0x00, 0x1a, 0x00, 0x00, 0x00
+    /*0380*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0388*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[38] "inputSurfRef": Container({'st_name': 162, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_HIOS'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
+    /*0390*/ .byte 0xa2, 0x00, 0x00, 0x00, 0x1c, 0x00, 0x00, 0x00
+    /*0398*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*03a0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[39] "outputSurfRef": Container({'st_name': 175, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_HIOS'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
+    /*03a8*/ .byte 0xaf, 0x00, 0x00, 0x00, 0x1c, 0x00, 0x00, 0x00
+    /*03b0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*03b8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[40] "vprintf": Container({'st_name': 285, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
+    /*03c0*/ .byte 0x1d, 0x01, 0x00, 0x00, 0x12, 0x00, 0x00, 0x00
+    /*03c8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*03d0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[41] "_Z11shared_testfPf": Container({'st_name': 790, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 27, 'st_value': 0, 'st_size': 512})
+    /*03d8*/ .byte 0x16, 0x03, 0x00, 0x00, 0x12, 0x10, 0x1b, 0x00
+    /*03e0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*03e8*/ .byte 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[42] "_Z11nvinfo_testiiPi": Container({'st_name': 990, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 28, 'st_value': 0, 'st_size': 256})
+    /*03f0*/ .byte 0xde, 0x03, 0x00, 0x00, 0x12, 0x10, 0x1c, 0x00
+    /*03f8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0400*/ .byte 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[43] "_Z5childPii": Container({'st_name': 1159, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 29, 'st_value': 0, 'st_size': 640})
+    /*0408*/ .byte 0x87, 0x04, 0x00, 0x00, 0x12, 0x10, 0x1d, 0x00
+    /*0410*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0418*/ .byte 0x80, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[44] "_Z10local_testiiPi": Container({'st_name': 1302, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 30, 'st_value': 0, 'st_size': 384})
+    /*0420*/ .byte 0x16, 0x05, 0x00, 0x00, 0x12, 0x10, 0x1e, 0x00
+    /*0428*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0430*/ .byte 0x80, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[45] "_Z4test6float4PS_": Container({'st_name': 1465, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 31, 'st_value': 0, 'st_size': 1152})
+    /*0438*/ .byte 0xb9, 0x05, 0x00, 0x00, 0x12, 0x10, 0x1f, 0x00
+    /*0440*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0448*/ .byte 0x80, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+
+// --------------------- .debug_frame                     --------------------------
+	.section	.debug_frame,"",@progbits
+	.__section_name         0x35b 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x1030 	// maybe updated by assembler
+	.__section_size         0x5c8 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x0
+	.__section_entsize      0
+	.align                1 	// equivalent to set sh_addralign
+  .debug_frame:
+          /*0000*/ 	.byte	0xff, 0xff, 0xff, 0xff, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff
+          /*0010*/ 	.byte	0xff, 0xff, 0xff, 0xff, 0x03, 0x00, 0x04, 0x7c, 0xff, 0xff, 0xff, 0xff, 0x0f, 0x0c, 0x81, 0x80
+          /*0020*/ 	.byte	0x80, 0x28, 0x00, 0x08, 0xff, 0x81, 0x80, 0x28, 0x08, 0x81, 0x80, 0x80, 0x28, 0x00, 0x00, 0x00
+          /*0030*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0040*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0048*/ 	.dword	_Z7argtestPiS_S_
+          /*0050*/ 	.byte	0x30, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x04, 0x00, 0x00, 0x00, 0x04, 0x08, 0x00
+          /*0060*/ 	.byte	0x00, 0x00, 0x0c, 0x81, 0x80, 0x80, 0x28, 0x28, 0x04, 0x4c, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0070*/ 	.byte	0xff, 0xff, 0xff, 0xff, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff
+          /*0080*/ 	.byte	0xff, 0xff, 0xff, 0xff, 0x03, 0x00, 0x04, 0x7c, 0x94, 0x80, 0x80, 0x28, 0x0c, 0x81, 0x80, 0x80
+          /*0090*/ 	.byte	0x28, 0x00, 0x08, 0xff, 0x81, 0x80, 0x28, 0x08, 0x81, 0x80, 0x80, 0x28, 0x08, 0x94, 0x80, 0x80
+          /*00a0*/ 	.byte	0x28, 0x08, 0x95, 0x80, 0x80, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff
+          /*00b0*/ 	.byte	0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*00c0*/ 	.dword	(_Z7argtestPiS_S_ + $_Z7argtestPiS_S_$_Z2f1ii@srel)
+          /*00c8*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x04, 0x00, 0x00, 0x00, 0x0c, 0x81, 0x80
+          /*00d8*/ 	.byte	0x80, 0x28, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x30, 0x00, 0x00, 0x00
+          /*00e8*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x03, 0x00, 0x04, 0x7c
+          /*00f8*/ 	.byte	0x94, 0x80, 0x80, 0x28, 0x0c, 0x81, 0x80, 0x80, 0x28, 0x00, 0x08, 0xff, 0x81, 0x80, 0x28, 0x08
+          /*0108*/ 	.byte	0x81, 0x80, 0x80, 0x28, 0x08, 0x94, 0x80, 0x80, 0x28, 0x08, 0x95, 0x80, 0x80, 0x28, 0x00, 0x00
+          /*0118*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0128*/ 	.byte	0xe0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0130*/ 	.dword	(_Z7argtestPiS_S_ + $_Z7argtestPiS_S_$_Z2f2ii@srel)
+          /*0138*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x54, 0x02, 0x00, 0x00, 0x0c, 0x81, 0x80
+          /*0148*/ 	.byte	0x80, 0x28, 0x00, 0x04, 0x04, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x30, 0x00, 0x00, 0x00
+          /*0158*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x03, 0x00, 0x04, 0x7c
+          /*0168*/ 	.byte	0x94, 0x80, 0x80, 0x28, 0x0c, 0x81, 0x80, 0x80, 0x28, 0x00, 0x08, 0xff, 0x81, 0x80, 0x28, 0x08
+          /*0178*/ 	.byte	0x81, 0x80, 0x80, 0x28, 0x08, 0x94, 0x80, 0x80, 0x28, 0x08, 0x95, 0x80, 0x80, 0x28, 0x00, 0x00
+          /*0188*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0198*/ 	.byte	0x50, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*01a0*/ 	.dword	(_Z7argtestPiS_S_ + $_Z7argtestPiS_S_$_Z2f3ii@srel)
+          /*01a8*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x58, 0x02, 0x00, 0x00, 0x0c, 0x81, 0x80
+          /*01b8*/ 	.byte	0x80, 0x28, 0x00, 0x04, 0x04, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x30, 0x00, 0x00, 0x00
+          /*01c8*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x03, 0x00, 0x04, 0x7c
+          /*01d8*/ 	.byte	0x94, 0x80, 0x80, 0x28, 0x0c, 0x81, 0x80, 0x80, 0x28, 0x00, 0x08, 0xff, 0x81, 0x80, 0x28, 0x08
+          /*01e8*/ 	.byte	0x81, 0x80, 0x80, 0x28, 0x08, 0x94, 0x80, 0x80, 0x28, 0x08, 0x95, 0x80, 0x80, 0x28, 0x00, 0x00
+          /*01f8*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0208*/ 	.byte	0xc0, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0210*/ 	.dword	(_Z7argtestPiS_S_ + $_Z7argtestPiS_S_$_Z2f4ii@srel)
+          /*0218*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x5c, 0x02, 0x00, 0x00, 0x0c, 0x81, 0x80
+          /*0228*/ 	.byte	0x80, 0x28, 0x00, 0x04, 0x04, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x30, 0x00, 0x00, 0x00
+          /*0238*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x03, 0x00, 0x04, 0x7c
+          /*0248*/ 	.byte	0x94, 0x80, 0x80, 0x28, 0x0c, 0x81, 0x80, 0x80, 0x28, 0x00, 0x08, 0xff, 0x81, 0x80, 0x28, 0x08
+          /*0258*/ 	.byte	0x81, 0x80, 0x80, 0x28, 0x08, 0x94, 0x80, 0x80, 0x28, 0x08, 0x95, 0x80, 0x80, 0x28, 0x00, 0x00
+          /*0268*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0278*/ 	.byte	0x30, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0280*/ 	.dword	(_Z7argtestPiS_S_ + $_Z7argtestPiS_S_$_Z2f5ii@srel)
+          /*0288*/ 	.byte	0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x60, 0x02, 0x00, 0x00, 0x0c, 0x81, 0x80
+          /*0298*/ 	.byte	0x80, 0x28, 0x00, 0x04, 0x08, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x30, 0x00, 0x00, 0x00
+          /*02a8*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x03, 0x00, 0x04, 0x7c
+          /*02b8*/ 	.byte	0x94, 0x80, 0x80, 0x28, 0x0c, 0x81, 0x80, 0x80, 0x28, 0x00, 0x08, 0xff, 0x81, 0x80, 0x28, 0x08
+          /*02c8*/ 	.byte	0x81, 0x80, 0x80, 0x28, 0x08, 0x94, 0x80, 0x80, 0x28, 0x08, 0x95, 0x80, 0x80, 0x28, 0x00, 0x00
+          /*02d8*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*02e8*/ 	.byte	0xa0, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*02f0*/ 	.dword	(_Z7argtestPiS_S_ + $_Z7argtestPiS_S_$_Z2f6ii@srel)
+          /*02f8*/ 	.byte	0xd0, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x6c, 0x02, 0x00, 0x00, 0x0c, 0x81, 0x80
+          /*0308*/ 	.byte	0x80, 0x28, 0x08, 0x04, 0x74, 0x00, 0x00, 0x00, 0x0c, 0x81, 0x80, 0x80, 0x28, 0x00, 0x00, 0x00
+          /*0318*/ 	.byte	0xff, 0xff, 0xff, 0xff, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff
+          /*0328*/ 	.byte	0xff, 0xff, 0xff, 0xff, 0x03, 0x00, 0x04, 0x7c, 0x94, 0x80, 0x80, 0x28, 0x0c, 0x81, 0x80, 0x80
+          /*0338*/ 	.byte	0x28, 0x00, 0x08, 0xff, 0x81, 0x80, 0x28, 0x08, 0x81, 0x80, 0x80, 0x28, 0x08, 0x94, 0x80, 0x80
+          /*0348*/ 	.byte	0x28, 0x08, 0x95, 0x80, 0x80, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff
+          /*0358*/ 	.byte	0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0368*/ 	.dword	(_Z7argtestPiS_S_ + $_Z7argtestPiS_S_$_Z2f7ii@srel)
+          /*0370*/ 	.byte	0xf0, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0xe4, 0x02, 0x00, 0x00, 0x0c, 0x81, 0x80
+          /*0380*/ 	.byte	0x80, 0x28, 0x08, 0x04, 0x70, 0x00, 0x00, 0x00, 0x0c, 0x81, 0x80, 0x80, 0x28, 0x00, 0x00, 0x00
+          /*0390*/ 	.byte	0xff, 0xff, 0xff, 0xff, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff
+          /*03a0*/ 	.byte	0xff, 0xff, 0xff, 0xff, 0x03, 0x00, 0x04, 0x7c, 0xff, 0xff, 0xff, 0xff, 0x0f, 0x0c, 0x81, 0x80
+          /*03b0*/ 	.byte	0x80, 0x28, 0x00, 0x08, 0xff, 0x81, 0x80, 0x28, 0x08, 0x81, 0x80, 0x80, 0x28, 0x00, 0x00, 0x00
+          /*03c0*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*03d0*/ 	.byte	0x90, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*03d8*/ 	.dword	_Z11shared_testfPf
+          /*03e0*/ 	.byte	0xf0, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x04, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00
+          /*03f0*/ 	.byte	0x00, 0x00, 0x0c, 0x81, 0x80, 0x80, 0x28, 0x00, 0x04, 0x58, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0400*/ 	.byte	0xff, 0xff, 0xff, 0xff, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff
+          /*0410*/ 	.byte	0xff, 0xff, 0xff, 0xff, 0x03, 0x00, 0x04, 0x7c, 0xff, 0xff, 0xff, 0xff, 0x0f, 0x0c, 0x81, 0x80
+          /*0420*/ 	.byte	0x80, 0x28, 0x00, 0x08, 0xff, 0x81, 0x80, 0x28, 0x08, 0x81, 0x80, 0x80, 0x28, 0x00, 0x00, 0x00
+          /*0430*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0440*/ 	.byte	0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0448*/ 	.dword	_Z11nvinfo_testiiPi
+          /*0450*/ 	.byte	0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x04, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00
+          /*0460*/ 	.byte	0x00, 0x00, 0x0c, 0x81, 0x80, 0x80, 0x28, 0x00, 0x04, 0x2c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0470*/ 	.byte	0xff, 0xff, 0xff, 0xff, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff
+          /*0480*/ 	.byte	0xff, 0xff, 0xff, 0xff, 0x03, 0x00, 0x04, 0x7c, 0xff, 0xff, 0xff, 0xff, 0x0f, 0x0c, 0x81, 0x80
+          /*0490*/ 	.byte	0x80, 0x28, 0x00, 0x08, 0xff, 0x81, 0x80, 0x28, 0x08, 0x81, 0x80, 0x80, 0x28, 0x00, 0x00, 0x00
+          /*04a0*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*04b0*/ 	.byte	0x70, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*04b8*/ 	.dword	_Z5childPii
+          /*04c0*/ 	.byte	0x70, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x04, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00
+          /*04d0*/ 	.byte	0x00, 0x00, 0x0c, 0x81, 0x80, 0x80, 0x28, 0x00, 0x04, 0x88, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*04e0*/ 	.byte	0xff, 0xff, 0xff, 0xff, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff
+          /*04f0*/ 	.byte	0xff, 0xff, 0xff, 0xff, 0x03, 0x00, 0x04, 0x7c, 0xff, 0xff, 0xff, 0xff, 0x0f, 0x0c, 0x81, 0x80
+          /*0500*/ 	.byte	0x80, 0x28, 0x00, 0x08, 0xff, 0x81, 0x80, 0x28, 0x08, 0x81, 0x80, 0x80, 0x28, 0x00, 0x00, 0x00
+          /*0510*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x38, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0520*/ 	.byte	0xe0, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0528*/ 	.dword	_Z10local_testiiPi
+          /*0530*/ 	.byte	0x80, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x04, 0x00, 0x00, 0x00, 0x04, 0x0c, 0x00
+          /*0540*/ 	.byte	0x00, 0x00, 0x0c, 0x81, 0x80, 0x80, 0x28, 0x48, 0x04, 0x00, 0x00, 0x00, 0x00, 0x0c, 0x81, 0x80
+          /*0550*/ 	.byte	0x80, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x28, 0x00, 0x00, 0x00
+          /*0560*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x03, 0x00, 0x04, 0x7c
+          /*0570*/ 	.byte	0xff, 0xff, 0xff, 0xff, 0x0f, 0x0c, 0x81, 0x80, 0x80, 0x28, 0x00, 0x08, 0xff, 0x81, 0x80, 0x28
+          /*0580*/ 	.byte	0x08, 0x81, 0x80, 0x80, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff
+          /*0590*/ 	.byte	0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x58, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*05a0*/ 	.dword	_Z4test6float4PS_
+          /*05a8*/ 	.byte	0x80, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x04, 0x00, 0x00, 0x00, 0x04, 0x00, 0x00
+          /*05b8*/ 	.byte	0x00, 0x00, 0x0c, 0x81, 0x80, 0x80, 0x28, 0x00, 0x04, 0x14, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00
+  
+  
+// --------------------- .nv.info                         --------------------------
+	.section	.nv.info,"",@"SHT_CUDA_INFO"
+	.__section_name         0x29 	// offset in .shstrtab
+	.__section_type         1879048192
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x15f8 	// maybe updated by assembler
+	.__section_size         0x21c 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x0
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  
+  
+  	//----- nvinfo : EIATTR_REGCOUNT
+  	.align		4
+          /*0000*/ 	.byte	0x04, 0x2f
+          /*0002*/ 	.short	(.L_21 - .L_20)
+  	.align		4
+  .L_20:
+          /*0004*/ 	.word	index@(_Z4test6float4PS_)
+          /*0008*/ 	.word	0x0000000a
+  
+  
+  	//----- nvinfo : EIATTR_MAX_STACK_SIZE
+  	.align		4
+  .L_21:
+          /*000c*/ 	.byte	0x04, 0x23
+          /*000e*/ 	.short	(.L_23 - .L_22)
+  	.align		4
+  .L_22:
+          /*0010*/ 	.word	index@(_Z4test6float4PS_)
+          /*0014*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MIN_STACK_SIZE
+  	.align		4
+  .L_23:
+          /*0018*/ 	.byte	0x04, 0x12
+          /*001a*/ 	.short	(.L_25 - .L_24)
+  	.align		4
+  .L_24:
+          /*001c*/ 	.word	index@(_Z4test6float4PS_)
+          /*0020*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_FRAME_SIZE
+  	.align		4
+  .L_25:
+          /*0024*/ 	.byte	0x04, 0x11
+          /*0026*/ 	.short	(.L_27 - .L_26)
+  	.align		4
+  .L_26:
+          /*0028*/ 	.word	index@(_Z4test6float4PS_)
+          /*002c*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_REGCOUNT
+  	.align		4
+  .L_27:
+          /*0030*/ 	.byte	0x04, 0x2f
+          /*0032*/ 	.short	(.L_29 - .L_28)
+  	.align		4
+  .L_28:
+          /*0034*/ 	.word	index@(_Z10local_testiiPi)
+          /*0038*/ 	.word	0x0000000d
+  
+  
+  	//----- nvinfo : EIATTR_MAX_STACK_SIZE
+  	.align		4
+  .L_29:
+          /*003c*/ 	.byte	0x04, 0x23
+          /*003e*/ 	.short	(.L_31 - .L_30)
+  	.align		4
+  .L_30:
+          /*0040*/ 	.word	index@(_Z10local_testiiPi)
+          /*0044*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MIN_STACK_SIZE
+  	.align		4
+  .L_31:
+          /*0048*/ 	.byte	0x04, 0x12
+          /*004a*/ 	.short	(.L_33 - .L_32)
+  	.align		4
+  .L_32:
+          /*004c*/ 	.word	index@(_Z10local_testiiPi)
+          /*0050*/ 	.word	0x00000048
+  
+  
+  	//----- nvinfo : EIATTR_FRAME_SIZE
+  	.align		4
+  .L_33:
+          /*0054*/ 	.byte	0x04, 0x11
+          /*0056*/ 	.short	(.L_35 - .L_34)
+  	.align		4
+  .L_34:
+          /*0058*/ 	.word	index@(_Z10local_testiiPi)
+          /*005c*/ 	.word	0x00000048
+  
+  
+  	//----- nvinfo : EIATTR_REGCOUNT
+  	.align		4
+  .L_35:
+          /*0060*/ 	.byte	0x04, 0x2f
+          /*0062*/ 	.short	(.L_37 - .L_36)
+  	.align		4
+  .L_36:
+          /*0064*/ 	.word	index@(_Z5childPii)
+          /*0068*/ 	.word	0x0000000e
+  
+  
+  	//----- nvinfo : EIATTR_MAX_STACK_SIZE
+  	.align		4
+  .L_37:
+          /*006c*/ 	.byte	0x04, 0x23
+          /*006e*/ 	.short	(.L_39 - .L_38)
+  	.align		4
+  .L_38:
+          /*0070*/ 	.word	index@(_Z5childPii)
+          /*0074*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MIN_STACK_SIZE
+  	.align		4
+  .L_39:
+          /*0078*/ 	.byte	0x04, 0x12
+          /*007a*/ 	.short	(.L_41 - .L_40)
+  	.align		4
+  .L_40:
+          /*007c*/ 	.word	index@(_Z5childPii)
+          /*0080*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_FRAME_SIZE
+  	.align		4
+  .L_41:
+          /*0084*/ 	.byte	0x04, 0x11
+          /*0086*/ 	.short	(.L_43 - .L_42)
+  	.align		4
+  .L_42:
+          /*0088*/ 	.word	index@(_Z5childPii)
+          /*008c*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_REGCOUNT
+  	.align		4
+  .L_43:
+          /*0090*/ 	.byte	0x04, 0x2f
+          /*0092*/ 	.short	(.L_45 - .L_44)
+  	.align		4
+  .L_44:
+          /*0094*/ 	.word	index@(_Z11nvinfo_testiiPi)
+          /*0098*/ 	.word	0x0000000a
+  
+  
+  	//----- nvinfo : EIATTR_MAX_STACK_SIZE
+  	.align		4
+  .L_45:
+          /*009c*/ 	.byte	0x04, 0x23
+          /*009e*/ 	.short	(.L_47 - .L_46)
+  	.align		4
+  .L_46:
+          /*00a0*/ 	.word	index@(_Z11nvinfo_testiiPi)
+          /*00a4*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MIN_STACK_SIZE
+  	.align		4
+  .L_47:
+          /*00a8*/ 	.byte	0x04, 0x12
+          /*00aa*/ 	.short	(.L_49 - .L_48)
+  	.align		4
+  .L_48:
+          /*00ac*/ 	.word	index@(_Z11nvinfo_testiiPi)
+          /*00b0*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_FRAME_SIZE
+  	.align		4
+  .L_49:
+          /*00b4*/ 	.byte	0x04, 0x11
+          /*00b6*/ 	.short	(.L_51 - .L_50)
+  	.align		4
+  .L_50:
+          /*00b8*/ 	.word	index@(_Z11nvinfo_testiiPi)
+          /*00bc*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_REGCOUNT
+  	.align		4
+  .L_51:
+          /*00c0*/ 	.byte	0x04, 0x2f
+          /*00c2*/ 	.short	(.L_53 - .L_52)
+  	.align		4
+  .L_52:
+          /*00c4*/ 	.word	index@(_Z11shared_testfPf)
+          /*00c8*/ 	.word	0x0000000c
+  
+  
+  	//----- nvinfo : EIATTR_MAX_STACK_SIZE
+  	.align		4
+  .L_53:
+          /*00cc*/ 	.byte	0x04, 0x23
+          /*00ce*/ 	.short	(.L_55 - .L_54)
+  	.align		4
+  .L_54:
+          /*00d0*/ 	.word	index@(_Z11shared_testfPf)
+          /*00d4*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MIN_STACK_SIZE
+  	.align		4
+  .L_55:
+          /*00d8*/ 	.byte	0x04, 0x12
+          /*00da*/ 	.short	(.L_57 - .L_56)
+  	.align		4
+  .L_56:
+          /*00dc*/ 	.word	index@(_Z11shared_testfPf)
+          /*00e0*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_FRAME_SIZE
+  	.align		4
+  .L_57:
+          /*00e4*/ 	.byte	0x04, 0x11
+          /*00e6*/ 	.short	(.L_59 - .L_58)
+  	.align		4
+  .L_58:
+          /*00e8*/ 	.word	index@(_Z11shared_testfPf)
+          /*00ec*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_REGCOUNT
+  	.align		4
+  .L_59:
+          /*00f0*/ 	.byte	0x04, 0x2f
+          /*00f2*/ 	.short	(.L_61 - .L_60)
+  	.align		4
+  .L_60:
+          /*00f4*/ 	.word	index@(_Z7argtestPiS_S_)
+          /*00f8*/ 	.word	0x00000018
+  
+  
+  	//----- nvinfo : EIATTR_MAX_STACK_SIZE
+  	.align		4
+  .L_61:
+          /*00fc*/ 	.byte	0x04, 0x23
+          /*00fe*/ 	.short	(.L_63 - .L_62)
+  	.align		4
+  .L_62:
+          /*0100*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f7ii)
+          /*0104*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MIN_STACK_SIZE
+  	.align		4
+  .L_63:
+          /*0108*/ 	.byte	0x04, 0x12
+          /*010a*/ 	.short	(.L_65 - .L_64)
+  	.align		4
+  .L_64:
+          /*010c*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f7ii)
+          /*0110*/ 	.word	0x00000008
+  
+  
+  	//----- nvinfo : EIATTR_FRAME_SIZE
+  	.align		4
+  .L_65:
+          /*0114*/ 	.byte	0x04, 0x11
+          /*0116*/ 	.short	(.L_67 - .L_66)
+  	.align		4
+  .L_66:
+          /*0118*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f7ii)
+          /*011c*/ 	.word	0x00000008
+  
+  
+  	//----- nvinfo : EIATTR_MAX_STACK_SIZE
+  	.align		4
+  .L_67:
+          /*0120*/ 	.byte	0x04, 0x23
+          /*0122*/ 	.short	(.L_69 - .L_68)
+  	.align		4
+  .L_68:
+          /*0124*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f6ii)
+          /*0128*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MIN_STACK_SIZE
+  	.align		4
+  .L_69:
+          /*012c*/ 	.byte	0x04, 0x12
+          /*012e*/ 	.short	(.L_71 - .L_70)
+  	.align		4
+  .L_70:
+          /*0130*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f6ii)
+          /*0134*/ 	.word	0x00000008
+  
+  
+  	//----- nvinfo : EIATTR_FRAME_SIZE
+  	.align		4
+  .L_71:
+          /*0138*/ 	.byte	0x04, 0x11
+          /*013a*/ 	.short	(.L_73 - .L_72)
+  	.align		4
+  .L_72:
+          /*013c*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f6ii)
+          /*0140*/ 	.word	0x00000008
+  
+  
+  	//----- nvinfo : EIATTR_MAX_STACK_SIZE
+  	.align		4
+  .L_73:
+          /*0144*/ 	.byte	0x04, 0x23
+          /*0146*/ 	.short	(.L_75 - .L_74)
+  	.align		4
+  .L_74:
+          /*0148*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f5ii)
+          /*014c*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MIN_STACK_SIZE
+  	.align		4
+  .L_75:
+          /*0150*/ 	.byte	0x04, 0x12
+          /*0152*/ 	.short	(.L_77 - .L_76)
+  	.align		4
+  .L_76:
+          /*0154*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f5ii)
+          /*0158*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_FRAME_SIZE
+  	.align		4
+  .L_77:
+          /*015c*/ 	.byte	0x04, 0x11
+          /*015e*/ 	.short	(.L_79 - .L_78)
+  	.align		4
+  .L_78:
+          /*0160*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f5ii)
+          /*0164*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MAX_STACK_SIZE
+  	.align		4
+  .L_79:
+          /*0168*/ 	.byte	0x04, 0x23
+          /*016a*/ 	.short	(.L_81 - .L_80)
+  	.align		4
+  .L_80:
+          /*016c*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f4ii)
+          /*0170*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MIN_STACK_SIZE
+  	.align		4
+  .L_81:
+          /*0174*/ 	.byte	0x04, 0x12
+          /*0176*/ 	.short	(.L_83 - .L_82)
+  	.align		4
+  .L_82:
+          /*0178*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f4ii)
+          /*017c*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_FRAME_SIZE
+  	.align		4
+  .L_83:
+          /*0180*/ 	.byte	0x04, 0x11
+          /*0182*/ 	.short	(.L_85 - .L_84)
+  	.align		4
+  .L_84:
+          /*0184*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f4ii)
+          /*0188*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MAX_STACK_SIZE
+  	.align		4
+  .L_85:
+          /*018c*/ 	.byte	0x04, 0x23
+          /*018e*/ 	.short	(.L_87 - .L_86)
+  	.align		4
+  .L_86:
+          /*0190*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f3ii)
+          /*0194*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MIN_STACK_SIZE
+  	.align		4
+  .L_87:
+          /*0198*/ 	.byte	0x04, 0x12
+          /*019a*/ 	.short	(.L_89 - .L_88)
+  	.align		4
+  .L_88:
+          /*019c*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f3ii)
+          /*01a0*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_FRAME_SIZE
+  	.align		4
+  .L_89:
+          /*01a4*/ 	.byte	0x04, 0x11
+          /*01a6*/ 	.short	(.L_91 - .L_90)
+  	.align		4
+  .L_90:
+          /*01a8*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f3ii)
+          /*01ac*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MAX_STACK_SIZE
+  	.align		4
+  .L_91:
+          /*01b0*/ 	.byte	0x04, 0x23
+          /*01b2*/ 	.short	(.L_93 - .L_92)
+  	.align		4
+  .L_92:
+          /*01b4*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f2ii)
+          /*01b8*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MIN_STACK_SIZE
+  	.align		4
+  .L_93:
+          /*01bc*/ 	.byte	0x04, 0x12
+          /*01be*/ 	.short	(.L_95 - .L_94)
+  	.align		4
+  .L_94:
+          /*01c0*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f2ii)
+          /*01c4*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_FRAME_SIZE
+  	.align		4
+  .L_95:
+          /*01c8*/ 	.byte	0x04, 0x11
+          /*01ca*/ 	.short	(.L_97 - .L_96)
+  	.align		4
+  .L_96:
+          /*01cc*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f2ii)
+          /*01d0*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MAX_STACK_SIZE
+  	.align		4
+  .L_97:
+          /*01d4*/ 	.byte	0x04, 0x23
+          /*01d6*/ 	.short	(.L_99 - .L_98)
+  	.align		4
+  .L_98:
+          /*01d8*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f1ii)
+          /*01dc*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MIN_STACK_SIZE
+  	.align		4
+  .L_99:
+          /*01e0*/ 	.byte	0x04, 0x12
+          /*01e2*/ 	.short	(.L_101 - .L_100)
+  	.align		4
+  .L_100:
+          /*01e4*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f1ii)
+          /*01e8*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_FRAME_SIZE
+  	.align		4
+  .L_101:
+          /*01ec*/ 	.byte	0x04, 0x11
+          /*01ee*/ 	.short	(.L_103 - .L_102)
+  	.align		4
+  .L_102:
+          /*01f0*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f1ii)
+          /*01f4*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MAX_STACK_SIZE
+  	.align		4
+  .L_103:
+          /*01f8*/ 	.byte	0x04, 0x23
+          /*01fa*/ 	.short	(.L_105 - .L_104)
+  	.align		4
+  .L_104:
+          /*01fc*/ 	.word	index@(_Z7argtestPiS_S_)
+          /*0200*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MIN_STACK_SIZE
+  	.align		4
+  .L_105:
+          /*0204*/ 	.byte	0x04, 0x12
+          /*0206*/ 	.short	(.L_107 - .L_106)
+  	.align		4
+  .L_106:
+          /*0208*/ 	.word	index@(_Z7argtestPiS_S_)
+          /*020c*/ 	.word	0x00000030
+  
+  
+  	//----- nvinfo : EIATTR_FRAME_SIZE
+  	.align		4
+  .L_107:
+          /*0210*/ 	.byte	0x04, 0x11
+          /*0212*/ 	.short	(.L_109 - .L_108)
+  	.align		4
+  .L_108:
+          /*0214*/ 	.word	index@(_Z7argtestPiS_S_)
+          /*0218*/ 	.word	0x00000028
+  .L_109:
+  
+  
+// --------------------- .nv.info._Z7argtestPiS_S_        --------------------------
+	.section	.nv.info._Z7argtestPiS_S_,"",@"SHT_CUDA_INFO"
+	.__section_name         0x49 	// offset in .shstrtab
+	.__section_type         1879048192
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x1814 	// maybe updated by assembler
+	.__section_size         0x78 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x1a
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  
+  
+  	//----- nvinfo : EIATTR_SW_WAR
+  	.align		4
+          /*0000*/ 	.byte	0x04, 0x36
+          /*0002*/ 	.short	(.L_111 - .L_110)
+  .L_110:
+          /*0004*/ 	.word	0x00000001
+  
+  
+  	//----- nvinfo : EIATTR_CUDA_API_VERSION
+  	.align		4
+  .L_111:
+          /*0008*/ 	.byte	0x04, 0x37
+          /*000a*/ 	.short	(.L_113 - .L_112)
+  .L_112:
+          /*000c*/ 	.word	0x0000006f
+  
+  
+  	//----- nvinfo : EIATTR_PARAM_CBANK
+  	.align		4
+  .L_113:
+          /*0010*/ 	.byte	0x04, 0x0a
+          /*0012*/ 	.short	(.L_115 - .L_114)
+  	.align		4
+  .L_114:
+          /*0014*/ 	.word	index@(.nv.constant0._Z7argtestPiS_S_)
+          /*0018*/ 	.short	0x0160
+          /*001a*/ 	.short	0x0018
+  
+  
+  	//----- nvinfo : EIATTR_CBANK_PARAM_SIZE
+  	.align		4
+  .L_115:
+          /*001c*/ 	.byte	0x03, 0x19
+          /*001e*/ 	.short	0x0018
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+          /*0020*/ 	.byte	0x04, 0x17
+          /*0022*/ 	.short	(.L_117 - .L_116)
+  .L_116:
+          /*0024*/ 	.word	0x00000000
+          /*0028*/ 	.short	0x0002
+          /*002a*/ 	.short	0x0010
+          /*002c*/ 	.byte	0x00, 0xf0, 0x21, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+  .L_117:
+          /*0030*/ 	.byte	0x04, 0x17
+          /*0032*/ 	.short	(.L_119 - .L_118)
+  .L_118:
+          /*0034*/ 	.word	0x00000000
+          /*0038*/ 	.short	0x0001
+          /*003a*/ 	.short	0x0008
+          /*003c*/ 	.byte	0x00, 0xf0, 0x21, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+  .L_119:
+          /*0040*/ 	.byte	0x04, 0x17
+          /*0042*/ 	.short	(.L_121 - .L_120)
+  .L_120:
+          /*0044*/ 	.word	0x00000000
+          /*0048*/ 	.short	0x0000
+          /*004a*/ 	.short	0x0000
+          /*004c*/ 	.byte	0x00, 0xf0, 0x21, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_MAXREG_COUNT
+  	.align		4
+  .L_121:
+          /*0050*/ 	.byte	0x03, 0x1b
+          /*0052*/ 	.short	0x00ff
+  
+  
+  	//----- nvinfo : EIATTR_BINDLESS_SURFACE_BANK
+  	.align		4
+          /*0054*/ 	.byte	0x02, 0x16
+  	.zero		1
+  	.zero		1
+  
+  
+  	//----- nvinfo : EIATTR_BINDLESS_TEXTURE_BANK
+  	.align		4
+          /*0058*/ 	.byte	0x02, 0x15
+  	.zero		1
+  	.zero		1
+  
+  
+  	//----- nvinfo : EIATTR_EXTERNS
+  	.align		4
+          /*005c*/ 	.byte	0x04, 0x0f
+          /*005e*/ 	.short	(.L_123 - .L_122)
+  
+  
+  	//   ....[0]....
+  	.align		4
+  .L_122:
+          /*0060*/ 	.word	index@(vprintf)
+  
+  
+  	//----- nvinfo : EIATTR_EXIT_INSTR_OFFSETS
+  	.align		4
+  .L_123:
+          /*0064*/ 	.byte	0x04, 0x1c
+          /*0066*/ 	.short	(.L_125 - .L_124)
+  
+  
+  	//   ....[0]....
+  .L_124:
+          /*0068*/ 	.word	0x00000850
+  
+  
+  	//   ....[1]....
+          /*006c*/ 	.word	0x00000930
+  
+  
+  	//----- nvinfo : EIATTR_CRS_STACK_SIZE
+  	.align		4
+  .L_125:
+          /*0070*/ 	.byte	0x04, 0x1e
+          /*0072*/ 	.short	(.L_127 - .L_126)
+  .L_126:
+          /*0074*/ 	.word	0x00000000
+  .L_127:
+  
+  
+// --------------------- .nv.info._Z11shared_testfPf      --------------------------
+	.section	.nv.info._Z11shared_testfPf,"",@"SHT_CUDA_INFO"
+	.__section_name         0x136 	// offset in .shstrtab
+	.__section_type         1879048192
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x188c 	// maybe updated by assembler
+	.__section_size         0x4c 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x1b
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  
+  
+  	//----- nvinfo : EIATTR_SW_WAR
+  	.align		4
+          /*0000*/ 	.byte	0x04, 0x36
+          /*0002*/ 	.short	(.L_129 - .L_128)
+  .L_128:
+          /*0004*/ 	.word	0x00000001
+  
+  
+  	//----- nvinfo : EIATTR_CUDA_API_VERSION
+  	.align		4
+  .L_129:
+          /*0008*/ 	.byte	0x04, 0x37
+          /*000a*/ 	.short	(.L_131 - .L_130)
+  .L_130:
+          /*000c*/ 	.word	0x0000006f
+  
+  
+  	//----- nvinfo : EIATTR_PARAM_CBANK
+  	.align		4
+  .L_131:
+          /*0010*/ 	.byte	0x04, 0x0a
+          /*0012*/ 	.short	(.L_133 - .L_132)
+  	.align		4
+  .L_132:
+          /*0014*/ 	.word	index@(.nv.constant0._Z11shared_testfPf)
+          /*0018*/ 	.short	0x0160
+          /*001a*/ 	.short	0x0010
+  
+  
+  	//----- nvinfo : EIATTR_CBANK_PARAM_SIZE
+  	.align		4
+  .L_133:
+          /*001c*/ 	.byte	0x03, 0x19
+          /*001e*/ 	.short	0x0010
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+          /*0020*/ 	.byte	0x04, 0x17
+          /*0022*/ 	.short	(.L_135 - .L_134)
+  .L_134:
+          /*0024*/ 	.word	0x00000000
+          /*0028*/ 	.short	0x0001
+          /*002a*/ 	.short	0x0008
+          /*002c*/ 	.byte	0x00, 0xf0, 0x21, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+  .L_135:
+          /*0030*/ 	.byte	0x04, 0x17
+          /*0032*/ 	.short	(.L_137 - .L_136)
+  .L_136:
+          /*0034*/ 	.word	0x00000000
+          /*0038*/ 	.short	0x0000
+          /*003a*/ 	.short	0x0000
+          /*003c*/ 	.byte	0x00, 0xf0, 0x11, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_MAXREG_COUNT
+  	.align		4
+  .L_137:
+          /*0040*/ 	.byte	0x03, 0x1b
+          /*0042*/ 	.short	0x00ff
+  
+  
+  	//----- nvinfo : EIATTR_EXIT_INSTR_OFFSETS
+  	.align		4
+          /*0044*/ 	.byte	0x04, 0x1c
+          /*0046*/ 	.short	(.L_139 - .L_138)
+  
+  
+  	//   ....[0]....
+  .L_138:
+          /*0048*/ 	.word	0x00000170
+  .L_139:
+  
+  
+// --------------------- .nv.info._Z11nvinfo_testiiPi     --------------------------
+	.section	.nv.info._Z11nvinfo_testiiPi,"",@"SHT_CUDA_INFO"
+	.__section_name         0x1ab 	// offset in .shstrtab
+	.__section_type         1879048192
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x18d8 	// maybe updated by assembler
+	.__section_size         0x60 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x1c
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  
+  
+  	//----- nvinfo : EIATTR_SW_WAR
+  	.align		4
+          /*0000*/ 	.byte	0x04, 0x36
+          /*0002*/ 	.short	(.L_141 - .L_140)
+  .L_140:
+          /*0004*/ 	.word	0x00000001
+  
+  
+  	//----- nvinfo : EIATTR_CUDA_API_VERSION
+  	.align		4
+  .L_141:
+          /*0008*/ 	.byte	0x04, 0x37
+          /*000a*/ 	.short	(.L_143 - .L_142)
+  .L_142:
+          /*000c*/ 	.word	0x0000006f
+  
+  
+  	//----- nvinfo : EIATTR_PARAM_CBANK
+  	.align		4
+  .L_143:
+          /*0010*/ 	.byte	0x04, 0x0a
+          /*0012*/ 	.short	(.L_145 - .L_144)
+  	.align		4
+  .L_144:
+          /*0014*/ 	.word	index@(.nv.constant0._Z11nvinfo_testiiPi)
+          /*0018*/ 	.short	0x0160
+          /*001a*/ 	.short	0x0010
+  
+  
+  	//----- nvinfo : EIATTR_CBANK_PARAM_SIZE
+  	.align		4
+  .L_145:
+          /*001c*/ 	.byte	0x03, 0x19
+          /*001e*/ 	.short	0x0010
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+          /*0020*/ 	.byte	0x04, 0x17
+          /*0022*/ 	.short	(.L_147 - .L_146)
+  .L_146:
+          /*0024*/ 	.word	0x00000000
+          /*0028*/ 	.short	0x0002
+          /*002a*/ 	.short	0x0008
+          /*002c*/ 	.byte	0x00, 0xf0, 0x21, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+  .L_147:
+          /*0030*/ 	.byte	0x04, 0x17
+          /*0032*/ 	.short	(.L_149 - .L_148)
+  .L_148:
+          /*0034*/ 	.word	0x00000000
+          /*0038*/ 	.short	0x0001
+          /*003a*/ 	.short	0x0004
+          /*003c*/ 	.byte	0x00, 0xf0, 0x11, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+  .L_149:
+          /*0040*/ 	.byte	0x04, 0x17
+          /*0042*/ 	.short	(.L_151 - .L_150)
+  .L_150:
+          /*0044*/ 	.word	0x00000000
+          /*0048*/ 	.short	0x0000
+          /*004a*/ 	.short	0x0000
+          /*004c*/ 	.byte	0x00, 0xf0, 0x11, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_MAXREG_COUNT
+  	.align		4
+  .L_151:
+          /*0050*/ 	.byte	0x03, 0x1b
+          /*0052*/ 	.short	0x00ff
+  
+  
+  	//----- nvinfo : EIATTR_EXIT_INSTR_OFFSETS
+  	.align		4
+          /*0054*/ 	.byte	0x04, 0x1c
+          /*0056*/ 	.short	(.L_153 - .L_152)
+  
+  
+  	//   ....[0]....
+  .L_152:
+          /*0058*/ 	.word	0x000000c0
+  
+  
+  	//----- nvinfo : EIATTR_CTAIDZ_USED
+  	.align		4
+  .L_153:
+          /*005c*/ 	.byte	0x01, 0x04
+  	.zero		2
+  
+  
+// --------------------- .nv.info._Z5childPii             --------------------------
+	.section	.nv.info._Z5childPii,"",@"SHT_CUDA_INFO"
+	.__section_name         0x21b 	// offset in .shstrtab
+	.__section_type         1879048192
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x1938 	// maybe updated by assembler
+	.__section_size         0x4c 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x1d
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  
+  
+  	//----- nvinfo : EIATTR_SW_WAR
+  	.align		4
+          /*0000*/ 	.byte	0x04, 0x36
+          /*0002*/ 	.short	(.L_155 - .L_154)
+  .L_154:
+          /*0004*/ 	.word	0x00000001
+  
+  
+  	//----- nvinfo : EIATTR_CUDA_API_VERSION
+  	.align		4
+  .L_155:
+          /*0008*/ 	.byte	0x04, 0x37
+          /*000a*/ 	.short	(.L_157 - .L_156)
+  .L_156:
+          /*000c*/ 	.word	0x0000006f
+  
+  
+  	//----- nvinfo : EIATTR_PARAM_CBANK
+  	.align		4
+  .L_157:
+          /*0010*/ 	.byte	0x04, 0x0a
+          /*0012*/ 	.short	(.L_159 - .L_158)
+  	.align		4
+  .L_158:
+          /*0014*/ 	.word	index@(.nv.constant0._Z5childPii)
+          /*0018*/ 	.short	0x0160
+          /*001a*/ 	.short	0x000c
+  
+  
+  	//----- nvinfo : EIATTR_CBANK_PARAM_SIZE
+  	.align		4
+  .L_159:
+          /*001c*/ 	.byte	0x03, 0x19
+          /*001e*/ 	.short	0x000c
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+          /*0020*/ 	.byte	0x04, 0x17
+          /*0022*/ 	.short	(.L_161 - .L_160)
+  .L_160:
+          /*0024*/ 	.word	0x00000000
+          /*0028*/ 	.short	0x0001
+          /*002a*/ 	.short	0x0008
+          /*002c*/ 	.byte	0x00, 0xf0, 0x11, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+  .L_161:
+          /*0030*/ 	.byte	0x04, 0x17
+          /*0032*/ 	.short	(.L_163 - .L_162)
+  .L_162:
+          /*0034*/ 	.word	0x00000000
+          /*0038*/ 	.short	0x0000
+          /*003a*/ 	.short	0x0000
+          /*003c*/ 	.byte	0x00, 0xf0, 0x21, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_MAXREG_COUNT
+  	.align		4
+  .L_163:
+          /*0040*/ 	.byte	0x03, 0x1b
+          /*0042*/ 	.short	0x00ff
+  
+  
+  	//----- nvinfo : EIATTR_EXIT_INSTR_OFFSETS
+  	.align		4
+          /*0044*/ 	.byte	0x04, 0x1c
+          /*0046*/ 	.short	(.L_165 - .L_164)
+  
+  
+  	//   ....[0]....
+  .L_164:
+          /*0048*/ 	.word	0x00000230
+  .L_165:
+  
+  
+// --------------------- .nv.info._Z10local_testiiPi      --------------------------
+	.section	.nv.info._Z10local_testiiPi,"",@"SHT_CUDA_INFO"
+	.__section_name         0x290 	// offset in .shstrtab
+	.__section_type         1879048192
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x1984 	// maybe updated by assembler
+	.__section_size         0x5c 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x1e
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  
+  
+  	//----- nvinfo : EIATTR_SW_WAR
+  	.align		4
+          /*0000*/ 	.byte	0x04, 0x36
+          /*0002*/ 	.short	(.L_167 - .L_166)
+  .L_166:
+          /*0004*/ 	.word	0x00000001
+  
+  
+  	//----- nvinfo : EIATTR_CUDA_API_VERSION
+  	.align		4
+  .L_167:
+          /*0008*/ 	.byte	0x04, 0x37
+          /*000a*/ 	.short	(.L_169 - .L_168)
+  .L_168:
+          /*000c*/ 	.word	0x0000006f
+  
+  
+  	//----- nvinfo : EIATTR_PARAM_CBANK
+  	.align		4
+  .L_169:
+          /*0010*/ 	.byte	0x04, 0x0a
+          /*0012*/ 	.short	(.L_171 - .L_170)
+  	.align		4
+  .L_170:
+          /*0014*/ 	.word	index@(.nv.constant0._Z10local_testiiPi)
+          /*0018*/ 	.short	0x0160
+          /*001a*/ 	.short	0x0010
+  
+  
+  	//----- nvinfo : EIATTR_CBANK_PARAM_SIZE
+  	.align		4
+  .L_171:
+          /*001c*/ 	.byte	0x03, 0x19
+          /*001e*/ 	.short	0x0010
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+          /*0020*/ 	.byte	0x04, 0x17
+          /*0022*/ 	.short	(.L_173 - .L_172)
+  .L_172:
+          /*0024*/ 	.word	0x00000000
+          /*0028*/ 	.short	0x0002
+          /*002a*/ 	.short	0x0008
+          /*002c*/ 	.byte	0x00, 0xf0, 0x21, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+  .L_173:
+          /*0030*/ 	.byte	0x04, 0x17
+          /*0032*/ 	.short	(.L_175 - .L_174)
+  .L_174:
+          /*0034*/ 	.word	0x00000000
+          /*0038*/ 	.short	0x0001
+          /*003a*/ 	.short	0x0004
+          /*003c*/ 	.byte	0x00, 0xf0, 0x11, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+  .L_175:
+          /*0040*/ 	.byte	0x04, 0x17
+          /*0042*/ 	.short	(.L_177 - .L_176)
+  .L_176:
+          /*0044*/ 	.word	0x00000000
+          /*0048*/ 	.short	0x0000
+          /*004a*/ 	.short	0x0000
+          /*004c*/ 	.byte	0x00, 0xf0, 0x11, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_MAXREG_COUNT
+  	.align		4
+  .L_177:
+          /*0050*/ 	.byte	0x03, 0x1b
+          /*0052*/ 	.short	0x00ff
+  
+  
+  	//----- nvinfo : EIATTR_EXIT_INSTR_OFFSETS
+  	.align		4
+          /*0054*/ 	.byte	0x04, 0x1c
+          /*0056*/ 	.short	(.L_179 - .L_178)
+  
+  
+  	//   ....[0]....
+  .L_178:
+          /*0058*/ 	.word	0x00000160
+  .L_179:
+  
+  
+// --------------------- .nv.info._Z4test6float4PS_       --------------------------
+	.section	.nv.info._Z4test6float4PS_,"",@"SHT_CUDA_INFO"
+	.__section_name         0x303 	// offset in .shstrtab
+	.__section_type         1879048192
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x19e0 	// maybe updated by assembler
+	.__section_size         0x4c 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x1f
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  
+  
+  	//----- nvinfo : EIATTR_SW_WAR
+  	.align		4
+          /*0000*/ 	.byte	0x04, 0x36
+          /*0002*/ 	.short	(.L_181 - .L_180)
+  .L_180:
+          /*0004*/ 	.word	0x00000001
+  
+  
+  	//----- nvinfo : EIATTR_CUDA_API_VERSION
+  	.align		4
+  .L_181:
+          /*0008*/ 	.byte	0x04, 0x37
+          /*000a*/ 	.short	(.L_183 - .L_182)
+  .L_182:
+          /*000c*/ 	.word	0x0000006f
+  
+  
+  	//----- nvinfo : EIATTR_PARAM_CBANK
+  	.align		4
+  .L_183:
+          /*0010*/ 	.byte	0x04, 0x0a
+          /*0012*/ 	.short	(.L_185 - .L_184)
+  	.align		4
+  .L_184:
+          /*0014*/ 	.word	index@(.nv.constant0._Z4test6float4PS_)
+          /*0018*/ 	.short	0x0160
+          /*001a*/ 	.short	0x0018
+  
+  
+  	//----- nvinfo : EIATTR_CBANK_PARAM_SIZE
+  	.align		4
+  .L_185:
+          /*001c*/ 	.byte	0x03, 0x19
+          /*001e*/ 	.short	0x0018
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+          /*0020*/ 	.byte	0x04, 0x17
+          /*0022*/ 	.short	(.L_187 - .L_186)
+  .L_186:
+          /*0024*/ 	.word	0x00000000
+          /*0028*/ 	.short	0x0001
+          /*002a*/ 	.short	0x0010
+          /*002c*/ 	.byte	0x00, 0xf0, 0x21, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+  .L_187:
+          /*0030*/ 	.byte	0x04, 0x17
+          /*0032*/ 	.short	(.L_189 - .L_188)
+  .L_188:
+          /*0034*/ 	.word	0x00000000
+          /*0038*/ 	.short	0x0000
+          /*003a*/ 	.short	0x0000
+          /*003c*/ 	.byte	0x00, 0xf0, 0x41, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_MAXREG_COUNT
+  	.align		4
+  .L_189:
+          /*0040*/ 	.byte	0x03, 0x1b
+          /*0042*/ 	.short	0x00ff
+  
+  
+  	//----- nvinfo : EIATTR_EXIT_INSTR_OFFSETS
+  	.align		4
+          /*0044*/ 	.byte	0x04, 0x1c
+          /*0046*/ 	.short	(.L_191 - .L_190)
+  
+  
+  	//   ....[0]....
+  .L_190:
+          /*0048*/ 	.word	0x00000460
+  .L_191:
+  
+  
+// --------------------- .nv.rel.action                   --------------------------
+	.section	.nv.rel.action,"",@"SHT_CUDA_RELOCINFO"
+	.__section_name         0x409 	// offset in .shstrtab
+	.__section_type         1879048203
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x1a30 	// maybe updated by assembler
+	.__section_size         0xd0 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x0
+	.__section_entsize      8
+	.align                8 	// equivalent to set sh_addralign
+  	.align	8
+  	.sectionentsize	8
+          /*0000*/ 	.byte	0x4b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x02, 0x08, 0x10, 0x0a, 0x2f, 0x22
+          /*0010*/ 	.byte	0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0020*/ 	.byte	0x00, 0x00, 0x10, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0030*/ 	.byte	0x00, 0x00, 0x20, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x28, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0040*/ 	.byte	0x00, 0x00, 0x30, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x38, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0050*/ 	.byte	0x01, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x08, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0060*/ 	.byte	0x01, 0x00, 0x10, 0x08, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x18, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0070*/ 	.byte	0x01, 0x00, 0x20, 0x08, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x28, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0080*/ 	.byte	0x01, 0x00, 0x30, 0x08, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x38, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0090*/ 	.byte	0x02, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x08, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*00a0*/ 	.byte	0x02, 0x00, 0x10, 0x08, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x18, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*00b0*/ 	.byte	0x02, 0x00, 0x20, 0x08, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x28, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*00c0*/ 	.byte	0x02, 0x00, 0x30, 0x08, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x38, 0x08, 0x00, 0x00, 0x00, 0x00
+  
+  
+// --------------------- .rel.text._Z7argtestPiS_S_       --------------------------
+	.section  ".rel.text._Z7argtestPiS_S_", 0, SHT_REL
+	// all relocation sections will be dynamically generated by assembler 
+	// but most of the section header will be kept as is.
+	.__section_name         0xc7 	// offset in .shstrtab
+	.__section_type         SHT_REL
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x1b00 	// maybe updated by assembler
+	.__section_size         0x70 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x1a
+	.__section_entsize      16
+	.align                8 	// equivalent to set sh_addralign
+    // Relocation[0] : vprintf, Container({'r_offset': 2336, 'r_info': 171798691898, 'r_info_sym': 40, 'r_info_type': 58})
+    // Relocation[1] : $str, Container({'r_offset': 2208, 'r_info': 47244640313, 'r_info_sym': 11, 'r_info_type': 57})
+    // Relocation[2] : $str, Container({'r_offset': 2176, 'r_info': 47244640312, 'r_info_sym': 11, 'r_info_type': 56})
+    // Relocation[3] : __cudart_i2opi_f, Container({'r_offset': 592, 'r_info': 51539607609, 'r_info_sym': 12, 'r_info_type': 57})
+    // Relocation[4] : __cudart_i2opi_f, Container({'r_offset': 560, 'r_info': 51539607608, 'r_info_sym': 12, 'r_info_type': 56})
+    // Relocation[5] : flist, Container({'r_offset': 80, 'r_info': 42949673017, 'r_info_sym': 10, 'r_info_type': 57})
+    // Relocation[6] : flist, Container({'r_offset': 64, 'r_info': 42949673016, 'r_info_sym': 10, 'r_info_type': 56})
+
+// --------------------- .rela.text._Z7argtestPiS_S_      --------------------------
+	.section  ".rela.text._Z7argtestPiS_S_", 0, SHT_RELA
+	// all relocation sections will be dynamically generated by assembler 
+	// but most of the section header will be kept as is.
+	.__section_name         0xe2 	// offset in .shstrtab
+	.__section_type         SHT_RELA
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x1b70 	// maybe updated by assembler
+	.__section_size         0x30 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x1a
+	.__section_entsize      24
+	.align                8 	// equivalent to set sh_addralign
+    // Relocation[0] : _Z7argtestPiS_S_, Container({'r_offset': 2288, 'r_info': 150323855417, 'r_info_sym': 35, 'r_info_type': 57, 'r_addend': 2352})
+    // Relocation[1] : _Z7argtestPiS_S_, Container({'r_offset': 2240, 'r_info': 150323855416, 'r_info_sym': 35, 'r_info_type': 56, 'r_addend': 2352})
+
+// --------------------- .rel.text._Z5childPii            --------------------------
+	.section  ".rel.text._Z5childPii", 0, SHT_REL
+	// all relocation sections will be dynamically generated by assembler 
+	// but most of the section header will be kept as is.
+	.__section_name         0x247 	// offset in .shstrtab
+	.__section_type         SHT_REL
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x1ba0 	// maybe updated by assembler
+	.__section_size         0x40 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x1d
+	.__section_entsize      16
+	.align                8 	// equivalent to set sh_addralign
+    // Relocation[0] : GlobalC1, Container({'r_offset': 112, 'r_info': 30064771129, 'r_info_sym': 7, 'r_info_type': 57})
+    // Relocation[1] : GlobalC1, Container({'r_offset': 80, 'r_info': 30064771128, 'r_info_sym': 7, 'r_info_type': 56})
+    // Relocation[2] : GlobalC2, Container({'r_offset': 48, 'r_info': 34359738425, 'r_info_sym': 8, 'r_info_type': 57})
+    // Relocation[3] : GlobalC2, Container({'r_offset': 32, 'r_info': 34359738424, 'r_info_sym': 8, 'r_info_type': 56})
+
+// --------------------- .rel.nv.constant0._Z7argtestPiS_S_ --------------------------
+	.section  ".rel.nv.constant0._Z7argtestPiS_S_", 0, SHT_REL
+	// all relocation sections will be dynamically generated by assembler 
+	// but most of the section header will be kept as is.
+	.__section_name         0x3c3 	// offset in .shstrtab
+	.__section_type         SHT_REL
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x1be0 	// maybe updated by assembler
+	.__section_size         0x40 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x14
+	.__section_entsize      16
+	.align                8 	// equivalent to set sh_addralign
+    // Relocation[0] : outputSurfRef, Container({'r_offset': 388, 'r_info': 167503724596, 'r_info_sym': 39, 'r_info_type': 52})
+    // Relocation[1] : inputSurfRef, Container({'r_offset': 384, 'r_info': 163208757300, 'r_info_sym': 38, 'r_info_type': 52})
+    // Relocation[2] : texRef1d, Container({'r_offset': 380, 'r_info': 158913789958, 'r_info_sym': 37, 'r_info_type': 6})
+    // Relocation[3] : texRef2d, Container({'r_offset': 376, 'r_info': 154618822662, 'r_info_sym': 36, 'r_info_type': 6})
+
+// --------------------- .rel.debug_frame                 --------------------------
+	.section  ".rel.debug_frame", 0, SHT_REL
+	// all relocation sections will be dynamically generated by assembler 
+	// but most of the section header will be kept as is.
+	.__section_name         0x3e6 	// offset in .shstrtab
+	.__section_type         SHT_REL
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x1c20 	// maybe updated by assembler
+	.__section_size         0xd0 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x4
+	.__section_entsize      16
+	.align                8 	// equivalent to set sh_addralign
+    // Relocation[0] : _Z4test6float4PS_, Container({'r_offset': 1440, 'r_info': 193273528322, 'r_info_sym': 45, 'r_info_type': 2})
+    // Relocation[1] : _Z10local_testiiPi, Container({'r_offset': 1320, 'r_info': 188978561026, 'r_info_sym': 44, 'r_info_type': 2})
+    // Relocation[2] : _Z5childPii, Container({'r_offset': 1208, 'r_info': 184683593730, 'r_info_sym': 43, 'r_info_type': 2})
+    // Relocation[3] : _Z11nvinfo_testiiPi, Container({'r_offset': 1096, 'r_info': 180388626434, 'r_info_sym': 42, 'r_info_type': 2})
+    // Relocation[4] : _Z11shared_testfPf, Container({'r_offset': 984, 'r_info': 176093659138, 'r_info_sym': 41, 'r_info_type': 2})
+    // Relocation[5] : _Z7argtestPiS_S_, Container({'r_offset': 872, 'r_info': 150323855362, 'r_info_sym': 35, 'r_info_type': 2})
+    // Relocation[6] : _Z7argtestPiS_S_, Container({'r_offset': 752, 'r_info': 150323855362, 'r_info_sym': 35, 'r_info_type': 2})
+    // Relocation[7] : _Z7argtestPiS_S_, Container({'r_offset': 640, 'r_info': 150323855362, 'r_info_sym': 35, 'r_info_type': 2})
+    // Relocation[8] : _Z7argtestPiS_S_, Container({'r_offset': 528, 'r_info': 150323855362, 'r_info_sym': 35, 'r_info_type': 2})
+    // Relocation[9] : _Z7argtestPiS_S_, Container({'r_offset': 416, 'r_info': 150323855362, 'r_info_sym': 35, 'r_info_type': 2})
+    // Relocation[10] : _Z7argtestPiS_S_, Container({'r_offset': 304, 'r_info': 150323855362, 'r_info_sym': 35, 'r_info_type': 2})
+    // Relocation[11] : _Z7argtestPiS_S_, Container({'r_offset': 192, 'r_info': 150323855362, 'r_info_sym': 35, 'r_info_type': 2})
+    // Relocation[12] : _Z7argtestPiS_S_, Container({'r_offset': 72, 'r_info': 150323855362, 'r_info_sym': 35, 'r_info_type': 2})
+
+// --------------------- .nv.constant3                    --------------------------
+	.section	.nv.constant3,"a",@progbits
+	.__section_name         0x7f 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x2
+	.__section_addr         0x0
+	.__section_offset       0x1cf0 	// maybe updated by assembler
+	.__section_size         0x141 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x0
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  	.type		C1,@object
+  	.size		C1,(C2 - C1)
+  C1:
+  .nv.constant3:
+  	.zero		44
+  	.type		C2,@object
+  	.size		C2,(C3 - C2)
+  C2:
+  	.zero		260
+  	.type		C3,@object
+  	.size		C3,(.L_3 - C3)
+  C3:
+  	.zero		17
+  .L_3:
+  
+  
+// --------------------- .nv.constant2._Z7argtestPiS_S_   --------------------------
+	.section	.nv.constant2._Z7argtestPiS_S_,"a",@progbits
+	.__section_name         0xa8 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x2
+	.__section_addr         0x0
+	.__section_offset       0x1e34 	// maybe updated by assembler
+	.__section_size         0x48 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x1a
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  .nv.constant2._Z7argtestPiS_S_:
+          /*0000*/ 	.byte	0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0010*/ 	.byte	0x50, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x60, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0020*/ 	.byte	0x70, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0030*/ 	.byte	0xa0, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x0b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0040*/ 	.byte	0x19, 0x2d, 0x44, 0x54, 0xfb, 0x21, 0xf9, 0x3b
+  
+  
+// --------------------- .nv.constant0._Z7argtestPiS_S_   --------------------------
+	.section	.nv.constant0._Z7argtestPiS_S_,"a",@progbits
+	.__section_name         0xfe 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x2
+	.__section_addr         0x0
+	.__section_offset       0x1e7c 	// maybe updated by assembler
+	.__section_size         0x188 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x1a
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  .nv.constant0._Z7argtestPiS_S_:
+  	.zero		376
+  	.align		4
+          /*0178*/ 	.word	[20@lo(0x0)=texRef2d]
+  	.align		4
+          /*017c*/ 	.word	[20@lo(0x0)=texRef1d]
+  	.align		4
+          /*0180*/ 	.word	[20@lo(0x0)=fun@R_CUDA_SURF_HEADER_INDEX(inputSurfRef)]
+  	.align		4
+          /*0184*/ 	.word	[20@lo(0x0)=fun@R_CUDA_SURF_HEADER_INDEX(outputSurfRef)]
+  
+  
+// --------------------- .nv.constant0._Z11shared_testfPf --------------------------
+	.section	.nv.constant0._Z11shared_testfPf,"a",@progbits
+	.__section_name         0x170 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x2
+	.__section_addr         0x0
+	.__section_offset       0x2004 	// maybe updated by assembler
+	.__section_size         0x170 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x1b
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  .nv.constant0._Z11shared_testfPf:
+  	.zero		368
+  
+  
+// --------------------- .nv.constant0._Z11nvinfo_testiiPi --------------------------
+	.section	.nv.constant0._Z11nvinfo_testiiPi,"a",@progbits
+	.__section_name         0x1e7 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x2
+	.__section_addr         0x0
+	.__section_offset       0x2174 	// maybe updated by assembler
+	.__section_size         0x170 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x1c
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  .nv.constant0._Z11nvinfo_testiiPi:
+  	.zero		368
+  
+  
+// --------------------- .nv.constant0._Z5childPii        --------------------------
+	.section	.nv.constant0._Z5childPii,"a",@progbits
+	.__section_name         0x25d 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x2
+	.__section_addr         0x0
+	.__section_offset       0x22e4 	// maybe updated by assembler
+	.__section_size         0x16c 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x1d
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  .nv.constant0._Z5childPii:
+  	.zero		364
+  
+  
+// --------------------- .nv.constant0._Z10local_testiiPi --------------------------
+	.section	.nv.constant0._Z10local_testiiPi,"a",@progbits
+	.__section_name         0x2ca 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x2
+	.__section_addr         0x0
+	.__section_offset       0x2450 	// maybe updated by assembler
+	.__section_size         0x170 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x1e
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  .nv.constant0._Z10local_testiiPi:
+  	.zero		368
+  
+  
+// --------------------- .nv.constant0._Z4test6float4PS_  --------------------------
+	.section	.nv.constant0._Z4test6float4PS_,"a",@progbits
+	.__section_name         0x33b 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x2
+	.__section_addr         0x0
+	.__section_offset       0x25c0 	// maybe updated by assembler
+	.__section_size         0x178 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x1f
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  .nv.constant0._Z4test6float4PS_:
+  	.zero		376
+  
+  
+// --------------------- .text._Z7argtestPiS_S_           --------------------------
+	.section	.text._Z7argtestPiS_S_,"ax",@progbits
+	.__section_name         0x32 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x6
+	.__section_addr         0x0
+	.__section_offset       0x2780 	// maybe updated by assembler
+	.__section_size         0xd80 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x18000023
+	.__section_entsize      0
+	.align                128 	// equivalent to set sh_addralign
+  	.sectioninfo	@"SHI_REGISTERS=24"
+  	.align	128
+          .global         _Z7argtestPiS_S_
+          .type           _Z7argtestPiS_S_,@function
+          .size           _Z7argtestPiS_S_,(.L_198 - _Z7argtestPiS_S_)
+          .other          _Z7argtestPiS_S_,@"STO_CUDA_ENTRY STV_DEFAULT"
+  _Z7argtestPiS_S_:
+  .text._Z7argtestPiS_S_:
+      [----:B------:R-:W-:Y:S08]         /*0000*/                   IMAD.MOV.U32 R1, RZ, RZ, c[0x0][0x28] ;
+      [----:B------:R-:W-:-:S01]         /*0010*/                   ULDC.64 UR36, c[0x0][0x160] ;
+      [----:B------:R-:W-:-:S01]         /*0020*/                   IADD3 R1, R1, -0x28, RZ ;
+      [----:B------:R-:W2:-:S01]         /*0030*/                   LDG.E.SYS R5, [UR36] ;
+      [----:B------:R-:W-:-:S02]         /*0040*/                   MOV R2, 32@lo(flist) ;
+      [----:B------:R-:W-:-:S01]         /*0050*/                   MOV R3, 32@hi(flist) ;
+      [----:B------:R-:W0:-:S04]         /*0060*/                   S2R R17, SR_CTAID.X ;
+      [----:B------:R-:W0:-:S01]         /*0070*/                   S2R R0, SR_TID.X ;
+      [----:B------:R-:W-:Y:S02]         /*0080*/                   IMAD.MOV.U32 R18, RZ, RZ, 0x4 ;
+      [----:B0-----:R-:W-:Y:S04]         /*0090*/                   IMAD R17, R17, c[0x0][0x0], R0 ;
+      [----:B------:R-:W-:Y:S04]         /*00a0*/                   IMAD.WIDE R18, R17, R18, c[0x0][0x168] ;
+      [----:B--2---:R-:W-:Y:S04]         /*00b0*/                   IMAD.WIDE R2, R5, 0x8, R2 ;
+      [----:B------:R0:W4:-:S04]         /*00c0*/                   LDG.E.SYS R5, [R18] ;
+      [----:B------:R-:W2:-:S01]         /*00d0*/                   LDG.E.SYS R2, [R2] ;
+      [----:B------:R-:W-:-:S01]         /*00e0*/                   IMAD.MOV.U32 R4, RZ, RZ, R17 ;
+      [----:B------:R-:W-:-:S01]         /*00f0*/                   MOV R20, 0x130 ;
+      [----:B------:R-:W-:-:S01]         /*0100*/                   IMAD.MOV.U32 R21, RZ, RZ, 0x0 ;
+      [----:B--2---:R0:W1:-:S07]         /*0110*/                   LDC.64 R6, c[0x2][R2] ;
+      [----:B01--4-:R-:W-:-:S05]         /*0120*/                   CALL.REL.NOINC R6 `(_Z7argtestPiS_S_) ;
+      [----:B------:R-:W0:-:S01]         /*0130*/                   I2F R10, R4 ;
+      [----:B------:R-:W-:-:S01]         /*0140*/                   BMOV.32.CLEAR RZ, B0 ;
+      [----:B------:R-:W-:-:S01]         /*0150*/                   BSSY B0, `(.L_10) ;
+      [----:B0-----:R-:W-:Y:S04]         /*0160*/                   FMUL R9, R10, 0.34999999403953552246 ;
+      [R---:B------:R-:W-:-:S01]         /*0170*/                   FMUL R0, R9.reuse, 0.63661974668502807617 ;
+      [----:B------:R-:W-:Y:S05]         /*0180*/                   FSETP.GT.AND P0, PT, |R9|, 105615, PT ;
+      [----:B------:R-:W0:-:S02]         /*0190*/                   F2I.NTZ R0, R0 ;
+      [----:B0-----:R-:W0:-:S02]         /*01a0*/                   I2F R2, R0 ;
+      [----:B0-----:R-:W-:Y:S04]         /*01b0*/                   FFMA R3, R2, -1.5707962512969970703, R9 ;
+      [----:B------:R-:W-:Y:S04]         /*01c0*/                   FFMA R3, R2, -7.5497894158615963534e-08, R3 ;
+      [----:B------:R-:W-:-:S01]         /*01d0*/                   FFMA R2, R2, -5.3903029534742383927e-15, R3 ;
+      [----:B------:R-:W-:-:S07]         /*01e0*/              @!P0 BRA `(.L_11) ;
+      [----:B------:R-:W-:Y:S12]         /*01f0*/                   FSETP.NEU.AND P0, PT, |R9|, +INF , PT ;
+      [----:B------:R-:W-:-:S05]         /*0200*/              @!P0 BRA `(.L_12) ;
+      [--R-:B------:R-:W-:-:S01]         /*0210*/                   SHF.R.U32.HI R2, RZ, 0x17, R9.reuse ;
+      [----:B------:R-:W-:-:S01]         /*0220*/                   IMAD.SHL.U32 R3, R9, 0x100, RZ ;
+      [----:B------:R-:W-:-:S01]         /*0230*/                   UMOV UR5, 32@lo(__cudart_i2opi_f) ;
+      [----:B------:R-:W-:-:S01]         /*0240*/                   SHF.R.U32.HI R8, RZ, 0x17, R9 ;
+      [----:B------:R-:W-:-:S01]         /*0250*/                   UMOV UR6, 32@hi(__cudart_i2opi_f) ;
+      [----:B------:R-:W-:-:S01]         /*0260*/                   SGXT.U32 R2, R2, 0x8 ;
+      [----:B------:R-:W-:-:S01]         /*0270*/                   IMAD.MOV.U32 R6, RZ, RZ, RZ ;
+      [----:B------:R-:W-:-:S01]         /*0280*/                   LOP3.LUT R13, R3, 0x80000000, RZ, 0xfc, !PT ;
+      [----:B------:R-:W-:-:S01]         /*0290*/                   IMAD.MOV.U32 R7, RZ, RZ, -0x6 ;
+      [----:B------:R-:W-:-:S01]         /*02a0*/                   IADD3 R2, R2, -0x80, RZ ;
+      [----:B------:R-:W-:-:S01]         /*02b0*/                   IMAD.MOV.U32 R0, RZ, RZ, R1 ;
+      [----:B------:R-:W-:-:S01]         /*02c0*/                   UMOV UR4, URZ ;
+      [----:B------:R-:W-:-:S01]         /*02d0*/                   IMAD.U32 R4, RZ, RZ, UR5 ;
+      [----:B------:R-:W-:-:S01]         /*02e0*/                   SHF.R.U32.HI R12, RZ, 0x5, R2 ;
+      [----:B------:R-:W-:Y:S09]         /*02f0*/                   IMAD.U32 R5, RZ, RZ, UR6 ;
+  .L_13:
+      [----:B------:R0:W2:-:S01]         /*0300*/                   LDG.E.SYS R2, [R4] ;
+      [----:B------:R-:W-:Y:S04]         /*0310*/                   IADD3 R7, R7, 0x1, RZ ;
+      [----:B------:R-:W-:-:S02]         /*0320*/                   ISETP.NE.AND P0, PT, R7, RZ, PT ;
+      [----:B0-----:R-:W-:Y:S05]         /*0330*/                   IADD3 R4, P2, R4, 0x4, RZ ;
+      [----:B------:R-:W-:-:S02]         /*0340*/                   IMAD.X R5, RZ, RZ, R5, P2 ;
+      [----:B--2---:R-:W-:Y:S07]         /*0350*/                   IMAD.WIDE.U32 R2, R2, R13, RZ ;
+      [----:B------:R-:W-:Y:S04]         /*0360*/                   IADD3 R11, P1, R2, R6, RZ ;
+      [----:B------:R-:W-:Y:S04]         /*0370*/                   IADD3.X R6, R3, UR4, RZ, P1, !PT ;
+      [----:B------:R0:W-:-:S02]         /*0380*/                   STL [R0], R11 ;
+      [----:B0-----:R-:W-:-:S01]         /*0390*/                   IADD3 R0, R0, 0x4, RZ ;
+      [----:B------:R-:W-:-:S07]         /*03a0*/               @P0 BRA `(.L_13) ;
+      [----:B------:R-:W-:-:S01]         /*03b0*/                   LOP3.LUT R4, R8, 0x1f, RZ, 0xc0, !PT ;
+      [----:B------:R0:W-:-:S01]         /*03c0*/                   STL [R1+0x18], R6 ;
+      [----:B------:R-:W-:-:S02]         /*03d0*/                   IADD3 R0, -R12, 0x6, RZ ;
+      [----:B------:R-:W-:Y:S03]         /*03e0*/                   ISETP.NE.AND P0, PT, R4, RZ, PT ;
+      [----:B------:R-:W-:Y:S08]         /*03f0*/                   IMAD R8, R0, 0x4, R1 ;
+      [----:B------:R-:W2:-:S04]         /*0400*/                   LDL R0, [R8] ;
+      [----:B------:R-:W3:-:S04]         /*0410*/               @P0 LDL R7, [R8+-0x8] ;
+      [----:B------:R-:W4:-:S01]         /*0420*/                   LDL R3, [R8+-0x4] ;
+      [----:B------:R-:W-:-:S02]         /*0430*/               @P0 IADD3 R2, -R4, 0x20, RZ ;
+      [----:B------:R-:W-:Y:S04]         /*0440*/                   LOP3.LUT R9, R9, 0x80000000, RZ, 0xc0, !PT ;
+      [----:B------:R-:W-:-:S02]         /*0450*/                   ISETP.NE.AND P2, PT, R9, RZ, PT ;
+      [----:B--2---:R-:W-:-:S02]         /*0460*/               @P0 SHF.L.U32 R5, R0, R4, RZ ;
+      [-R--:B---3--:R-:W-:-:S02]         /*0470*/               @P0 SHF.R.U32.HI R7, RZ, R2.reuse, R7 ;
+      [----:B----4-:R-:W-:-:S02]         /*0480*/               @P0 SHF.R.U32.HI R2, RZ, R2, R3 ;
+      [----:B------:R-:W-:Y:S03]         /*0490*/               @P0 SHF.L.U32 R4, R3, R4, RZ ;
+      [----:B------:R-:W-:-:S02]         /*04a0*/               @P0 IMAD.IADD R0, R2, 0x1, R5 ;
+      [----:B------:R-:W-:Y:S05]         /*04b0*/               @P0 IMAD.IADD R3, R7, 0x1, R4 ;
+      [R---:B------:R-:W-:-:S01]         /*04c0*/                   SHF.L.U32.HI R7, R3.reuse, 0x2, R0 ;
+      [----:B------:R-:W-:Y:S03]         /*04d0*/                   IMAD.SHL.U32 R3, R3, 0x4, RZ ;
+      [----:B------:R-:W-:Y:S04]         /*04e0*/                   SHF.R.U32.HI R11, RZ, 0x1f, R7 ;
+      [----:B------:R-:W-:-:S02]         /*04f0*/                   ISETP.NE.AND P0, PT, R11, RZ, PT ;
+      [----:B------:R-:W-:-:S02]         /*0500*/                   LEA.HI R0, R0, R11, RZ, 0x2 ;
+      [----:B------:R-:W-:Y:S03]         /*0510*/                   ISETP.NE.AND P1, PT, R3, RZ, P0 ;
+      [----:B------:R-:W-:Y:S05]         /*0520*/               @P2 IMAD.MOV R0, RZ, RZ, -R0 ;
+      [----:B------:R-:W-:-:S01]         /*0530*/               @P0 LOP3.LUT R2, RZ, R7, RZ, 0x33, !PT ;
+      [--R-:B0-----:R-:W-:-:S02]         /*0540*/               @P0 IMAD.MOV R6, RZ, RZ, -R3.reuse ;
+      [----:B------:R-:W-:-:S01]         /*0550*/              @!P0 IMAD.MOV.U32 R6, RZ, RZ, R3 ;
+      [----:B------:R-:W-:Y:S05]         /*0560*/               @P0 IADD3 R4, R2, 0x1, RZ ;
+      [----:B------:R-:W-:-:S01]         /*0570*/               @P1 IMAD.MOV R4, RZ, RZ, R2 ;
+      [----:B------:R-:W-:-:S02]         /*0580*/               @P0 LOP3.LUT P1, RZ, R9, 0x80000000, RZ, 0x3c, !PT ;
+      [----:B------:R-:W-:-:S01]         /*0590*/              @!P0 PLOP3.LUT P1, PT, P2, PT, PT, 0x80, 0x0 ;
+      [----:B------:R-:W-:Y:S06]         /*05a0*/               @P0 IMAD.MOV.U32 R7, RZ, RZ, R4 ;
+      [----:B------:R-:W0:-:S02]         /*05b0*/                   I2F.F64.S64 R2, R6 ;
+      [----:B0-----:R-:W0:Y:S09]         /*05c0*/                   DMUL R4, R2, c[0x2][0x40] ;
+      [----:B0-----:R-:W0:-:S02]         /*05d0*/                   F2F.F32.F64 R4, R4 ;
+      [----:B0-----:R-:W-:-:S01]         /*05e0*/                   FSEL R2, R4, -R4, !P1 ;
+      [----:B------:R-:W-:-:S07]         /*05f0*/                   BRA `(.L_11) ;
+  .L_12:
+      [----:B------:R-:W-:Y:S08]         /*0600*/                   FMUL R2, RZ, R9 ;
+  .L_11:
+      [----:B------:R-:W-:-:S05]         /*0610*/                   BSYNC B0 ;
+  .L_10:
+      [----:B------:R-:W-:-:S02]         /*0620*/                   FADD R4, R10, 0.5 ;
+      [----:B------:R-:W-:-:S02]         /*0630*/                   IMAD.MOV.U32 R11, RZ, RZ, -0x3e000000 ;
+      [----:B------:R-:W-:-:S02]         /*0640*/                   FADD R5, R4, -1 ;
+      [----:B------:R-:W-:-:S02]         /*0650*/                   IMAD.MOV.U32 R15, RZ, RZ, RZ ;
+      [----:B------:R-:W-:Y:S02]         /*0660*/                   IMAD.MOV.U32 R14, RZ, RZ, R4 ;
+      [R---:B------:R0:W5:Y:S04]         /*0670*/                   TEX.SCR.LL RZ, R6, R4, R11, 0x0, 0x5e, 2D, 0x1 ;
+      [--R-:B------:R-:W5:Y:S01]         /*0680*/                   TEX.SCR.LL RZ, R7, R14, R11, 0x0, 0x5f, 2D, 0x1 ;
+      [----:B------:R-:W-:-:S01]         /*0690*/                   LOP3.LUT R3, R0, 0x1, RZ, 0xc0, !PT ;
+      [----:B------:R-:W-:Y:S03]         /*06a0*/                   IMAD.SHL.U32 R16, R17, 0x4, RZ ;
+      [R---:B------:R-:W-:-:S01]         /*06b0*/                   ISETP.NE.AND P1, PT, R3.reuse, RZ, PT ;
+      [----:B------:R-:W-:-:S01]         /*06c0*/                   IMAD.MOV.U32 R10, RZ, RZ, 0x3d2aaabb ;
+      [----:B------:R-:W-:-:S01]         /*06d0*/                   ISETP.NE.AND P0, PT, R3, RZ, PT ;
+      [----:B------:R-:W-:-:S01]         /*06e0*/                   IMAD.MOV.U32 R3, RZ, RZ, -0x46b2bead ;
+      [----:B------:R-:W5:-:S01]         /*06f0*/                   SULD.D.BA.2D.STRONG.CTA.TRAP R8, [R16], 0x0, 0x60 ;
+      [----:B------:R-:W-:-:S01]         /*0700*/                   FMUL R12, R2, R2 ;
+      [----:B0-----:R-:W-:-:S01]         /*0710*/                   FSEL R4, R10, 0.0083327032625675201416, P0 ;
+      [----:B------:R-:W-:-:S01]         /*0720*/                   IMAD.MOV.U32 R5, RZ, RZ, 0x3effffff ;
+      [----:B------:R-:W-:Y:S04]         /*0730*/                   FSEL R2, R2, 1, !P1 ;
+      [----:B------:R-:W-:Y:S04]         /*0740*/               @P1 IMAD.MOV.U32 R9, RZ, RZ, 0x37cbac00 ;
+      [----:B------:R-:W-:Y:S04]         /*0750*/               @P1 FFMA R3, R12, R9, -0.0013887860113754868507 ;
+      [----:B------:R-:W-:-:S01]         /*0760*/                   FFMA R3, R12, R3, R4 ;
+      [----:B------:R-:W-:-:S02]         /*0770*/                   FSEL R4, -R5, -0.16666662693023681641, P0 ;
+      [----:B------:R-:W-:Y:S03]         /*0780*/                   LOP3.LUT P0, RZ, R0, 0x2, RZ, 0xc0, !PT ;
+      [----:B------:R-:W-:-:S02]         /*0790*/                   FFMA R3, R12, R3, R4 ;
+      [----:B------:R-:W-:Y:S04]         /*07a0*/                   FFMA R12, R2, R12, RZ ;
+      [----:B------:R-:W-:Y:S04]         /*07b0*/                   FFMA R3, R12, R3, R2 ;
+      [----:B------:R-:W-:-:S01]         /*07c0*/               @P0 FFMA R3, R3, -1, RZ ;
+      [----:B------:R-:W-:Y:S04]         /*07d0*/                   DEPBAR.LE SB5, 0x1 ;
+      [----:B------:R-:W-:Y:S04]         /*07e0*/                   FADD R6, R6, R3 ;
+      [----:B------:R-:W-:Y:S06]         /*07f0*/                   FADD R6, R6, R7 ;
+      [----:B------:R-:W0:-:S01]         /*0800*/                   F2I.TRUNC.NTZ R3, R6 ;
+      [----:B-----5:R1:W-:-:S01]         /*0810*/                   SUST.D.BA.2D.STRONG.CTA.TRAP [R16], R8, 0x0, 0x61 ;
+      [----:B0-----:R1:W-:-:S04]         /*0820*/                   STG.E.SYS [R18], R3 ;
+      [----:B------:R-:W2:-:S02]         /*0830*/                   LDG.E.SYS R0, [UR36+0x4] ;
+      [----:B--2---:R-:W-:Y:S12]         /*0840*/                   ISETP.NE.AND P0, PT, R0, R17, PT ;
+      [----:B------:R-:W-:-:S05]         /*0850*/               @P0 EXIT ;
+      [----:B-1----:R-:W2:-:S01]         /*0860*/                   LDG.E.SYS R3, [R18] ;
+      [----:B------:R-:W-:-:S01]         /*0870*/                   IMAD.MOV.U32 R2, RZ, RZ, R17 ;
+      [----:B------:R-:W-:-:S01]         /*0880*/                   UMOV UR4, 32@lo($str) ;
+      [----:B------:R-:W-:-:S01]         /*0890*/                   IMAD.MOV.U32 R6, RZ, RZ, c[0x0][0x20] ;
+      [----:B------:R-:W-:-:S01]         /*08a0*/                   UMOV UR5, 32@hi($str) ;
+      [----:B------:R-:W-:-:S01]         /*08b0*/                   IMAD.U32 R4, RZ, RZ, UR4 ;
+      [----:B------:R-:W-:-:S01]         /*08c0*/                   MOV R20, 32@lo((_Z7argtestPiS_S_ + .L_9@srel)) ;
+      [----:B------:R-:W-:-:S01]         /*08d0*/                   IMAD.U32 R5, RZ, RZ, UR5 ;
+      [----:B------:R-:W-:-:S02]         /*08e0*/                   IADD3 R6, P0, P1, R1, 0x20, R6 ;
+      [----:B------:R-:W-:Y:S02]         /*08f0*/                   MOV R21, 32@hi((_Z7argtestPiS_S_ + .L_9@srel)) ;
+      [----:B------:R-:W-:-:S01]         /*0900*/                   IADD3.X R7, RZ, c[0x0][0x24], RZ, P0, P1 ;
+      [----:B--2---:R0:W-:-:S07]         /*0910*/                   STL.64 [R1+0x20], R2 ;
+      [----:B0-----:R-:W-:-:S05]         /*0920*/                   CALL.ABS.NOINC `(vprintf) ;
+  .L_9:
+      [----:B------:R-:W-:-:S05]         /*0930*/                   EXIT ;
+          .type           $_Z7argtestPiS_S_$_Z2f1ii,@function
+          .size           $_Z7argtestPiS_S_$_Z2f1ii,($_Z7argtestPiS_S_$_Z2f2ii - $_Z7argtestPiS_S_$_Z2f1ii)
+  $_Z7argtestPiS_S_$_Z2f1ii:
+      [----:B------:R-:W-:-:S05]         /*0940*/                   RET.REL.NODEC R20 `(_Z7argtestPiS_S_) ;
+          .type           $_Z7argtestPiS_S_$_Z2f2ii,@function
+          .size           $_Z7argtestPiS_S_$_Z2f2ii,($_Z7argtestPiS_S_$_Z2f3ii - $_Z7argtestPiS_S_$_Z2f2ii)
+  $_Z7argtestPiS_S_$_Z2f2ii:
+      [----:B------:R-:W-:-:S05]         /*0950*/                   RET.REL.NODEC R20 `(_Z7argtestPiS_S_) ;
+          .type           $_Z7argtestPiS_S_$_Z2f3ii,@function
+          .size           $_Z7argtestPiS_S_$_Z2f3ii,($_Z7argtestPiS_S_$_Z2f4ii - $_Z7argtestPiS_S_$_Z2f3ii)
+  $_Z7argtestPiS_S_$_Z2f3ii:
+      [----:B------:R-:W-:-:S05]         /*0960*/                   RET.REL.NODEC R20 `(_Z7argtestPiS_S_) ;
+          .type           $_Z7argtestPiS_S_$_Z2f4ii,@function
+          .size           $_Z7argtestPiS_S_$_Z2f4ii,($_Z7argtestPiS_S_$_Z2f5ii - $_Z7argtestPiS_S_$_Z2f4ii)
+  $_Z7argtestPiS_S_$_Z2f4ii:
+      [----:B------:R-:W-:-:S05]         /*0970*/                   RET.REL.NODEC R20 `(_Z7argtestPiS_S_) ;
+          .type           $_Z7argtestPiS_S_$_Z2f5ii,@function
+          .size           $_Z7argtestPiS_S_$_Z2f5ii,($_Z7argtestPiS_S_$_Z2f6ii - $_Z7argtestPiS_S_$_Z2f5ii)
+  $_Z7argtestPiS_S_$_Z2f5ii:
+      [----:B------:R-:W-:-:S01]         /*0980*/                   IMAD.IADD R4, R4, 0x1, R5 ;
+      [----:B------:R-:W-:-:S07]         /*0990*/                   RET.REL.NODEC R20 `(_Z7argtestPiS_S_) ;
+          .type           $_Z7argtestPiS_S_$_Z2f6ii,@function
+          .size           $_Z7argtestPiS_S_$_Z2f6ii,($_Z7argtestPiS_S_$_Z2f7ii - $_Z7argtestPiS_S_$_Z2f6ii)
+  $_Z7argtestPiS_S_$_Z2f6ii:
+      [----:B------:R-:W-:Y:S08]         /*09a0*/                   IADD3 R1, R1, -0x8, RZ ;
+      [----:B------:R0:W-:-:S02]         /*09b0*/                   STL [R1], R2 ;
+      [-R--:B------:R-:W-:-:S02]         /*09c0*/                   IABS R7, R5.reuse ;
+      [----:B------:R-:W-:Y:S04]         /*09d0*/                   IABS R8, R5 ;
+      [----:B------:R-:W1:-:S02]         /*09e0*/                   I2F.RP R0, R7 ;
+      [----:B-1----:R-:W1:-:S02]         /*09f0*/                   MUFU.RCP R0, R0 ;
+      [----:B01----:R-:W-:-:S01]         /*0a00*/                   IADD3 R2, R0, 0xffffffe, RZ ;
+      [----:B------:R-:W-:Y:S05]         /*0a10*/                   IMAD.MOV R0, RZ, RZ, -R8 ;
+      [----:B------:R0:W1:-:S02]         /*0a20*/                   F2I.FTZ.U32.TRUNC.NTZ R3, R2 ;
+      [----:B0-----:R-:W-:-:S02]         /*0a30*/                   IMAD.MOV.U32 R2, RZ, RZ, RZ ;
+      [----:B-1----:R-:W-:Y:S04]         /*0a40*/                   IMAD.MOV R6, RZ, RZ, -R3 ;
+      [----:B------:R-:W-:-:S01]         /*0a50*/                   IMAD R9, R6, R7, RZ ;
+      [----:B------:R-:W-:-:S02]         /*0a60*/                   IABS R6, R4 ;
+      [----:B------:R-:W-:-:S01]         /*0a70*/                   LOP3.LUT R4, R4, R5, RZ, 0x3c, !PT ;
+      [----:B------:R-:W-:-:S02]         /*0a80*/                   IMAD.HI.U32 R3, R3, R9, R2 ;
+      [----:B------:R0:W2:-:S01]         /*0a90*/                   LDL R2, [R1] ;
+      [----:B------:R-:W-:Y:S05]         /*0aa0*/                   ISETP.GE.AND P1, PT, R4, RZ, PT ;
+      [----:B------:R-:W-:Y:S06]         /*0ab0*/                   IMAD.HI.U32 R3, R3, R6, RZ ;
+      [----:B------:R-:W-:Y:S05]         /*0ac0*/                   IMAD R0, R3, R0, R6 ;
+      [----:B------:R-:W-:Y:S12]         /*0ad0*/                   ISETP.GT.U32.AND P2, PT, R7, R0, PT ;
+      [----:B------:R-:W-:-:S01]         /*0ae0*/              @!P2 IMAD.IADD R0, R0, 0x1, -R7 ;
+      [----:B------:R-:W-:-:S02]         /*0af0*/              @!P2 IADD3 R3, R3, 0x1, RZ ;
+      [----:B------:R-:W-:-:S02]         /*0b00*/                   ISETP.NE.AND P2, PT, R5, RZ, PT ;
+      [----:B------:R-:W-:Y:S12]         /*0b10*/                   ISETP.GE.U32.AND P0, PT, R0, R7, PT ;
+      [----:B------:R-:W-:Y:S05]         /*0b20*/               @P0 IADD3 R3, R3, 0x1, RZ ;
+      [----:B------:R-:W-:Y:S04]         /*0b30*/                   IMAD.MOV.U32 R4, RZ, RZ, R3 ;
+      [----:B------:R-:W-:-:S01]         /*0b40*/              @!P1 IMAD.MOV R4, RZ, RZ, -R4 ;
+      [----:B0-----:R-:W-:Y:S04]         /*0b50*/                   IADD3 R1, R1, 0x8, RZ ;
+      [----:B------:R-:W-:-:S01]         /*0b60*/              @!P2 LOP3.LUT R4, RZ, R5, RZ, 0x33, !PT ;
+      [----:B--2---:R-:W-:-:S07]         /*0b70*/                   RET.REL.NODEC R20 `(_Z7argtestPiS_S_) ;
+          .type           $_Z7argtestPiS_S_$_Z2f7ii,@function
+          .size           $_Z7argtestPiS_S_$_Z2f7ii,(.L_198 - $_Z7argtestPiS_S_$_Z2f7ii)
+  $_Z7argtestPiS_S_$_Z2f7ii:
+      [----:B------:R-:W-:Y:S08]         /*0b80*/                   IADD3 R1, R1, -0x8, RZ ;
+      [----:B------:R0:W-:-:S02]         /*0b90*/                   STL [R1], R2 ;
+      [----:B------:R-:W-:-:S02]         /*0ba0*/                   IABS R6, R5 ;
+      [----:B------:R-:W-:-:S02]         /*0bb0*/                   IABS R8, R4 ;
+      [----:B------:R-:W-:-:S02]         /*0bc0*/                   ISETP.GE.AND P2, PT, R4, RZ, PT ;
+      [----:B------:R-:W1:-:S02]         /*0bd0*/                   I2F.RP R0, R6 ;
+      [----:B-1----:R-:W1:-:S02]         /*0be0*/                   MUFU.RCP R0, R0 ;
+      [----:B01----:R-:W-:Y:S06]         /*0bf0*/                   IADD3 R2, R0, 0xffffffe, RZ ;
+      [----:B------:R0:W1:-:S02]         /*0c00*/                   F2I.FTZ.U32.TRUNC.NTZ R3, R2 ;
+      [----:B0-----:R-:W-:-:S02]         /*0c10*/                   IMAD.MOV.U32 R2, RZ, RZ, RZ ;
+      [----:B-1----:R-:W-:Y:S04]         /*0c20*/                   IMAD.MOV R7, RZ, RZ, -R3 ;
+      [----:B------:R-:W-:Y:S04]         /*0c30*/                   IMAD R7, R7, R6, RZ ;
+      [----:B------:R-:W-:-:S01]         /*0c40*/                   IMAD.HI.U32 R3, R3, R7, R2 ;
+      [----:B------:R-:W-:-:S01]         /*0c50*/                   IABS R7, R5 ;
+      [----:B------:R0:W2:-:S04]         /*0c60*/                   LDL R2, [R1] ;
+      [----:B------:R-:W-:-:S02]         /*0c70*/                   IMAD.MOV R0, RZ, RZ, -R7 ;
+      [----:B------:R-:W-:Y:S06]         /*0c80*/                   IMAD.HI.U32 R3, R3, R8, RZ ;
+      [----:B------:R-:W-:Y:S05]         /*0c90*/                   IMAD R3, R3, R0, R8 ;
+      [----:B------:R-:W-:Y:S12]         /*0ca0*/                   ISETP.GT.U32.AND P0, PT, R6, R3, PT ;
+      [----:B------:R-:W-:-:S01]         /*0cb0*/              @!P0 IMAD.IADD R3, R3, 0x1, -R6 ;
+      [----:B------:R-:W-:Y:S04]         /*0cc0*/                   ISETP.NE.AND P0, PT, R5, RZ, PT ;
+      [----:B------:R-:W-:Y:S12]         /*0cd0*/                   ISETP.GT.U32.AND P1, PT, R6, R3, PT ;
+      [----:B------:R-:W-:Y:S04]         /*0ce0*/              @!P1 IMAD.IADD R3, R3, 0x1, -R6 ;
+      [----:B------:R-:W-:Y:S04]         /*0cf0*/                   IMAD.MOV.U32 R4, RZ, RZ, R3 ;
+      [----:B------:R-:W-:-:S01]         /*0d00*/              @!P2 IMAD.MOV R4, RZ, RZ, -R4 ;
+      [----:B0-----:R-:W-:Y:S04]         /*0d10*/                   IADD3 R1, R1, 0x8, RZ ;
+      [----:B------:R-:W-:-:S01]         /*0d20*/              @!P0 LOP3.LUT R4, RZ, R5, RZ, 0x33, !PT ;
+      [----:B--2---:R-:W-:-:S07]         /*0d30*/                   RET.REL.NODEC R20 `(_Z7argtestPiS_S_) ;
+  .L_14:
+      [----:B------:R-:W-:Y:S00]         /*0d40*/                   BRA `(.L_14);
+  .L_198:
+  
+  
+
+// --------------------- .text._Z11shared_testfPf         --------------------------
+	.section	.text._Z11shared_testfPf,"ax",@progbits
+	.__section_name         0x11d 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x100006
+	.__section_addr         0x0
+	.__section_offset       0x3500 	// maybe updated by assembler
+	.__section_size         0x200 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0xc000029
+	.__section_entsize      0
+	.align                128 	// equivalent to set sh_addralign
+  	.sectionflags	@"SHF_BARRIERS=1"
+  	.sectioninfo	@"SHI_REGISTERS=12"
+  	.align	128
+          .global         _Z11shared_testfPf
+          .type           _Z11shared_testfPf,@function
+          .size           _Z11shared_testfPf,(.L_200 - _Z11shared_testfPf)
+          .other          _Z11shared_testfPf,@"STO_CUDA_ENTRY STV_DEFAULT"
+  _Z11shared_testfPf:
+  .text._Z11shared_testfPf:
+      [----:B------:R-:W-:Y:S08]         /*0000*/                   IMAD.MOV.U32 R1, RZ, RZ, c[0x0][0x28] ;
+      [----:B------:R-:W0:-:S01]         /*0010*/                   S2R R8, SR_TID.X ;
+      [----:B------:R-:W-:Y:S03]         /*0020*/                   IMAD.MOV.U32 R5, RZ, RZ, 0x4 ;
+      [----:B------:R-:W0:-:S02]         /*0030*/                   S2R R3, SR_CTAID.X ;
+      [----:B0-----:R-:W-:Y:S04]         /*0040*/                   IMAD R0, R3, c[0x0][0x0], R8 ;
+      [----:B------:R-:W-:Y:S08]         /*0050*/                   IMAD.WIDE R2, R0, R5, c[0x0][0x168] ;
+      [----:B------:R-:W2:-:S01]         /*0060*/                   LDG.E.SYS R4, [R2] ;
+      [----:B------:R-:W-:-:S02]         /*0070*/                   SHF.R.S32.HI R5, RZ, 0x1f, R0 ;
+      [----:B------:R-:W-:-:S02]         /*0080*/                   IADD3 R6, -R8, 0x400, RZ ;
+      [----:B------:R-:W-:Y:S04]         /*0090*/                   LEA.HI R5, R5, R0, RZ, 0xb ;
+      [----:B------:R-:W-:Y:S05]         /*00a0*/                   LOP3.LUT R7, R5, 0x3ffff800, RZ, 0xc0, !PT ;
+      [R---:B------:R-:W-:-:S01]         /*00b0*/                   IMAD.IADD R7, R0.reuse, 0x1, -R7 ;
+      [----:B------:R-:W-:-:S02]         /*00c0*/                   IADD3 R0, -R0, 0x800, RZ ;
+      [----:B--2---:R-:W-:Y:S04]         /*00d0*/                   FSETP.GT.AND P0, PT, R4, c[0x0][0x160], PT ;
+      [R---:B------:R-:W-:-:S01]         /*00e0*/                   FSEL R5, R4.reuse, c[0x0][0x160], P0 ;
+      [----:B------:R-:W-:Y:S07]         /*00f0*/                   FMUL R4, R4, c[0x0][0x160] ;
+      [----:B------:R-:W-:-:S04]         /*0100*/                   STS [R8.X4], R5 ;
+      [----:B------:R-:W-:-:S04]         /*0110*/                   STS [R7.X4+0x1010], R4 ;
+      [----:B------:R-:W-:-:S05]         /*0120*/                   BAR.SYNC 0x0 ;
+      [----:B------:R-:W-:-:S04]         /*0130*/                   LDS.U R6, [R6.X4] ;
+      [----:B------:R-:W0:-:S02]         /*0140*/                   LDS.U R9, [R0.X4+0x1010] ;
+      [----:B0-----:R-:W-:Y:S08]         /*0150*/                   FADD R9, R6, R9 ;
+      [----:B------:R-:W-:-:S01]         /*0160*/                   STG.E.SYS [R2], R9 ;
+      [----:B------:R-:W-:-:S05]         /*0170*/                   EXIT ;
+  .L_15:
+      [----:B------:R-:W-:Y:S00]         /*0180*/                   BRA `(.L_15);
+  .L_200:
+  
+  
+
+// --------------------- .text._Z11nvinfo_testiiPi        --------------------------
+	.section	.text._Z11nvinfo_testiiPi,"ax",@progbits
+	.__section_name         0x191 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x6
+	.__section_addr         0x0
+	.__section_offset       0x3700 	// maybe updated by assembler
+	.__section_size         0x100 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0xa00002a
+	.__section_entsize      0
+	.align                128 	// equivalent to set sh_addralign
+  	.sectioninfo	@"SHI_REGISTERS=10"
+  	.align	128
+          .global         _Z11nvinfo_testiiPi
+          .type           _Z11nvinfo_testiiPi,@function
+          .size           _Z11nvinfo_testiiPi,(.L_201 - _Z11nvinfo_testiiPi)
+          .other          _Z11nvinfo_testiiPi,@"STO_CUDA_ENTRY STV_DEFAULT"
+  _Z11nvinfo_testiiPi:
+  .text._Z11nvinfo_testiiPi:
+      [----:B------:R-:W-:Y:S08]         /*0000*/                   MOV R1, c[0x0][0x28] ;
+      [----:B------:R-:W0:-:S01]         /*0010*/                   S2R R2, SR_TID.X ;
+      [----:B------:R-:W-:Y:S03]         /*0020*/                   MOV R3, 0x4 ;
+      [----:B------:R-:W0:-:S02]         /*0030*/                   S2R R7, SR_CTAID.X ;
+      [----:B0-----:R-:W-:Y:S04]         /*0040*/                   IMAD R2, R7, c[0x0][0x0], R2 ;
+      [----:B------:R-:W-:Y:S08]         /*0050*/                   IMAD.WIDE R2, R2, R3, c[0x0][0x168] ;
+      [----:B------:R-:W2:-:S04]         /*0060*/                   LDG.E.SYS R5, [R2] ;
+      [----:B------:R-:W0:-:S04]         /*0070*/                   S2UR UR4, SR_CTAID.Y ;
+      [----:B------:R-:W0:-:S02]         /*0080*/                   S2R R0, SR_CTAID.Z ;
+      [----:B0-----:R-:W-:Y:S04]         /*0090*/                   IADD3 R0, R0, UR4, R7 ;
+      [----:B--2---:R-:W-:Y:S08]         /*00a0*/                   IADD3 R5, R0, R5, RZ ;
+      [----:B------:R-:W-:-:S01]         /*00b0*/                   STG.E.SYS [R2], R5 ;
+      [----:B------:R-:W-:-:S05]         /*00c0*/                   EXIT ;
+  .L_16:
+      [----:B------:R-:W-:Y:S00]         /*00d0*/                   BRA `(.L_16);
+  .L_201:
+  
+  
+
+// --------------------- .text._Z5childPii                --------------------------
+	.section	.text._Z5childPii,"ax",@progbits
+	.__section_name         0x209 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x6
+	.__section_addr         0x0
+	.__section_offset       0x3800 	// maybe updated by assembler
+	.__section_size         0x280 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0xe00002b
+	.__section_entsize      0
+	.align                128 	// equivalent to set sh_addralign
+  	.sectioninfo	@"SHI_REGISTERS=14"
+  	.align	128
+          .global         _Z5childPii
+          .type           _Z5childPii,@function
+          .size           _Z5childPii,(.L_202 - _Z5childPii)
+          .other          _Z5childPii,@"STO_CUDA_ENTRY STV_DEFAULT"
+  _Z5childPii:
+  .text._Z5childPii:
+      [----:B------:R-:W-:Y:S08]         /*0000*/                   MOV R1, c[0x0][0x28] ;
+      [----:B------:R-:W0:-:S01]         /*0010*/                   S2R R6, SR_TID.X ;
+      [----:B------:R-:W-:-:S02]         /*0020*/                   UMOV UR5, 32@lo(GlobalC2) ;
+      [----:B------:R-:W-:-:S01]         /*0030*/                   UMOV UR6, 32@hi(GlobalC2) ;
+      [----:B------:R-:W0:-:S01]         /*0040*/                   S2R R7, SR_CTAID.X ;
+      [----:B------:R-:W-:-:S01]         /*0050*/                   UMOV UR4, 32@lo(GlobalC1) ;
+      [----:B------:R-:W-:-:S01]         /*0060*/                   IMAD.U32 R4, RZ, RZ, UR5 ;
+      [----:B------:R-:W-:-:S01]         /*0070*/                   UMOV UR5, 32@hi(GlobalC1) ;
+      [----:B------:R-:W-:-:S01]         /*0080*/                   MOV R2, UR4 ;
+      [----:B0-----:R-:W-:-:S01]         /*0090*/                   IMAD R7, R7, c[0x0][0x0], R6 ;
+      [----:B------:R-:W-:Y:S04]         /*00a0*/                   MOV R6, RZ ;
+      [--R-:B------:R-:W-:-:S01]         /*00b0*/                   SHF.R.S32.HI R5, RZ, 0x1f, R7.reuse ;
+      [----:B------:R-:W-:Y:S03]         /*00c0*/                   IMAD.HI R0, R7, -0x6db6db6d, R6 ;
+      [----:B------:R-:W-:Y:S04]         /*00d0*/                   LEA.HI R5, R5, R7, RZ, 0x4 ;
+      [----:B------:R-:W-:Y:S04]         /*00e0*/                   SHF.R.U32.HI R3, RZ, 0x1f, R0 ;
+      [----:B------:R-:W-:-:S02]         /*00f0*/                   LEA.HI.SX32 R6, R0, R3, 0x1e ;
+      [----:B------:R-:W-:-:S02]         /*0100*/                   LOP3.LUT R3, R5, 0xfffffff0, RZ, 0xc0, !PT ;
+      [----:B------:R-:W-:-:S01]         /*0110*/                   MOV R5, UR6 ;
+      [----:B------:R-:W-:-:S02]         /*0120*/                   IMAD R9, R6, -0x7, R7 ;
+      [----:B------:R-:W-:-:S02]         /*0130*/                   IMAD.IADD R11, R7, 0x1, -R3 ;
+      [----:B------:R-:W-:-:S02]         /*0140*/                   IMAD.U32 R3, RZ, RZ, UR5 ;
+      [----:B------:R-:W-:-:S01]         /*0150*/                   IMAD.WIDE R4, R11, 0x4, R4 ;
+      [----:B------:R-:W-:Y:S03]         /*0160*/                   MOV R11, 0x4 ;
+      [----:B------:R-:W-:Y:S04]         /*0170*/                   IMAD.WIDE R2, R9, 0x4, R2 ;
+      [----:B------:R-:W-:-:S01]         /*0180*/                   IMAD.WIDE R6, R7, R11, c[0x0][0x160] ;
+      [----:B------:R-:W2:-:S04]         /*0190*/                   LDG.E.SYS R5, [R4] ;
+      [----:B------:R-:W2:-:S04]         /*01a0*/                   LDG.E.SYS R2, [R2] ;
+      [----:B------:R-:W3:-:S01]         /*01b0*/                   LDG.E.SYS R9, [R6] ;
+      [----:B------:R-:W-:Y:S06]         /*01c0*/                   IMAD R8, R11, c[0x0][0x168], RZ ;
+      [----:B------:R-:W0:-:S08]         /*01d0*/                   LDC R0, c[0x3][R8] ;
+      [----:B------:R-:W0:-:S02]         /*01e0*/                   LDC R11, c[0x3][R8+0x2c] ;
+      [----:B0-----:R-:W-:Y:S02]         /*01f0*/                   IADD3 R11, R0, R11, RZ ;
+      [----:B--2---:R-:W-:Y:S05]         /*0200*/                   IADD3 R0, R5, c[0x0][0x168], R2 ;
+      [----:B---3--:R-:W-:Y:S08]         /*0210*/                   IMAD R9, R0, R9, R11 ;
+      [----:B------:R-:W-:-:S01]         /*0220*/                   STG.E.SYS [R6], R9 ;
+      [----:B------:R-:W-:-:S05]         /*0230*/                   EXIT ;
+  .L_17:
+      [----:B------:R-:W-:Y:S00]         /*0240*/                   BRA `(.L_17);
+  .L_202:
+  
+  
+
+// --------------------- .text._Z10local_testiiPi         --------------------------
+	.section	.text._Z10local_testiiPi,"ax",@progbits
+	.__section_name         0x277 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x6
+	.__section_addr         0x0
+	.__section_offset       0x3a80 	// maybe updated by assembler
+	.__section_size         0x180 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0xd00002c
+	.__section_entsize      0
+	.align                128 	// equivalent to set sh_addralign
+  	.sectioninfo	@"SHI_REGISTERS=13"
+  	.align	128
+          .global         _Z10local_testiiPi
+          .type           _Z10local_testiiPi,@function
+          .size           _Z10local_testiiPi,(.L_203 - _Z10local_testiiPi)
+          .other          _Z10local_testiiPi,@"STO_CUDA_ENTRY STV_DEFAULT"
+  _Z10local_testiiPi:
+  .text._Z10local_testiiPi:
+      [----:B------:R-:W-:Y:S08]         /*0000*/                   IMAD.MOV.U32 R1, RZ, RZ, c[0x0][0x28] ;
+      [----:B------:R-:W0:-:S01]         /*0010*/                   S2R R0, SR_TID.X ;
+      [----:B------:R-:W-:-:S01]         /*0020*/                   IMAD.MOV.U32 R4, RZ, RZ, c[0x0][0x160] ;
+      [----:B------:R-:W-:-:S01]         /*0030*/                   IADD3 R1, R1, -0x48, RZ ;
+      [----:B------:R-:W-:-:S01]         /*0040*/                   IMAD.MOV.U32 R8, RZ, RZ, c[0x0][0x164] ;
+      [----:B------:R-:W0:-:S02]         /*0050*/                   S2R R3, SR_CTAID.X ;
+      [----:B------:R-:W-:-:S01]         /*0060*/                   SHF.L.U32 R2, R4, 0x1, RZ ;
+      [----:B------:R-:W-:-:S01]         /*0070*/                   IMAD R8, R8, 0x4, R1 ;
+      [----:B------:R-:W-:Y:S03]         /*0080*/                   LEA R5, R4, R1, 0x2 ;
+      [----:B------:R-:W-:-:S02]         /*0090*/                   IMAD R7, R2, 0x4, R1 ;
+      [----:B0-----:R-:W-:Y:S05]         /*00a0*/                   IMAD R0, R3, c[0x0][0x0], R0 ;
+      [R---:B------:R-:W-:-:S02]         /*00b0*/                   IADD3 R4, R0.reuse, 0x1, RZ ;
+      [----:B------:R-:W-:-:S01]         /*00c0*/                   SHF.L.U32 R6, R0, 0x1, RZ ;
+      [----:B------:R-:W-:-:S05]         /*00d0*/                   STL [R5], R0 ;
+      [----:B------:R-:W-:-:S04]         /*00e0*/                   STL [R5+0x4], R4 ;
+      [----:B------:R-:W-:-:S04]         /*00f0*/                   STL [R7], R6 ;
+      [----:B------:R-:W2:-:S04]         /*0100*/                   LDL R9, [R8] ;
+      [----:B------:R-:W2:-:S01]         /*0110*/                   LDL R10, [R8+0x4] ;
+      [----:B------:R-:W-:Y:S05]         /*0120*/                   MOV R3, 0x4 ;
+      [----:B------:R-:W-:-:S01]         /*0130*/                   IMAD.WIDE R2, R0, R3, c[0x0][0x168] ;
+      [----:B--2---:R-:W-:Y:S08]         /*0140*/                   IADD3 R9, R9, R10, RZ ;
+      [----:B------:R-:W-:-:S01]         /*0150*/                   STG.E.SYS [R2], R9 ;
+      [----:B------:R-:W-:-:S05]         /*0160*/                   EXIT ;
+  .L_18:
+      [----:B------:R-:W-:Y:S00]         /*0170*/                   BRA `(.L_18);
+  .L_203:
+  
+  
+
+// --------------------- .text._Z4test6float4PS_          --------------------------
+	.section	.text._Z4test6float4PS_,"ax",@progbits
+	.__section_name         0x2eb 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x6
+	.__section_addr         0x0
+	.__section_offset       0x3c00 	// maybe updated by assembler
+	.__section_size         0x480 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0xa00002d
+	.__section_entsize      0
+	.align                128 	// equivalent to set sh_addralign
+  	.sectioninfo	@"SHI_REGISTERS=10"
+  	.align	128
+          .global         _Z4test6float4PS_
+          .type           _Z4test6float4PS_,@function
+          .size           _Z4test6float4PS_,(.L_204 - _Z4test6float4PS_)
+          .other          _Z4test6float4PS_,@"STO_CUDA_ENTRY STV_DEFAULT"
+  _Z4test6float4PS_:
+  .text._Z4test6float4PS_:
+      [----:B------:R-:W-:Y:S08]         /*0000*/                   MOV R1, c[0x0][0x28] ;
+      [----:B------:R-:W0:-:S01]         /*0010*/                   S2R R2, SR_TID.X ;
+      [----:B------:R-:W-:Y:S05]         /*0020*/                   MOV R3, 0x10 ;
+      [----:B0-----:R-:W-:Y:S08]         /*0030*/                   IMAD.WIDE R2, R2, R3, c[0x0][0x170] ;
+      [----:B------:R-:W2:-:S02]         /*0040*/                   LDG.E.128.SYS R4, [R2] ;
+      [----:B--2---:R-:W-:-:S02]         /*0050*/                   FFMA R7, R7, c[0x0][0x16c], R7 ;
+      [----:B------:R-:W-:-:S02]         /*0060*/                   FFMA R6, R6, c[0x0][0x168], R6 ;
+      [----:B------:R-:W-:-:S02]         /*0070*/                   FFMA R5, R5, c[0x0][0x164], R5 ;
+      [----:B------:R-:W-:-:S02]         /*0080*/                   FFMA R4, R4, c[0x0][0x160], R4 ;
+      [----:B------:R-:W-:Y:S02]         /*0090*/                   FFMA R7, R7, c[0x0][0x16c], R7 ;
+      [----:B------:R-:W-:-:S02]         /*00a0*/                   FFMA R6, R6, c[0x0][0x168], R6 ;
+      [----:B------:R-:W-:-:S02]         /*00b0*/                   FFMA R5, R5, c[0x0][0x164], R5 ;
+      [----:B------:R-:W-:-:S02]         /*00c0*/                   FFMA R4, R4, c[0x0][0x160], R4 ;
+      [----:B------:R-:W-:-:S02]         /*00d0*/                   FFMA R7, R7, c[0x0][0x16c], R7 ;
+      [----:B------:R-:W-:-:S02]         /*00e0*/                   FFMA R6, R6, c[0x0][0x168], R6 ;
+      [----:B------:R-:W-:Y:S02]         /*00f0*/                   FFMA R5, R5, c[0x0][0x164], R5 ;
+      [----:B------:R-:W-:-:S02]         /*0100*/                   FFMA R4, R4, c[0x0][0x160], R4 ;
+      [----:B------:R-:W-:-:S02]         /*0110*/                   FFMA R7, R7, c[0x0][0x16c], R7 ;
+      [----:B------:R-:W-:-:S02]         /*0120*/                   FFMA R6, R6, c[0x0][0x168], R6 ;
+      [----:B------:R-:W-:-:S02]         /*0130*/                   FFMA R5, R5, c[0x0][0x164], R5 ;
+      [----:B------:R-:W-:-:S02]         /*0140*/                   FFMA R4, R4, c[0x0][0x160], R4 ;
+      [----:B------:R-:W-:Y:S02]         /*0150*/                   FFMA R7, R7, c[0x0][0x16c], R7 ;
+      [----:B------:R-:W-:-:S02]         /*0160*/                   FFMA R6, R6, c[0x0][0x168], R6 ;
+      [----:B------:R-:W-:-:S02]         /*0170*/                   FFMA R5, R5, c[0x0][0x164], R5 ;
+      [----:B------:R-:W-:-:S02]         /*0180*/                   FFMA R4, R4, c[0x0][0x160], R4 ;
+      [----:B------:R-:W-:-:S02]         /*0190*/                   FFMA R7, R7, c[0x0][0x16c], R7 ;
+      [----:B------:R-:W-:-:S02]         /*01a0*/                   FFMA R6, R6, c[0x0][0x168], R6 ;
+      [----:B------:R-:W-:Y:S02]         /*01b0*/                   FFMA R5, R5, c[0x0][0x164], R5 ;
+      [----:B------:R-:W-:-:S02]         /*01c0*/                   FFMA R4, R4, c[0x0][0x160], R4 ;
+      [----:B------:R-:W-:-:S02]         /*01d0*/                   FFMA R7, R7, c[0x0][0x16c], R7 ;
+      [----:B------:R-:W-:-:S02]         /*01e0*/                   FFMA R6, R6, c[0x0][0x168], R6 ;
+      [----:B------:R-:W-:-:S02]         /*01f0*/                   FFMA R5, R5, c[0x0][0x164], R5 ;
+      [----:B------:R-:W-:-:S02]         /*0200*/                   FFMA R4, R4, c[0x0][0x160], R4 ;
+      [----:B------:R-:W-:Y:S02]         /*0210*/                   FFMA R7, R7, c[0x0][0x16c], R7 ;
+      [----:B------:R-:W-:-:S02]         /*0220*/                   FFMA R6, R6, c[0x0][0x168], R6 ;
+      [----:B------:R-:W-:-:S02]         /*0230*/                   FFMA R5, R5, c[0x0][0x164], R5 ;
+      [----:B------:R-:W-:-:S02]         /*0240*/                   FFMA R4, R4, c[0x0][0x160], R4 ;
+      [----:B------:R-:W-:-:S02]         /*0250*/                   FFMA R7, R7, c[0x0][0x16c], R7 ;
+      [----:B------:R-:W-:-:S02]         /*0260*/                   FFMA R6, R6, c[0x0][0x168], R6 ;
+      [----:B------:R-:W-:Y:S02]         /*0270*/                   FFMA R5, R5, c[0x0][0x164], R5 ;
+      [----:B------:R-:W-:-:S02]         /*0280*/                   FFMA R4, R4, c[0x0][0x160], R4 ;
+      [----:B------:R-:W-:-:S02]         /*0290*/                   FFMA R7, R7, c[0x0][0x16c], R7 ;
+      [----:B------:R-:W-:-:S02]         /*02a0*/                   FFMA R6, R6, c[0x0][0x168], R6 ;
+      [----:B------:R-:W-:-:S02]         /*02b0*/                   FFMA R5, R5, c[0x0][0x164], R5 ;
+      [----:B------:R-:W-:-:S02]         /*02c0*/                   FFMA R4, R4, c[0x0][0x160], R4 ;
+      [----:B------:R-:W-:Y:S02]         /*02d0*/                   FFMA R7, R7, c[0x0][0x16c], R7 ;
+      [----:B------:R-:W-:-:S02]         /*02e0*/                   FFMA R6, R6, c[0x0][0x168], R6 ;
+      [----:B------:R-:W-:-:S02]         /*02f0*/                   FFMA R5, R5, c[0x0][0x164], R5 ;
+      [----:B------:R-:W-:-:S02]         /*0300*/                   FFMA R4, R4, c[0x0][0x160], R4 ;
+      [----:B------:R-:W-:-:S02]         /*0310*/                   FFMA R7, R7, c[0x0][0x16c], R7 ;
+      [----:B------:R-:W-:-:S02]         /*0320*/                   FFMA R6, R6, c[0x0][0x168], R6 ;
+      [----:B------:R-:W-:Y:S02]         /*0330*/                   FFMA R5, R5, c[0x0][0x164], R5 ;
+      [----:B------:R-:W-:-:S02]         /*0340*/                   FFMA R4, R4, c[0x0][0x160], R4 ;
+      [----:B------:R-:W-:-:S02]         /*0350*/                   FFMA R7, R7, c[0x0][0x16c], R7 ;
+      [----:B------:R-:W-:-:S02]         /*0360*/                   FFMA R6, R6, c[0x0][0x168], R6 ;
+      [----:B------:R-:W-:-:S02]         /*0370*/                   FFMA R5, R5, c[0x0][0x164], R5 ;
+      [----:B------:R-:W-:-:S02]         /*0380*/                   FFMA R4, R4, c[0x0][0x160], R4 ;
+      [----:B------:R-:W-:Y:S02]         /*0390*/                   FFMA R7, R7, c[0x0][0x16c], R7 ;
+      [----:B------:R-:W-:-:S02]         /*03a0*/                   FFMA R6, R6, c[0x0][0x168], R6 ;
+      [----:B------:R-:W-:-:S02]         /*03b0*/                   FFMA R5, R5, c[0x0][0x164], R5 ;
+      [----:B------:R-:W-:-:S02]         /*03c0*/                   FFMA R4, R4, c[0x0][0x160], R4 ;
+      [----:B------:R-:W-:-:S02]         /*03d0*/                   FFMA R7, R7, c[0x0][0x16c], R7 ;
+      [----:B------:R-:W-:-:S02]         /*03e0*/                   FFMA R6, R6, c[0x0][0x168], R6 ;
+      [----:B------:R-:W-:Y:S02]         /*03f0*/                   FFMA R5, R5, c[0x0][0x164], R5 ;
+      [----:B------:R-:W-:-:S02]         /*0400*/                   FFMA R4, R4, c[0x0][0x160], R4 ;
+      [----:B------:R-:W-:-:S02]         /*0410*/                   FFMA R7, R7, c[0x0][0x16c], R7 ;
+      [----:B------:R-:W-:-:S02]         /*0420*/                   FFMA R6, R6, c[0x0][0x168], R6 ;
+      [----:B------:R-:W-:-:S02]         /*0430*/                   FFMA R5, R5, c[0x0][0x164], R5 ;
+      [----:B------:R-:W-:Y:S08]         /*0440*/                   FFMA R4, R4, c[0x0][0x160], R4 ;
+      [----:B------:R-:W-:-:S01]         /*0450*/                   STG.E.128.SYS [R2], R4 ;
+      [----:B------:R-:W-:-:S05]         /*0460*/                   EXIT ;
+  .L_19:
+      [----:B------:R-:W-:Y:S00]         /*0470*/                   BRA `(.L_19);
+  .L_204:
+  
+  
+
+// --------------------- .nv.global.init                  --------------------------
+	.section	.nv.global.init,"aw",@progbits
+	.__section_name         0x98 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x3
+	.__section_addr         0x0
+	.__section_offset       0x4080 	// maybe updated by assembler
+	.__section_size         0x5c 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x0
+	.__section_entsize      0
+	.align                8 	// equivalent to set sh_addralign
+  	.align	8
+  	.type		flist,@object
+  	.size		flist,(__cudart_i2opi_f - flist)
+  flist:
+  .nv.global.init:
+          /*0000*/ 	.byte	0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0010*/ 	.byte	0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0020*/ 	.byte	0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0030*/ 	.byte	0x38, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+  	.type		__cudart_i2opi_f,@object
+  	.size		__cudart_i2opi_f,($str - __cudart_i2opi_f)
+  __cudart_i2opi_f:
+          /*0038*/ 	.byte	0x41, 0x90, 0x43, 0x3c, 0x99, 0x95, 0x62, 0xdb, 0xc0, 0xdd, 0x34, 0xf5, 0xd1, 0x57, 0x27, 0xfc
+          /*0048*/ 	.byte	0x29, 0x15, 0x44, 0x4e, 0x6e, 0x83, 0xf9, 0xa2
+  	.type		$str,@object
+  	.size		$str,(.L_7 - $str)
+  $str:
+          /*0050*/ 	.byte	0x61, 0x5b, 0x25, 0x64, 0x5d, 0x20, 0x3d, 0x20, 0x25, 0x64, 0x0a, 0x00
+  .L_7:
+  
+  
+// --------------------- .nv.shared._Z7argtestPiS_S_      --------------------------
+	.section	.nv.shared._Z7argtestPiS_S_,"aw",@nobits
+	.__section_name         0x63 	// offset in .shstrtab
+	.__section_type         SHT_NOBITS
+	.__section_flags        0x3
+	.__section_addr         0x0
+	.__section_offset       0x40e0 	// maybe updated by assembler
+	.__section_size         0x0 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x1a
+	.__section_entsize      0
+	.align                16 	// equivalent to set sh_addralign
+  	.align	16
+  
+  
+// --------------------- .nv.global                       --------------------------
+	.section	.nv.global,"aw",@nobits
+	.__section_name         0x8d 	// offset in .shstrtab
+	.__section_type         SHT_NOBITS
+	.__section_flags        0x3
+	.__section_addr         0x0
+	.__section_offset       0x40e0 	// maybe updated by assembler
+	.__section_size         0xa0 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x0
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  	.type		GlobalC1,@object
+  	.size		GlobalC1,(GlobalC2 - GlobalC1)
+  GlobalC1:
+  .nv.global:
+  	.zero		28
+  	.type		GlobalC2,@object
+  	.size		GlobalC2,(.L_5 - GlobalC2)
+  GlobalC2:
+  	.zero		132
+  .L_5:
+  
+  
+// --------------------- .nv.shared._Z11shared_testfPf    --------------------------
+	.section	.nv.shared._Z11shared_testfPf,"aw",@nobits
+	.__section_name         0x152 	// offset in .shstrtab
+	.__section_type         SHT_NOBITS
+	.__section_flags        0x3
+	.__section_addr         0x0
+	.__section_offset       0x40e0 	// maybe updated by assembler
+	.__section_size         0x1010 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x1b
+	.__section_entsize      0
+	.align                16 	// equivalent to set sh_addralign
+  	.align	16
+  .nv.shared._Z11shared_testfPf:
+  	.zero		4112
+  
+  
+// --------------------- .nv.shared._Z11nvinfo_testiiPi   --------------------------
+	.section	.nv.shared._Z11nvinfo_testiiPi,"aw",@nobits
+	.__section_name         0x1c8 	// offset in .shstrtab
+	.__section_type         SHT_NOBITS
+	.__section_flags        0x3
+	.__section_addr         0x0
+	.__section_offset       0x40e0 	// maybe updated by assembler
+	.__section_size         0x0 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x1c
+	.__section_entsize      0
+	.align                16 	// equivalent to set sh_addralign
+  	.align	16
+  
+  
+// --------------------- .nv.shared._Z5childPii           --------------------------
+	.section	.nv.shared._Z5childPii,"aw",@nobits
+	.__section_name         0x230 	// offset in .shstrtab
+	.__section_type         SHT_NOBITS
+	.__section_flags        0x3
+	.__section_addr         0x0
+	.__section_offset       0x40e0 	// maybe updated by assembler
+	.__section_size         0x0 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x1d
+	.__section_entsize      0
+	.align                16 	// equivalent to set sh_addralign
+  	.align	16
+  
+  
+// --------------------- .nv.shared._Z10local_testiiPi    --------------------------
+	.section	.nv.shared._Z10local_testiiPi,"aw",@nobits
+	.__section_name         0x2ac 	// offset in .shstrtab
+	.__section_type         SHT_NOBITS
+	.__section_flags        0x3
+	.__section_addr         0x0
+	.__section_offset       0x40e0 	// maybe updated by assembler
+	.__section_size         0x0 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x1e
+	.__section_entsize      0
+	.align                16 	// equivalent to set sh_addralign
+  	.align	16
+  
+  
+// --------------------- .nv.shared._Z4test6float4PS_     --------------------------
+	.section	.nv.shared._Z4test6float4PS_,"aw",@nobits
+	.__section_name         0x31e 	// offset in .shstrtab
+	.__section_type         SHT_NOBITS
+	.__section_flags        0x3
+	.__section_addr         0x0
+	.__section_offset       0x40e0 	// maybe updated by assembler
+	.__section_size         0x0 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x1f
+	.__section_entsize      0
+	.align                16 	// equivalent to set sh_addralign
+  	.align	16
+  
+  
+  //--------------------- SYMBOLS --------------------------
+  
+  	.type		texRef2d,@"STT_CUDA_TEXTURE"
+  	.type		texRef1d,@"STT_CUDA_TEXTURE"
+  	.type		inputSurfRef,@"STT_CUDA_SURFACE"
+  	.type		outputSurfRef,@"STT_CUDA_SURFACE"
+  	.type		vprintf,@function
+  //-------------------------------------------------
+  //---------------- END of sections ----------------
+  //-------------------------------------------------
+
+
+// Program segment PT_PHDR, 5 
+  .__segment  "PT_PHDR", 5 
+  .__segment_offset  0x4ae0   		// maybe updated by assembler 
+  .__segment_vaddr   0x0   		// Seems always 0? 
+  .__segment_paddr   0x0   		// ??? 
+  .__segment_filesz  0xa8   		// file size, maybe updated by assembler 
+  .__segment_memsz   0xa8   		// file size + nobits sections, maybe updated by assembler 
+  .__segment_align     8   		//  
+
+// Program segment PT_LOAD, 5 
+  .__segment  "PT_LOAD", 5 
+  .__segment_offset  0x1cf0   		// maybe updated by assembler 
+  .__segment_vaddr   0x0   		// Seems always 0? 
+  .__segment_paddr   0x0   		// ??? 
+  .__segment_filesz  0x2390   		// file size, maybe updated by assembler 
+  .__segment_memsz   0x2390   		// file size + nobits sections, maybe updated by assembler 
+  .__segment_align     8   		//  
+  .__segment_startsection    ".nv.constant3"  		// first section in this segment 
+  .__segment_endsection      ".text._Z4test6float4PS_"  		// last  section in this segment 
+
+// Program segment PT_LOAD, 6 
+  .__segment  "PT_LOAD", 6 
+  .__segment_offset  0x4080   		// maybe updated by assembler 
+  .__segment_vaddr   0x0   		// Seems always 0? 
+  .__segment_paddr   0x0   		// ??? 
+  .__segment_filesz  0x60   		// file size, maybe updated by assembler 
+  .__segment_memsz   0x1110   		// file size + nobits sections, maybe updated by assembler 
+  .__segment_align     8   		//  
+  .__segment_startsection    ".nv.global.init"  		// first section in this segment 
+  .__segment_endsection      ".nv.shared._Z4test6float4PS_"  		// last  section in this segment 
+
+
+  //-------------------------------------------------
+  //---------------- END of segments ----------------
+  //-------------------------------------------------
+
+
