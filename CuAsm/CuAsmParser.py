@@ -297,6 +297,7 @@ class CuAsmSection(object):
         ''' Build section header bytes with current header struct. '''
         
         self.updateHeader()
+        # print(self.__mSectionHeader)
         return Config.CubinELFStructs.Elf_Shdr.build(self.__mSectionHeader)
 
     def emitBytes(self, bs):
@@ -695,6 +696,8 @@ class CuAsmParser(object):
         self.__mInsIndex      = 0   # Current instruction index
         self.__mCuSMVersion   = None
 
+        self.__mPadSizeBeforeSecHeader = 0 # number of padding bytes before section header
+
         # TODO: not implemented yet
         # current all the entries are copied from cubin
         # self.__mStrList       = []  # string may have identical entries
@@ -763,6 +766,11 @@ class CuAsmParser(object):
             disppos('SectionData %s'%sname)
             sec.writePaddedData(fout)
 
+        # write padding bytes before section header
+        if self.__mPadSizeBeforeSecHeader > 0:
+            disppos('Padding %d bytes before section header' % self.__mPadSizeBeforeSecHeader)
+            fout.write(b'\x00' * self.__mPadSizeBeforeSecHeader)
+
         # write section headers
         for sname,sec in self.__mSectionDict.items():
             disppos('SectionHeader %s'%sname)
@@ -776,7 +784,6 @@ class CuAsmParser(object):
         if needClose:
             fout.close()
 
-    
     def setInsAsmRepos(self, fname, arch):
         self.__mCuInsAsmRepos = CuInsAssemblerRepos(fname, arch=arch)
 
@@ -876,9 +883,9 @@ class CuAsmParser(object):
         self.__mSymtabDict = CuAsmSymbol.buildSymbolDict(self.__mStrtabDict,
                                                          self.__mSectionDict['.symtab'].getData())
 
-    @CuAsmLogger.logTraceIt
+    # @CuAsmLogger.logTraceIt
     def __parseKernelText(self, section, line_start, line_end):
-        CuAsmLogger.logSubroutine('Parsing kernel text of "%s"...'%section.name)
+        CuAsmLogger.logProcedure('Parsing kernel text of "%s"...'%section.name)
 
         kasm = CuKernelAssembler(ins_asm_repos=self.__mCuInsAsmRepos, version=self.__mCuSMVersion)
 
@@ -1113,32 +1120,57 @@ class CuAsmParser(object):
 
         # initialize the offset as the ELF header size
         elfheadersize = Config.CubinELFStructs.Elf_Ehdr.sizeof()
-        file_offset = elfheadersize
 
+        file_offset = elfheadersize
+        mem_offset = elfheadersize
         prev_sec = None
-        for isec, sec in self.__mSectionDict.items():
-            # skip the first NULL section
-            if sec.name == '':
+
+        sh_edges = {} # key=secname, value = (file_start, file_end, mem_start, mem_end)
+        # First pass to get the size of every section
+        # NOTE: the size of current section depends the padding, which is determined by next section
+        #       Seems only for text section? For other sections, padding will not count in size?
+        for secname, sec in self.__mSectionDict.items():
+            if secname == '':
                 continue
 
-            size = sec.getDataSize()
+            # print(secname)
             align = sec.addralign
+            file_offset, mem_offset = self.__updateSectionPadding(prev_sec, file_offset, mem_offset, align)
 
-            file_offset = self.__updateSectionPadding(prev_sec, file_offset, align)
-            prev_sec = sec
-
+            sec.size = sec.getDataSize()
             sec.offset = file_offset
-            sec.size = size
-            sec.header['offset'] = sec.offset
-            sec.header['size'] = sec.size
-            
-            if sec.header['type'] != 'SHT_NOBITS':
-                file_offset += size
-        
-        # FIXME: better alignment for headers?
-        p_align = self.__mSegmentList[0].header['align']
-        file_offset = self.__updateSectionPadding(prev_sec, file_offset, p_align)
 
+            sec.header['size'] = sec.size
+            sec.header['offset'] = sec.offset
+            
+            prev_sec = sec
+            sh_edges[secname] = (file_offset, 0, mem_offset, 0)
+
+            mem_offset += sec.size
+            if sec.header['type'] != 'SHT_NOBITS':
+                file_offset += sec.size
+        
+        # Section pass to build the section edges, for locating segment range
+        for secname, sec in self.__mSectionDict.items():
+            if secname == '':
+                continue
+            
+            sec.size = sec.getDataSize()
+            sec.header['size'] = sec.size
+
+            if sec.header['type'] != 'SHT_NOBITS':
+                fsize = sec.size
+                msize = fsize
+            else:
+                fsize = 0
+                msize = sec.size
+
+            file_offset, _, mem_offset, _ =  sh_edges[secname]
+            sh_edges[secname] = (file_offset, file_offset+fsize, mem_offset, mem_offset+msize)
+
+        # FIXME: better alignment for headers ?
+        file_offset, self.__mPadSizeBeforeSecHeader = alignTo(file_offset, 8)
+        
         # Current only the normal order is support:
         #      ELFHeader -> SectionData -> SectionHeader -> SegmentHeader
         # Other orders may be possible, but not supported yet.
@@ -1156,11 +1188,13 @@ class CuAsmParser(object):
             elif seg.header['type'] == 'PT_LOAD':
                 # if startsection is empty, this segment is empty
                 # Seems a convention of compiler?
-                if seg.header['startsection'] != '':
-                    seg_off, filesz, memsz = self.__calcSegmentRange(seg.header['startsection'], seg.header['endsection'])
-                    seg.header['offset'] = seg_off
-                    seg.header['filesz'] = filesz
-                    seg.header['memsz'] = memsz
+                if seg.header['startsection'] != '' and seg.header['endsection'] != '':
+                    file_start0, file_end0, mem_start0, mem_end0 = sh_edges[seg.header['startsection']]
+                    file_start1, file_end1, mem_start1, mem_end1 = sh_edges[seg.header['endsection']]
+
+                    seg.header['offset'] = file_start0
+                    seg.header['filesz'] = file_end1 - file_start0
+                    seg.header['memsz'] = mem_end1 - mem_start0
 
             else:
                 msg = 'Unknown segment type %s!'%seg.header['type']
@@ -1673,7 +1707,7 @@ class CuAsmParser(object):
         npad = size // len(padbytes)
         return npad * padbytes
 
-    def __updateSectionPadding(self, sec, file_offset, align):
+    def __updateSectionPadding(self, sec, file_offset, mem_offset, align):
         ''' Update section padding with size.
         
             For text sections: padding to the original section data, update size
@@ -1682,16 +1716,14 @@ class CuAsmParser(object):
         '''
 
         if sec is None:
-            return file_offset
+            return file_offset, mem_offset
 
         if sec.name.startswith('.text'):
             align = max(align, sec.addralign)
-
             file_offset, fpadsize = alignTo(file_offset, align)
+            mem_offset, mpadsize = alignTo(mem_offset, align)
 
-            sec.emitPadding(self.__genSectionPaddingBytes(sec, fpadsize))
-            sec.size = sec.getDataSize()
-            sec.header['size'] = sec.size
+            sec.emitPadding(self.__genSectionPaddingBytes(sec, fpadsize))            
             
             # FIXME: This treatment is weird, but the text sections seems always aligned
             #        and last label of .text section seems to be the padded offset. 
@@ -1701,15 +1733,21 @@ class CuAsmParser(object):
             if sec.name in self.__mSecSizeLabel:
                 sizelabel = self.__mSecSizeLabel[sec.name]
                 sizelabel.offset = sec.size
+            
+        elif sec.header['type'] == 'SHT_NOBITS':
+            mem_offset, mpadsize = alignTo(mem_offset, align)
+            sec.padsize = mpadsize
+            sec.padbytes = mpadsize * b'\x00'
         else:
             file_offset, fpadsize = alignTo(file_offset, align)
+            mem_offset, mpadsize = alignTo(mem_offset, align)
 
             sec.padsize = fpadsize
             sec.padbytes = fpadsize * b'\x00'
-        
+
         sec.updateHeader()
 
-        return file_offset
+        return file_offset, mem_offset
 
     def __calcSegmentRange(self, sec_start, sec_end):
 

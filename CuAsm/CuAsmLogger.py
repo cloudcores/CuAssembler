@@ -191,7 +191,7 @@ class CuAsmLogger(object):
         CuAsmLogger.__IndentString = '    ' * CuAsmLogger.__IndentLevel
     
     @staticmethod
-    def resetIndent(val):
+    def resetIndent(val=0):
         if val<0:
             val = 0
         CuAsmLogger.__IndentLevel = val
