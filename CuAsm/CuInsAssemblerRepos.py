@@ -42,12 +42,18 @@ class CuInsAssemblerRepos():
         self.m_InsAsmDict = InsAsmDict
 
     def initFromFile(self, fname):
+        ''' Load repos from file. '''
         with open(fname,'r') as fin:
             fconts = fin.read()
             asm_repos = eval(fconts)
             self.m_InsAsmDict = asm_repos.m_InsAsmDict
 
     def assemble(self, addr, s, precheck=True):
+        ''' Try to assemble the input instruction string. 
+        
+            Raise KeyError when the ins_key is not found.
+            if precheck is true, a ValueError will be raised if it cannot be assembled.
+        '''
         ins_key, ins_vals, ins_modi = self.m_InsParser.parse(s, addr, 0)
         if ins_key not in self.m_InsAsmDict:
             raise KeyError('Unknown ins_key(%s) in Repos!' % ins_key)
@@ -63,6 +69,7 @@ class CuInsAssemblerRepos():
 
     @CuAsmLogger.logTimeIt
     def verify(self, feeder):
+        ''' Verify current repos. '''
         res = True
         t0 = time.time()
         cnt = 0
@@ -71,26 +78,26 @@ class CuInsAssemblerRepos():
             try:
                 casm = self.assemble(addr, s)
                 if code != casm:
-                    print('Error when verifying :')
-                    print('  ' + s)
-                    print('  CodeOrg: %032x'%code)
-                    print('  CodeAsm: %032x'%casm)
+                    CuAsmLogger.logError('Error when verifying :')
+                    CuAsmLogger.logError('  ' + s)
+                    CuAsmLogger.logError('  CodeOrg: %032x'%code)
+                    CuAsmLogger.logError('  CodeAsm: %032x'%casm)
                     # raise Exception('Assembled code not match!')
             except:
-                print('Error when assembling :')
-                print('  ' + s)
+                CuAsmLogger.logError('Error when assembling :')
+                CuAsmLogger.logError('  ' + s)
                 res = False
 
         t1 = time.time()
 
         if res:
-            print("Verified %d ins in %8.3f secs." % (cnt, t1-t0))
-            if (t0==t1):
-                print("  ~Unknown ins per second." )
-            else:
-                print("  ~%8.2f ins per second." % (cnt/(t1-t0)))
+            msg = "Verified %d ins in %8.3f secs." % (cnt, t1-t0)
+            if t0!=t1:
+                msg += "  ~%8.2f ins/s." % (cnt/(t1-t0))
+            
+            CuAsmLogger.logProcedure(msg)
         else:
-            print("Verifying failed in %8.3f secs!!!" % (t1-t0))
+            CuAsmLogger.logError("Verifying failed in %8.3f secs!!!" % (t1-t0))
 
         return res
 
@@ -117,20 +124,21 @@ class CuInsAssemblerRepos():
             res = ins_asm_dict[ins_key].push(ins_vals, ins_modi, code, ins_info)
 
             if not res:
-                print("ERROR!!! Unmatched codes!")
-                print('  Str : ' + s)
-                print('  Addr: %#6x'%addr)
-                print(repr(ins_asm_dict[ins_key]))
+                CuAsmLogger.logError("CuInsAsmRepos update error!!! Unmatched codes!")
+                CuAsmLogger.logError('    Str : ' + s)
+                CuAsmLogger.logError('    Addr: %#6x'%addr)
+                CuAsmLogger.logInfo(repr(ins_asm_dict[ins_key]))
 
         t1 = time.time()
-        print("Updated %d ins in %8.3f secs." % (cnt, t1-t0))
-        if (t0==t1):
-            print("  ~Unknown ins per second." )
-        else:
-            print("  ~%8.2f ins per second." % (cnt/(t1-t0)))
+        msg = "Updated %d ins in %8.3f secs." % (cnt, t1-t0)
+        if (t0!=t1):
+            msg += "  ~%8.2f ins/s." % (cnt/(t1-t0))
+        
+        CuAsmLogger.logProcedure(msg)
 
     @CuAsmLogger.logTimeIt
     def save2file(self, fname):
+        CuAsmLogger.logEntry('Saving to %s...'%fname)
         with open(fname, 'w') as fout:
             fout.write(self.__repr__())
 
@@ -139,8 +147,8 @@ class CuInsAssemblerRepos():
         ''' When the CuInsParser is updated, the meaning of ins value/modifier may have changed.
         
             Thus CuInsAsmRepos should be rebuilt from original input (saved in ins records)
-            TODO: We may store some redundant records?
 
+            TODO: We may store some redundant records?
         '''
 
         tmp_ins_asm_dict = {}
@@ -183,7 +191,7 @@ class CuInsAssemblerRepos():
             Thus when the instruction assemblers are gathered from ptxas output, 
             many of them will not able to encode predicates.
 
-            This may give some useful infomation as performance guidelines.
+            This may give some useful information as performance guidelines.
             However, there will be certainly some occasions predicates will be needed.
         '''
 
