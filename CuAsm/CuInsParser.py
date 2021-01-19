@@ -196,9 +196,10 @@ class CuInsParser():
             opmodi.extend(tmodi)
         elif op[0] == '[': # address
             optype, opval, opmodi = self.__parseAddress(op)
-        elif op[0] == '{': # BarSet such as {3,4}, only for DEPBAR (deprecated? could set in control codes)
-                           # DEPBAR may wait a certain number of counts for one scoreboard, 
-            optype, opval, opmodi = self.__parseBarSet(op)
+        # elif op[0] == '{': # BarSet such as {3,4}, only for DEPBAR (deprecated? could set in control codes)
+        #                    # DEPBAR may wait a certain number of counts for one scoreboard, 
+        #     optype, opval, opmodi = self.__parseBarSet(op)
+        # NOTE: the scoreboard set is translated to indexed type in preprocess, thus no treatment here.
         elif op.startswith('c['):
             optype, opval, opmodi = self.__parseConstMemory(op)
             opmodi.extend(modi)
