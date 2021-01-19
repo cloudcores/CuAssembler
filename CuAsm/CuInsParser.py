@@ -37,6 +37,9 @@ p_FIType = re.compile(r'^(((-?\d+)(\.\d*)?((e|E)[-+]?\d+)?)(\.NEG)?|([+-]?INF)|(
 # Pattern for constant memory, some instructions have a mysterious space between two square brackets...
 p_ConstMemType = re.compile(r'c\[(0x\w+)\] *\[([+-?\w\.]+)\]')
 
+# Pattern for matching white spaces
+p_WhiteSpace = re.compile(r'\s+')
+
 # modifiers (1 char) that may appear before operands
 c_OpPreModifierChar = {'!':'NOT', '-':'NEG', '|':'ABS', '~':'BITNOT'}
 
@@ -142,7 +145,7 @@ class CuInsParser():
         self.m_InsVals = [self.m_InsPredVal]
         self.m_InsModifier = ['0_' + m for m in op_tokens] # TODO: May be we can treat pos dep modifiers here?
 
-        for iop,op in enumerate(tokens[1:]):
+        for iop, op in enumerate(tokens[1:]):
             if len(op)==0: # ?
                 continue
 
@@ -179,6 +182,10 @@ class CuInsParser():
             type:str, val:list, modi:list'''
 
         #print('Parsing operand: ' + operand)
+        
+        # all spaces inside the operand part of instruction are insignificant
+        # subn returns (result, num_of_replacements), thus the trailing [0]
+        operand = p_WhiteSpace.subn('', operand)[0]
 
         # Every operand may have one or more modifiers
         op, modi = self.stripModifier(operand)
