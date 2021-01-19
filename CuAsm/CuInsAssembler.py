@@ -6,6 +6,7 @@ from sympy.core.numbers import Rational
 from io import StringIO, BytesIO
 from .CuSMVersion import CuSMVersion
 from .common import reprList
+from CuAsm.CuAsmLogger import CuAsmLogger
 
 class CuInsAssembler():
     '''CuInsAssembler is the assembler handles the values and weights of one type of instruction.'''
@@ -100,7 +101,7 @@ class CuInsAssembler():
         if not all([m in self.m_InsModiSet for m in modi]):
             # If new instruction contains unknown modifier,
             # it's never possible to be assembled by current assembler.
-            print('Pushing with new modi (%s, %-20s): %s' % (self.m_Arch.formatCode(code), self.m_InsKey, ins_info))
+            CuAsmLogger.logProcedure('Pushing new modi (%s, %-20s): %s' % (self.m_Arch.formatCode(code), self.m_InsKey, ins_info))
             updated = self.expandModiSet(modi)
             self.m_InsRepos.append((vals, modi, code))
             self.buildMatrix()
@@ -124,11 +125,12 @@ class CuInsAssembler():
                 inscode = self.m_PSol.dot(insvec) / self.m_PSolFac
 
                 if inscode != code:
-                    print("InputCode : %s" % self.m_Arch.formatCode(code))
+                    CuAsmLogger.logError("Error when verifying code!")
+                    CuAsmLogger.logError("    InputCode : %s" % self.m_Arch.formatCode(code))
                     try:
-                        print("AsmCode   : %s" % self.m_Arch.formatCode(inscode))
+                        CuAsmLogger.logError("    AsmCode   : %s" % self.m_Arch.formatCode(inscode))
                     except:
-                        print("AsmCode   : (%s)!" % str(inscode))
+                        CuAsmLogger.logError("    AsmCode   : (%s)!" % str(inscode))
 
                     # print(self.__repr__())
                     # raise Exception("Inconsistent instruction code!")
@@ -138,7 +140,7 @@ class CuInsAssembler():
                     return 'Verified'
 
             else:
-                print('Pushing with new vals (%s, %-20s): %s' % (self.m_Arch.formatCode(code), self.m_InsKey, ins_info))
+                CuAsmLogger.logProcedure('Pushing with new vals (%s, %-20s): %s' % (self.m_Arch.formatCode(code), self.m_InsKey, ins_info))
                 self.m_InsRepos.append((vals, modi, code))
                 self.m_InsRecords.append(ins_info)
                 self.buildMatrix()
@@ -195,7 +197,8 @@ class CuInsAssembler():
     def solve(self):
         ''' Try to solve every variable.
 
-        This is possible only when ValNullMat is none.'''
+            This is possible only when ValNullMat is none.
+        '''
 
         if self.m_ValNullMat is None:
             x = self.m_ValMatrix.solve(self.m_Rhs)
@@ -208,12 +211,13 @@ class CuInsAssembler():
             return None
 
     def getNullMatrix(self, M):
-        '''Get the null space of current matrix M.
+        ''' Get the null space of current matrix M.
 
-        And get the lcm for all fractional denominators.
-        The null matrix is only for checking sufficiency of ValMatrix,
-        thus it won't be affected by any non-zero common factor.
-        Fractional seems much slower than integers.'''
+            And get the lcm for all fractional denominators.
+            The null matrix is only for checking sufficiency of ValMatrix,
+            thus it won't be affected by any non-zero common factor.
+            Fractional seems much slower than integers.
+        '''
 
         ns = M.nullspace()
         if len(ns)==0:
@@ -230,9 +234,9 @@ class CuInsAssembler():
     def getMatrixDenomLCM(self, M):
         ''' Get lcm of matrix denominator.
 
-        In sympy, operation of fractionals seems much slower than integers.
-        Thus we multiply a fraction matrix with the LCM of all denominators,
-        then divide the result with the LCM.
+            In sympy, operation of fractionals seems much slower than integers.
+            Thus we multiply a fraction matrix with the LCM of all denominators,
+            then divide the result with the LCM.
         '''
 
         dm = 1
@@ -245,7 +249,7 @@ class CuInsAssembler():
     def __repr__(self):
         ''' A string repr of current ins assembler.
 
-        This will be used to dump it to text file and read back by setFromDict.
+            This will be used to dump it to text file and read back by setFromDict.
         '''
         sio = StringIO()
 
