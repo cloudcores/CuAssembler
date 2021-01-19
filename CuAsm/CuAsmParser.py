@@ -1165,8 +1165,8 @@ class CuAsmParser(object):
                 fsize = 0
                 msize = sec.size
 
-            file_offset, _, mem_offset, _ =  sh_edges[secname]
-            sh_edges[secname] = (file_offset, file_offset+fsize, mem_offset, mem_offset+msize)
+            file_pos, _, mem_pos, _ =  sh_edges[secname]
+            sh_edges[secname] = (file_pos, file_pos + fsize, mem_pos, mem_pos + msize)
 
         # FIXME: better alignment for headers ?
         file_offset, self.__mPadSizeBeforeSecHeader = alignTo(file_offset, 8)
