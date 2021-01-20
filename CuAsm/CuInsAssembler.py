@@ -140,7 +140,7 @@ class CuInsAssembler():
                     return 'Verified'
 
             else:
-                CuAsmLogger.logProcedure('Pushing with new vals (%s, %-20s): %s' % (self.m_Arch.formatCode(code), self.m_InsKey, ins_info))
+                CuAsmLogger.logProcedure('Pushing new vals (%s, %-20s): %s' % (self.m_Arch.formatCode(code), self.m_InsKey, ins_info))
                 self.m_InsRepos.append((vals, modi, code))
                 self.m_InsRecords.append(ins_info)
                 self.buildMatrix()

@@ -6,7 +6,7 @@ from .common import *
 from .CuSMVersion import CuSMVersion
 
 # Pattern that matches an instruction string
-p_InsPattern = re.compile(r'(@!?U?P\d|@!PT)?\s*(\w+.*)\s*;')
+p_InsPattern = re.compile(r'(@!?U?P\d|@!PT)?\s*(\w+.*)\s*')
 
 # Pattern that matches scoreboard sets, such as {1}, {4,2}
 # Seems only appear after opcode DEPBAR
@@ -31,7 +31,7 @@ p_ModifierPattern = re.compile(r'^([~\-\|!]*)(.*?)((\.\w+)*)$')
 p_IndexedPattern = re.compile(r'\b(R|UR|P|UP|B|SB|SBSET)(\d+)\b')
 
 # Immediate floating point numbers, (NOTE: add 0f0000000 to skip conversion)
-# Some instruction in 
+# Some instruction in
 p_FIType = re.compile(r'^(((-?\d+)(\.\d*)?((e|E)[-+]?\d+)?)(\.NEG)?|([+-]?INF)|([+-]NAN)|(0[fF][0-9a-f]+))$')
 
 # Pattern for constant memory, some instructions have a mysterious space between two square brackets...
@@ -73,7 +73,7 @@ class CuInsParser():
 
     # predicate value is the first element in value vector
     PRED_VAL_IDX = 0
-    
+
     #
     OPERAND_VAL_IDX = 1
 
@@ -92,7 +92,7 @@ class CuInsParser():
         self.m_InsVals = []            # array of operand values (not include labels)
 
         self.m_SMVersion = CuSMVersion(arch)
-        
+
     def dumpInfo(self):
         print('#### CuInsParser @ 0x%016x ####' % id(self))
         print('InsString: ' + self.m_InsString)
@@ -107,7 +107,7 @@ class CuInsParser():
 
     def parse(self, s, addr=0, code=None):
         ''' Parse input string as instruction.'''
-        
+
         self.m_InsString = s.strip()
         self.m_CTrString = self.__preprocess(self.m_InsString)
         r = p_InsPattern.match(self.m_CTrString)
@@ -162,17 +162,18 @@ class CuInsParser():
         ''' Translate pre-defined constants (RZ/URZ/PT/...) to known or indexed values.
 
             Translate scoreboard sets {4,2} to SBSet
-        
+
         '''
-            
+
+        s = s.strip(' ;')
         for cm in p_ConstTrDict:
             s = re.sub(cm, p_ConstTrDict[cm], s)
-        
+
         res = p_SBSet.search(s)
         if res is not None:
             SB_valstr = self.__transScoreboardSet(res.group())
             s = p_SBSet.sub(SB_valstr, s)
-        
+
         return s
 
     def __parseOperand(self, operand):
@@ -182,7 +183,7 @@ class CuInsParser():
             type:str, val:list, modi:list'''
 
         #print('Parsing operand: ' + operand)
-        
+
         # all spaces inside the operand part of instruction are insignificant
         # subn returns (result, num_of_replacements), thus the trailing [0]
         operand = p_WhiteSpace.subn('', operand)[0]
@@ -197,7 +198,7 @@ class CuInsParser():
         elif op[0] == '[': # address
             optype, opval, opmodi = self.__parseAddress(op)
         # elif op[0] == '{': # BarSet such as {3,4}, only for DEPBAR (deprecated? could set in control codes)
-        #                    # DEPBAR may wait a certain number of counts for one scoreboard, 
+        #                    # DEPBAR may wait a certain number of counts for one scoreboard,
         #     optype, opval, opmodi = self.__parseBarSet(op)
         # NOTE: the scoreboard set is translated to indexed type in preprocess, thus no treatment here.
         elif op.startswith('c['):
@@ -228,8 +229,8 @@ class CuInsParser():
         return t, v, modi
 
     def __parsePred(self, s):
-        ''' Parse predicates (@!?U?P[\dT]) to values. 
-        
+        ''' Parse predicates (@!?U?P[\dT]) to values.
+
         '''
 
         if s is None or len(s)==0:
@@ -263,7 +264,7 @@ class CuInsParser():
         else:
             self.dumpInfo()
             raise ValueError('Unknown float precision (%s)!' % self.m_InsOp)
-        
+
         if self.m_InsOp.endswith('32I'):
             nbits = 32
         else:
@@ -279,7 +280,7 @@ class CuInsParser():
             but negtive ints may depend on the type.
             Currently we try to let the coefficient determined by the code, not predetermined.
 
-            TODO(Done): 
+            TODO(Done):
                 Some ALU instructions such as IADD3 in sm5x/6x, the sign bit will be moved to the modifier.
                 If the sign bit is explicitly show (such as -0x1), it can be handled by 'NegIntImme'.
                 But if it's implicitly defined (such as 0xfffff, 20bit used, but int imme has only 19bit),
@@ -388,7 +389,7 @@ class CuInsParser():
                     addr = self.m_InsVals[-1] - self.m_InsAddr - self.m_SMVersion.getInstructionLength()
                     if addr<0:
                         self.m_InsModifier.append('0_NegAddrOffset')
-                    
+
                     # The value length of same key should be kept the same
                     self.m_InsVals[-1] = addr
 

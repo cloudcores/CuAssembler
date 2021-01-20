@@ -114,11 +114,12 @@ class CuInsAssemblerRepos():
         cnt = 0
         for addr, code, s, ctrlcodes in feeder:
             cnt += 1
-            ins_key, ins_vals, ins_modi = self.m_InsParser.parse(s, addr, code)
             # print('%#6x : %s'%(addr, s))
+            ins_key, ins_vals, ins_modi = self.m_InsParser.parse(s, addr, code)
+            # 
 
             if ins_key not in ins_asm_dict:
-                ins_asm_dict[ins_key] = CuInsAssembler(ins_key)
+                ins_asm_dict[ins_key] = CuInsAssembler(ins_key, arch=self.__mSMVersion)
 
             ins_info = (addr, code, s)
             res = ins_asm_dict[ins_key].push(ins_vals, ins_modi, code, ins_info)

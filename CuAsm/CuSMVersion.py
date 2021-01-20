@@ -231,7 +231,7 @@ class CuSMVersion(object):
                 modi = ['FINeg']
             elif fval.endswith('.neg'): # Only for maxwell/pascal ?
                 val = fval[:-4]
-                modi = ['FINeg']
+                modi = ['ExplicitFINeg']
             else:
                 val = fval
                 modi = []
@@ -243,7 +243,7 @@ class CuSMVersion(object):
             v = int(val[2:], 16)
             return v, modi
         else:
-            fv = float(fval)
+            fv = float(val)
             ifmt, ofmt, fullbits, keepbits = self.__mFloatImmeFormat[prec]
             fb = struct.pack(ifmt, fv)
             ival = struct.unpack(ofmt, fb)[0]
