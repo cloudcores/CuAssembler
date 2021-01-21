@@ -191,7 +191,7 @@ class CuSMVersion(object):
             NOTE: This is different from the section align, which is applied to offset, not size.
         '''
         if self.__mMajor <= 6:
-            return 32
+            return 64
         else:
             return 128
 
@@ -380,7 +380,7 @@ class CuSMVersion(object):
         
         bio = BytesIO()
         nccode_intact =  n_ins // 3  # intact part of control code groups (1+3)
-        for i in nccode_intact:
+        for i in range(nccode_intact):
             ccode =  ctrl_code_list[3*i] + (ctrl_code_list[3*i+1]<<21) + (ctrl_code_list[3*i+2]<<42)
             bio.write(ccode.to_bytes(8, 'little'))
             bio.write(ins_code_list[3*i].to_bytes(8, 'little'))
@@ -388,27 +388,26 @@ class CuSMVersion(object):
             bio.write(ins_code_list[3*i+2].to_bytes(8, 'little'))
 
         if nccode_intact * 3 != n_ins:
-            if padding_align is None:
-                print('Tail part will be discarded when merging control codes! Try padding?')
-            else:
-                ntail = n_ins - nccode_intact
-                c0 = ctrl_code_list[3*nccode_intact]
-                c1 = ctrl_code_list[3*nccode_intact+1] if ntail>1 else CuSMVersion.Pad_CCode_5x_6x
-                c2 = CuSMVersion.Pad_CCode_5x_6x
-                ccode = c0 + (c1>>21) + (c2>>42)
-                bio.write(ccode.to_bytes(8,'little'))
+            
+            ntail = n_ins - nccode_intact*3
+            t_ctrl_code_list = ctrl_code_list[3*nccode_intact:]
+            t_ins_code_list  = ins_code_list[3*nccode_intact:]
+            
+            npad = 3 - ntail
+            for i in range(npad):
+                t_ctrl_code_list.append(CuSMVersion.Pad_CCode_5x_6x)
+                t_ins_code_list.append(CuSMVersion.Pad_ICode_5x_6x)
+            
+            ccode =  t_ctrl_code_list[0] + (t_ctrl_code_list[1]<<21) + (t_ctrl_code_list[2]<<42)
+            bio.write(ccode.to_bytes(8, 'little'))
+            bio.write(t_ins_code_list[0].to_bytes(8, 'little'))
+            bio.write(t_ins_code_list[1].to_bytes(8, 'little'))
+            bio.write(t_ins_code_list[2].to_bytes(8, 'little'))
 
-                i0 = ins_code_list[3*nccode_intact]
-                i1 = ins_code_list[3*nccode_intact+1] if ntail>1 else CuSMVersion.Pad_ICode_5x_6x
-                i2 = CuSMVersion.Pad_ICode_5x_6x
-                bio.write(i0.to_bytes(8,'little'))
-                bio.write(i1.to_bytes(8,'little'))
-                bio.write(i2.to_bytes(8,'little'))
-
-                pos = bio.tell()
-                padlen = padding_align * ((pos+padding_align-1) // padding_align) - pos
-                npad = padlen // 32  # 32B = (1+3) instruction group
-                bio.write(CuSMVersion.PadBytes_5x_6x * npad)
+        pos = bio.tell()
+        padlen = padding_align * ((pos+padding_align-1) // padding_align) - pos
+        npad = padlen // 32  # 32B = (1+3) instruction group
+        bio.write(CuSMVersion.PadBytes_5x_6x * npad)
         
         return bio.getvalue()
 

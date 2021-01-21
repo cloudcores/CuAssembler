@@ -588,6 +588,8 @@ class CuAsmParser(object):
 #### static variables, mostly re patterns
     m_cppcomment = re.compile(r'//.*$')      # cpp style line comments
     m_ccomment = re.compile(r'\/\*.*?\*\/')  # c   style line
+    m_bracomment = re.compile(r'\(\*.*\*\)') # notes for bra targets in sm_5x/6x
+                                             # such as (*"INDIRECT_CALL"*)
 
     m_directive = re.compile(r'(\.[a-zA-Z0-9_]+)\s*(.*)')
     m_label     = re.compile(r'([a-zA-Z0-9._$@#]+?)\s*:\s*(.*)')  # "#" for offset label auto rename
@@ -1970,6 +1972,7 @@ class CuAsmParser(object):
 
         s = CuAsmParser.m_cppcomment.subn(' ', s)[0] # replace comments as a single space, avoid unwanted concatination
         s = CuAsmParser.m_ccomment.subn(' ', s)[0]
+        s = CuAsmParser.m_bracomment.subn(' ', s)[0]
         s = re.subn(r'\s+', ' ', s)[0]       # replace one or more spaces/tabs into one single space
 
         return s.strip()

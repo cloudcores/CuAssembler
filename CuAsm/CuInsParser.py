@@ -6,7 +6,7 @@ from .common import *
 from .CuSMVersion import CuSMVersion
 
 # Pattern that matches an instruction string
-p_InsPattern = re.compile(r'(@!?U?P\d|@!PT)?\s*(\w+.*)\s*')
+p_InsPattern = re.compile(r'(@!?U?P\d|@!PT)?\s*\{?\s*(\w+.*)\s*')
 
 # Pattern that matches scoreboard sets, such as {1}, {4,2}
 # Seems only appear after opcode DEPBAR
@@ -174,6 +174,7 @@ class CuInsParser():
             SB_valstr = self.__transScoreboardSet(res.group())
             s = p_SBSet.sub(SB_valstr, s)
 
+        s = s.strip(' {}')
         return s
 
     def __parseOperand(self, operand):
