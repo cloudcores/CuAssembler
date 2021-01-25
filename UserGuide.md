@@ -10,7 +10,8 @@ CuAssembler User Guide
 - [Format of cubin and cuasm](#format-of-cubin-and-cuasm)
   - [File Structure](#file-structure)
   - [Sections and Segments](#sections-and-segments)
-  - [Labels and Symbols](#labels-and-symbols)
+  - [Basic syntax of cuasm](#basic-syntax-of-cuasm)
+  - [Kernel text sections and associated NVInfo section](#kernel-text-sections-and-associated-nvinfo-section)
   - [Traps and Pitfalls](#traps-and-pitfalls)
 - [How CuAssembler works](#how-cuassembler-works)
   - [Automatic Instruction Encoding](#automatic-instruction-encoding)
@@ -21,47 +22,40 @@ CuAssembler User Guide
 
 We will show the basic usage of CuAssembler, by a simple `cudatest` case. CuAssembler is just an assembler, its main purpose is to generate the cubin file according to user input assembly. All device initialization, data preparation and kernel launch should be done by the user, possibly using CUDA driver API. However, it's usually more convenient to start from runtime API. Here we will demonstrate the general workflow for using CUDA runtime API with CuAssembler.
 
-The tutorial is far from complete, many basic knowledge of CUDA is needed for this trivial task. The code is not fully shown, and some common building steps are ignored, but I think you should get the idea... If not, you are probably too early to be here, please get familiar with basic CUDA usage first~
+This tutorial is far from complete, many basic knowledge of CUDA is needed for this trivial task. The code is not fully shown, and some common building steps are ignored, but I think you can get the idea... If not, you are probably too early to be here, please get familiar with basic CUDA usage first~
 
-Some useful references of prerequisites knowledge:
-* Basic knowledge of [CUDA](https://docs.nvidia.com/cuda/index.html). 
+Some useful references of prerequisite knowledge:
+* Basic knowledge of [CUDA](https://docs.nvidia.com/cuda/index.html), at least the CUDA C programming guide. 
 * [NVCC](https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html) and [CUDA binary utilities](https://docs.nvidia.com/cuda/cuda-binary-utilities/index.html): many users just utilize those tools via IDE, but here, you will have to play with them in command line from time to time.
 * ELF Format: There are many references on the format of ELF, both generic and architecture dependent, for example, [this one](http://downloads.openwatcom.org/ftp/devel/docs/elf-64-gen.pdf). Currently only **64bit** version of ELF (**little endian**) is supported by CuAssembler. 
-* Common assembly directives: `nvdisasm` seems to reuse many conventions of gnu assembler. Since no doc is provided on the grammar of `nvdisasm` disassemblies, get familiar with [Gnu Assembler directives](https://ftp.gnu.org/old-gnu/Manuals/gas-2.9.1/html_chapter/as_7.html) would be helpful.
-* CUDA PTX and SASS instructions: Before you can write any assemblies, you need to know the language first. Currently no official (at least no comprehensive) doc is provided on SASS, just [simple opcodes list](https://docs.nvidia.com/cuda/cuda-binary-utilities/index.html#instruction-set-ref). Get familiar with [PTX ISA](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html) and its documentation will be greatly helpful to get the semantics of SASS assemblies.
+* Common assembly directives: `nvdisasm` seems to resemble many conventions of gnu assembler. Since no doc is provided on the grammar of `nvdisasm` disassemblies, get familiar with [Gnu Assembler directives](https://ftp.gnu.org/old-gnu/Manuals/gas-2.9.1/html_chapter/as_7.html) would be helpful. Actually only very few directives are used in cuasm, look it up in this manual if you need more information. **NOTE**: some directives may be architecture dependent, you may need to discriminate them by yourself.
+* CUDA PTX and SASS instructions: Before you can write any assemblies, you need to know the language first. Currently no official (at least no comprehensive) doc is provided on SASS, just [simple opcodes list](https://docs.nvidia.com/cuda/cuda-binary-utilities/index.html#instruction-set-ref). Get familiar with [PTX ISA](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html) and its documentation will be greatly helpful to understand the semantics of SASS assemblies. 
 
 ## Start from a CUDA C example
 
-First we need to create a `cudatest.cu` file with enough information of kernels. You may start from any other CUDA samples with explicit kernel definitions. An example may look like this:
+First we need to create a `cudatest.cu` file with enough information of kernels. You may start from any other CUDA samples with explicit kernel definitions. Some CUDA programs do not have explicit kernels written by user, instead, they may invoke some kernels pre-compiled in libraries. In this case you cannot hack the cubin by runtime API, you need to hack the library! That would be totally a different story, currently we just focus on the *user kernels*, rather than *library kernels*. An example of kernel may look like this (other lines are ignored):
 
 ```c++
-// ... includes ignored
 __global__ void vectorAdd(const float* a, const float* b, float* c)
 {
     int idx = threadIdx.x + blockIdx.x * blockDim.x;
     c[idx] = a[idx] + b[idx];
 }
-
-int main()
-{
-    // Other runtime API codes are ignored, it's irrelevant of our procedure.
-    return 0;
-}
 ```
 
-Currently CuAssembler does not fully support modification of kernel args, globals (constants, texture/surface references), thus all these information(size, name, etc.) should be defined in CUDA C, and inherited from cubin. Best practice here is to make a naive working version of the kernel, with all required resources prepared. Then in assembly, only the instructions need to be modified, that's the most robust way CuAssembler can be used. 
+Currently CuAssembler does not fully support modification of kernel args, globals (constants, texture/surface references), thus all these information(size, name, etc.) should be defined in CUDA C, and inherited from cubin into CuAssembler. Best practice here is to make a naive working version of the kernel, with all required resources prepared. Then in assembly, only the instructions need to be modified, that's the most robust way CuAssembler can be used. 
 
 **NOTE**: when you get into the stage of final assembly tuning, modifying the original CUDA C would be very unreliable, and usually rather error-prone, thus it's strongly recommended to keep all the staff unchanged in CUDA C. If you really need this, you probably have to make a big restructuring of the generated assembly. Making version control of the generated `cuasm` file may help you get through this more easily, and hopefully less painfully.
 
 ## Build CUDA C into Cubin
 
-`nvcc` is the canonical way to build a `.cu` file into executable, such as `nvcc -o cudatest cudatest.cu`. However, we need the intermediate `cubin` file to start with. thus we will use the `--keep` option of `nvcc`, which will keep all intermediate files (such as ptx, cubin, etc.). By default, only the lowest supported SM version(by current version of NVCC) of ptx and cubin will be generated, if you need a specific SM version of cubin, you need to specify the `-gencode` option, such as `-gencode=arch=compute_75,code=\"sm_75,compute_75\"` for turing (`sm_75`). The full command may look like:
+`nvcc` is the canonical way to build a `.cu` file into executable, such as `nvcc -o cudatest cudatest.cu`. However, we need the intermediate `cubin` file to start with. Thus we will use the `--keep` option of `nvcc`, which will keep all intermediate files (such as ptx, cubin, etc.). By default, only the lowest supported SM version of ptx and cubin will be generated, if you need a specific SM version of cubin, you need to specify the `-gencode` option, such as `-gencode=arch=compute_75,code=\"sm_75,compute_75\"` for turing (`sm_75`). The full command may look like:
 
 ```
     nvcc -o cudatest cudatest.cu -gencode=arch=compute_75,code=\"sm_75,compute_75\" --keep
 ```
 
-Then you will get cubins such as `cudatest.1.sm_75.cubin`, under the intermediate files directory (maybe just current directory). Then we get a cubin to start with.
+Then you will get cubins such as `cudatest.1.sm_75.cubin` (probably different number), under the intermediate files directory (maybe just current directory). Then we get a cubin to start with.
 
 **NOTE**: Sometimes `nvcc` may generate several `cubin` of different versions, and possibly an extra empty cubin of every SM version. You can check the contents by `nvdisasm`, or just judging by the file size.
 
@@ -88,7 +82,7 @@ You may get something like this (some lines are ignored, you may have different 
 #$ cl.exe -Fe"cudatest.exe" -nologo "cudatest_dlink.obj" "cudatest.obj" -link -INCREMENTAL:NO   "/LIBPATH:C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1\bin/../lib/x64"  cudadevrt.lib  cudart_static.lib
 ```
 
-Saving those commands to a script file(e.g., `*.bat` for windows, `*.sh` for linux). Since we will need them when we want to embed the hacked cubin back to the executable, and run it as if the hacking does not happen at all.
+Saving those commands to a script file(e.g., `*.bat` for windows, `*.sh` for linux, remember to **uncomment** it first). We will need them when we want to embed the hacked cubin back to the executable, and run it as if the hacking does not happen at all.
 
 ## Disassemble Cubin to CuAsm
 
@@ -103,11 +97,11 @@ asmname = binname.replace('.cubin', '.cuasm')
 cf.saveAsCuAsm(asmname)
 ```
 
-**NOTES**: CuAssembler is a python package, with default package name as directory name `CuAsm`. To make the package visible to python importing, you may need to append its parent dir to environment variable `PYTHONPATH`, or just copy the dir to any current `PYTHONPATH`. If you just want to make it temporally importable, you can append it to `sys.path` in the python script.
+**NOTES**: CuAssembler is a python package, with default package name as directory name `CuAsm`. To make the package visible to python importing, you may need to append its parent dir to environment variable `PYTHONPATH`, or just copy the `CuAsm` dir to any current `PYTHONPATH`. If you just want to make it temporally importable, you can append it to `sys.path` in the python script.
 
 ## Adjust the assembly code in cuasm
 
-Most contents of `cuasm` file is copied from `nvdisasm` result of the cubin, with some supplementary ELF information explicitly recorded in text format , such as section header attributes, implicit sections(such as `.strtab/.shstrtab/.symtab`) not shown in disassembly. All the information inherited directly from the cubin should not be modified (unless have to, such the offset and size of sections). This does not mean these information cannot be automatically generated, but since NVIDIA provides no information about their conventions, probing them all would be rather pain-staking. Thus it's much safer and easier to keep them as is. Actually, most adjustment of those information (such as add a kernel, global, etc.) can be achieved by modifying the original CUDA C code, which is officially supported and much more reliable.
+Most contents of `cuasm` file is copied from `nvdisasm` result of the cubin, with some supplementary ELF information explicitly recorded in text format , such as file header attributes, section header attributes, implicit sections(such as `.strtab/.shstrtab/.symtab`) not shown in disassembly. All these information inherited directly from the cubin should not be modified (unless have to, such the offset and size of sections, which will be done by the assembler automatically). This does not mean these information cannot be automatically generated, but since NVIDIA provides no information about their conventions, probing them all would be rather pain-staking. Thus it's much safer and easier to keep them as is. Actually, most adjustment of those information (such as add a kernel, global, etc.) can be achieved by modifying the original CUDA C code, which is officially supported and much more reliable.
 
 See an [example cuasm](TestData/CuTest/cudatest.7.sm_75.cuasm) in `TestData` for more information.
 
@@ -135,9 +129,9 @@ As soon as you get a hacked cubin, the easiest way to put it back to the executa
 ptxas -arch=sm_75 -m64 "cudatest.ptx"  -o "cudatest.sm_75.cubin"
 ```
 
-You can delete all the steps before this one (include this ptxas step), rename your hacked cubin to `cudatest.sm_75.cubin`, and run the rest of those building steps. That will give you an executable just like run `nvcc` directly (at least hopefully, if everything goes well).
+You can delete all the steps before this one (include this `ptxas` step), rename your hacked cubin to `cudatest.sm_75.cubin`, and run the rest of those building steps. That will give you an executable just like run `nvcc` directly.
 
-Sometimes you may not need to hack all of the cubins, you can freely hack one or more ptxas steps, since ptxas just accepts one file at a time. For more convenient usage, you may also copy those steps into a makefile, and run the rebuild steps if any dependent file is modified. You can even make a script or environment variable to switch between the hacked version and original version.
+Sometimes you may not need to hack all of the cubins, you can freely hack one or more `ptxas` steps, since `ptxas` just accepts one file at a time. For more convenient usage, you may also copy those steps into a makefile, and run the rebuild steps if any dependent file is modified. You can even make a script or set an environment variable to switch between the hacked version and original version.
 
 ## Run or debug the executable
 
@@ -145,22 +139,24 @@ If everything goes right, the hacked cubin should work as good as the original o
 
 See next section for more info on the contents of cubin and cuasm.
 
+**NOTE**: debug version of cubin contains far too much information(DWARF for source line correlations...and many more), which is very difficult to process in assembler. Thus you should not use CuAssembler with debug version of cubin. That's another reason why it's recommended to work on a naive but correct version of CUDA C first. NVIDIA provides tools for final SASS level debugging (such as NSight VS version and `cuda-gdb`), there are no source code correlation in this level.
+
 # Format of cubin and cuasm
 
-**Cubin** is an ELF format binary, thus most of its file structure will follow the convension of ELF. However, there are also many CUDA specific features involved. **Cuasm** is just a text form of cubin, with most of the cubin information explicitly described with assembly directives. Most of the assembly directives will follow the same semantics of `nvdisasm` (actually most of the cuasm contents are copied from `nvdisasm` output), but there are also some new directives, helping make some information clear and explicit.
+**Cubin** is an ELF format binary, thus most of its file structure will follow the generic conventions of ELF. However, there are also many CUDA specific features involved. **Cuasm** is just a text form of cubin, with most of the cubin information explicitly described with assembly directives. Most of the assembly directives will follow the same semantics of `nvdisasm` (actually most of the cuasm contents are copied from `nvdisasm` output), but there are also some new directives, helping make some information clear and explicit.
 
 ## File Structure
 
 An ELF file contains a file header, several sections, none or several program segments. Usually the cubin files are arranged like this:
 
-* **File Header** : The ELF file header will specify some common information of every ELF, such as identifier magic number, 32bit or 64bit, section header offset, program header offset, etc. For cubin, it will also specify the version of current cubin: virtual architecture version and SM version, toolkit version etc. 
+* **File Header** : The ELF file header will specify some common information, such as identifier magic number, 32bit or 64bit, section header offset, program header offset, etc. For cubin, it will also specify the version of current cubin: virtual architecture version and SM version, toolkit version etc. 
 * **Section Data** : The data of every section.
-* **Section Header** : Header information of every section. Defines the section name string offset, section offset, size, flags, type, and extra info, linkage with respect to other sections, etc.
-* **Segment Header** : Header information of every segment. Defines how the sections will be loaded. **NOTE**: for some `ET_REL` type of ELF, there could be no segment. They are likely to be linked to another cubin for final executable. Currently, only `ET_EXEC` type of ELF is tested, it usually contains 3 segments.
+* **Section Header** : Header information of every section. Defines the section name, section offset, size, flags, type, extra info, and linkage with respect to other sections, etc.
+* **Segment Header** : Header information of every segment. Defines how the sections will be loaded. **NOTE**: for some `ET_REL` type of ELF, there may be no segment. They are likely to be linked to another cubin for final executable. Currently, only `ET_EXEC` type of ELF is tested, it usually contains 3 segments.
 
 ## Sections and Segments
 
-This is a sample layout of sections:
+This is a sample layout of cubin sections (debug version of cubin will have much more sections, which are not concerned here):
 
 ```
 Index Offset   Size ES Align        Type        Flags Link     Info Name
@@ -205,15 +201,208 @@ Index Offset   Size ES Align        Type        Flags Link     Info Name
    27   40e0      0  0 10            NOBITS       3    0       1f .nv.shared._Z4test6float4PS_
 ```
 
-* `.shstrtab/.strtab/.symtab` : tables for section string, symbol string, and symbol entries. Currently all off them are copied from the original cubin.
-* `.nv.info.*` : Some attributes associated with kernels. `cuobjdump -elf *.cubin` can show those information in human readable format. Some of those attributes should be modified when kernel text changed, some can be done by CuAssembler, but there are more that cannot. 
-* `.rel.*` : Relocations. Relocation section should work with the associated section, such as `.rel.abc` vs `.abc`. Relocation is a special mechanism which allows runtime initialization of some symbols unknown during compile-time, such as some global constants and function entries. 
-* `.nv.constant#.*` :
-* `.text.*` :
-* `.nv.shared.*` :
+* `.shstrtab/.strtab/.symtab` : tables for section string, symbol string, and symbol entries. Currently all of them are copied from the original cubin.
+* `.nv.info.*` : Some attributes associated with kernels. `cuobjdump -elf *.cubin` can show those information in human readable format. Some of those attributes should be modified when kernel text changed, some can be done by CuAssembler(such as `EIATTR_EXIT_INSTR_OFFSETS`, `EIATTR_CTAIDZ_USED`, etc.), but there are more that cannot. Some attributes are strongly correlated to the offset of some instructions, CuAssembler utilizes a special form of label to handle this kind of attributes, which is necessary to make them work when the instruction sequence is changed.
+* `.rel.*` : Relocations. Relocation section should work with the associated section, such as `.rel.abc` to `.abc`. Relocation is a special mechanism which allows runtime initialization of some symbols unknown during compile-time, such as some global constants and function entries. 
+* `.nv.constant#.*` : constant memory contents for global or each kernel. The actual arrangement of contant memories may vary with respect to SM version(or even toolkit version?), thus you'd better check it in original SASS code generated with CUDA C.
+* `.text.*` : Kernel instruction sections. Most of the modification should be done to these sections.
+* `.nv.shared.*` : Nobits sections. I don't find the shared memory is runtime initializable, thus seems they are only for space allocation.
 
-## Labels and Symbols
+## Basic syntax of cuasm
+Most of the syntax of cuasm will follow the convention of `nvdisasm`, but since `nvdisasm` does not show all the information of cubin. We need more syntax to describe the file more specifically.
 
+**Comments**:
+
+C style comments `/* ... */` and cpp style comments `// ...` are supported. A special form of branch target annotation `(* ... *)` will also be treated as comments. They will all be replaced to spaces. **NOTE**: Currently no cross line comments, all comments should be in the same line.
+
+**Directives**:
+A directive is a predefined keyword, usually starts with a dot `.`. Current list of supported directives defined by `nvdisasm`:
+
+| Directive          | Notes          |
+|--------------------|----------------|
+| `.headerflags`*     | set ELF header |
+| `.elftype`*         | set ELF type |
+| `.section`*         | declare a section |
+| `.sectioninfo`*     | set section info |
+| `.sectionflags`*    | set section flags |
+| `.sectionentsize`*  | set section entsize |
+| `.align`           | set alignment |
+| `.byte`            | emit bytes |
+| `.short`           | emit shorts |
+| `.word`            | emit word (4B?) |
+| `.dword`           | emit dword (8B?) |
+| `.type`*           | set symbol type |
+| `.size`*           | set symbol size |
+| `.global`*          | declare a global symbol |
+| `.weak`*            | declare a weak symbol |
+| `.zero`            | emit zero bytes |
+| `.other`*           | set symbol other  |
+
+Directives annotated with an asterisk are currently not really functional, since the contents are actually copied from original cubin. CuAssembler defined some new internal directives(prefixed with `.__`) that keeps those information unchanged. 
+
+|  |                                |
+|--|--------------------------------|
+| ELF header | |
+| | .__elf_ident_osabi |
+| | .__elf_ident_abiversion |
+| | .__elf_type |
+| | .__elf_machine |
+| | .__elf_version |
+| | .__elf_entry |
+| | .__elf_phoff |
+| | .__elf_shoff |
+| | .__elf_flags |
+| | .__elf_ehsize |
+| | .__elf_phentsize |
+| | .__elf_phnum |
+| | .__elf_shentsize |
+| | .__elf_shnum |
+| | .__elf_shstrndx |
+| Section header | |
+| | .__section_name |
+| | .__section_type |
+| | .__section_flags |
+| | .__section_addr |
+| | .__section_offset |
+| | .__section_size |
+| | .__section_link |
+| | .__section_info |
+| | .__section_entsize |
+| Segment header | |
+| | .__segment |
+| | .__segment_offset |
+| | .__segment_vaddr |
+| | .__segment_paddr |
+| | .__segment_filesz |
+| | .__segment_memsz |
+| | .__segment_align |
+| | .__segment_startsection |
+| | .__segment_endsection |
+
+**Labels and Symbols**:
+
+A label is just an identifier(may include `.`, `$`, and any word character) followed by a colon `label:`, such as:
+
+```
+  _Z10local_testiiPi:
+  .L_203:
+  __cudart_i2opi_f:
+  $str:
+  $_Z7argtestPiS_S_$_Z2f1ii:
+```
+
+Labels can be used for reference when the real offset should be filled.
+
+A symbol is a special label that may be visible externally, i.e., give current address when the module is loaded. A symbol can be defined as:
+
+```asm
+.global         _Z10local_testiiPi
+.type           _Z10local_testiiPi,@function
+.size           _Z10local_testiiPi,(.L_203 - _Z10local_testiiPi)
+.other          _Z10local_testiiPi,@"STO_CUDA_ENTRY STV_DEFAULT"
+_Z10local_testiiPi:
+```
+
+The last line is actually a label(with **same identifier**) that tells the location of the symbol. Symbols without corresponding label are usually defined externally, such as `vprintf` and some other internal functions. Every symbol has an entry in `.symtab` section. `cuobjdump -elf *.cubin` can show those entries in human readable form.
+
+**CAUTION**: There are far too many treatments needed for different types of symbols. I don't want to follow those tedious or even troublesome treatments(and probably hidden convention privately defined by NVIDIA). Since most of those symbols can be prepared by CUDA C, I just copied them from original cubin, but still keeping those statements legal yet nonfunctional.
+
+## Kernel text sections and associated NVInfo section
+
+Kernel text sections are the most frequently part to be modified for CuAssembler. Here we use a simple kernel to show some basic conventions of `cuasm`.
+
+```c++
+__constant__ int C1[11];       // C1 will be stored in constant memory
+__device__ int GlobalC1[7];    // GlobalC1 will be stored in device memory (RW), loaded with relocated address
+__global__ void simpletest(const int4 VAL, int* v) // contents of VAL and address of v will be stored in constant memory
+{
+    int idx = threadIdx.x + blockIdx.x * blockDim.x;
+    int a = v[idx]*VAL.x + GlobalC1[idx%16];
+
+    // SHFL is an instruction needs an associated .nv.info attribute.
+    a = __shfl_up_sync(0xffffffff, a, 1);  
+
+    if (VAL.z > 0) // predicated statement
+        a += C1[VAL.y]; 
+    v[idx] = a;
+}
+```
+
+The corresponding `cuasm` region of codes will be as follows(generated by CUDA toolkit 11.1, SM_75):
+
+```
+// --------------------- .text._Z10simpletest4int4Pi      --------------------------
+.section	.text._Z10simpletest4int4Pi,"ax",@progbits
+.__section_name         0x35b 	// offset in .shstrtab
+.__section_type         SHT_PROGBITS
+.__section_flags        0x6
+.__section_addr         0x0
+.__section_offset       0x4500 	// maybe updated by assembler
+.__section_size         0x200 	// maybe updated by assembler
+.__section_link         3
+.__section_info         0xc000030
+.__section_entsize      0
+.align                128 	// equivalent to set sh_addralign
+  .sectioninfo	@"SHI_REGISTERS=12"
+  .align	128
+        .global         _Z10simpletest4int4Pi
+        .type           _Z10simpletest4int4Pi,@function
+        .size           _Z10simpletest4int4Pi,(.L_228 - _Z10simpletest4int4Pi)
+        .other          _Z10simpletest4int4Pi,@"STO_CUDA_ENTRY STV_DEFAULT"
+_Z10simpletest4int4Pi:
+.text._Z10simpletest4int4Pi:
+    [----:B------:R-:W-:Y:S08]         /*0000*/                   MOV R1, c[0x0][0x28] ;
+    [----:B------:R-:W0:-:S01]         /*0010*/                   S2R R2, SR_CTAID.X ;
+    [----:B------:R-:W-:-:S01]         /*0020*/                   UMOV UR4, 32@lo(GlobalC1) ;
+    [----:B------:R-:W-:-:S01]         /*0030*/                   MOV R9, 0x4 ;
+    [----:B------:R-:W-:-:S01]         /*0040*/                   UMOV UR5, 32@hi(GlobalC1) ;
+    [----:B------:R-:W0:-:S01]         /*0050*/                   S2R R3, SR_TID.X ;
+    [----:B------:R-:W-:-:S01]         /*0060*/                   MOV R4, UR4 ;
+    [----:B------:R-:W-:-:S02]         /*0070*/                   IMAD.U32 R5, RZ, RZ, UR5 ;
+    [----:B0-----:R-:W-:Y:S05]         /*0080*/                   IMAD R2, R2, c[0x0][0x0], R3 ;
+    [----:B------:R-:W-:Y:S04]         /*0090*/                   SHF.R.S32.HI R3, RZ, 0x1f, R2 ;
+    [----:B------:R-:W-:Y:S04]         /*00a0*/                   LEA.HI R3, R3, R2, RZ, 0x4 ;
+    [----:B------:R-:W-:Y:S05]         /*00b0*/                   LOP3.LUT R3, R3, 0xfffffff0, RZ, 0xc0, !PT ;
+    [R---:B------:R-:W-:-:S02]         /*00c0*/                   IMAD.IADD R7, R2.reuse, 0x1, -R3 ;
+    [----:B------:R-:W-:Y:S04]         /*00d0*/                   IMAD.WIDE R2, R2, R9, c[0x0][0x170] ;
+    [----:B------:R-:W-:Y:S04]         /*00e0*/                   IMAD.WIDE R4, R7, 0x4, R4 ;
+    [----:B------:R-:W2:-:S04]         /*00f0*/                   LDG.E.SYS R0, [R2] ;
+    [----:B------:R-:W2:-:S01]         /*0100*/                   LDG.E.SYS R5, [R4] ;
+    [----:B------:R-:W-:Y:S04]         /*0110*/                   MOV R6, c[0x0][0x168] ;
+    [----:B------:R-:W-:Y:S12]         /*0120*/                   ISETP.GE.AND P0, PT, R6, 0x1, PT ;
+    [----:B------:R-:W-:Y:S06]         /*0130*/               @P0 IMAD R6, R9, c[0x0][0x164], RZ ;
+    [----:B------:R-:W0:-:S01]         /*0140*/               @P0 LDC R6, c[0x3][R6] ;
+    [----:B--2---:R-:W-:Y:S08]         /*0150*/                   IMAD R0, R0, c[0x0][0x160], R5 ;
+.CUASM_OFFSET_LABEL._Z10simpletest4int4Pi.EIATTR_COOP_GROUP_INSTR_OFFSETS.#:
+    [----:B------:R-:W0:-:S02]         /*0160*/                   SHFL.UP PT, R7, R0, 0x1, RZ ;
+    [----:B0-----:R-:W-:Y:S08]         /*0170*/               @P0 IMAD.IADD R7, R7, 0x1, R6 ;
+    [----:B------:R-:W-:-:S01]         /*0180*/                   STG.E.SYS [R2], R7 ;
+    [----:B------:R-:W-:-:S05]         /*0190*/                   EXIT ;
+.L_20:
+    [----:B------:R-:W-:Y:S00]         /*01a0*/                   BRA `(.L_20);
+.L_228:
+```
+
+Here are some explanations:
+
+* `.section	.text._Z10simpletest4int4Pi,"ax",@progbits` declares a section with specified name, flags, type. `_Z10simpletest4int4Pi` is a **mangled** name of `void simpletest(const int4 VAL, int* v)`, you can use `c++filt` or `cu++filt` to demangle it to the original form. If you don't want the mangle treatment, use `extern "C"` to embrace the declaration (actually, strongly not recommended).
+* `.__section_*` directives: internal directives to define the section header attributes. NVIDIA seems have some of their own internal flags. Users are not likely to care about these, hence they are usually kept as is.
+* `.align 128` set current section to 128B alignment. Which means last section may need some padding if the offset of this section is not a multiple of 128B.
+* `.sectioninfo	@"SHI_REGISTERS=12"`: set register numbers used in current kernel. **NOTE**: For Turing and Ampere, 2 extra GPRs are occupied for some unknown reasons. Thus if the largest GPR number you used in your kernel is `R20`, you need to set `@"SHI_REGISTERS=23"` (GPR numbers from 0, `R20` means 21 used, plus 2 extra, that's 23). The maximum GPR number is 255 (the encoding of `R255` is occupied by `RZ`), which means `R252` is the largest GPR number used in kernel text.
+* `.global _Z10simpletest4int4Pi`: a symbol is defined for current kernel. It will be used for both function exporting (global symbol is visible externally, which means it's accessible via driver API `cuModuleGetFunction`), and possibly debugging (see `.debug_frame` section). As stated before, symbols are all kept as is. 
+* `[----:B------:R-:W-:Y:S08]         /*0000*/                   MOV R1, c[0x0][0x28] ;`: this is the canonical form of instruction line. A control code, a commented address in hex, and then the instruction assembly string. The text form of control codes is slightly different from the one used in [maxas by Scott Gray]().
+    - Reuse flags:
+    - Scoreboard to wait:
+    - Set scoreboard for reading
+    - Set scoreboard for writing
+    - Yield
+    - Stall count
+  
+* 
+
+Some conventions of CUDA SASS:
+* int imme
+* label/symbol
 
 ## Traps and Pitfalls
 
