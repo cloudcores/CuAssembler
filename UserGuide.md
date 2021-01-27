@@ -12,7 +12,7 @@ CuAssembler User Guide
   - [Sections and Segments](#sections-and-segments)
   - [Basic syntax of cuasm](#basic-syntax-of-cuasm)
   - [Kernel text sections and associated NVInfo section](#kernel-text-sections-and-associated-nvinfo-section)
-  - [Traps and Pitfalls](#traps-and-pitfalls)
+  - [Limitations, Traps and Pitfalls](#limitations-traps-and-pitfalls)
 - [How CuAssembler works](#how-cuassembler-works)
   - [Automatic Instruction Encoding](#automatic-instruction-encoding)
   - [Special Treatments of Encoding](#special-treatments-of-encoding)
@@ -204,7 +204,7 @@ Index Offset   Size ES Align        Type        Flags Link     Info Name
 * `.shstrtab/.strtab/.symtab` : tables for section string, symbol string, and symbol entries. Currently all of them are copied from the original cubin.
 * `.nv.info.*` : Some attributes associated with kernels. `cuobjdump -elf *.cubin` can show those information in human readable format. Some of those attributes should be modified when kernel text changed, some can be done by CuAssembler(such as `EIATTR_EXIT_INSTR_OFFSETS`, `EIATTR_CTAIDZ_USED`, etc.), but there are more that cannot. Some attributes are strongly correlated to the offset of some instructions, CuAssembler utilizes a special form of label to handle this kind of attributes, which is necessary to make them work when the instruction sequence is changed.
 * `.rel.*` : Relocations. Relocation section should work with the associated section, such as `.rel.abc` to `.abc`. Relocation is a special mechanism which allows runtime initialization of some symbols unknown during compile-time, such as some global constants and function entries. 
-* `.nv.constant#.*` : constant memory contents for global or each kernel. The actual arrangement of contant memories may vary with respect to SM version(or even toolkit version?), thus you'd better check it in original SASS code generated with CUDA C.
+* `.nv.constant#.*` : constant memory contents for global constants or kernel dependent constants. The actual arrangement of contant memories may vary with respect to SM version(or even toolkit version?), thus you'd better check it in original SASS code generated with CUDA C. In the example above, constant bank 3 `.nv.constant3` is for global, referred by `c[0x3][###]`. Bank 2 is for compiler generated constants, and bank 0 for kernel arguments and grid/block constants. Both of them are kernel dependent.
 * `.text.*` : Kernel instruction sections. Most of the modification should be done to these sections.
 * `.nv.shared.*` : Nobits sections. I don't find the shared memory is runtime initializable, thus seems they are only for space allocation.
 
@@ -389,23 +389,36 @@ Here are some explanations:
 * `.__section_*` directives: internal directives to define the section header attributes. NVIDIA seems have some of their own internal flags. Users are not likely to care about these, hence they are usually kept as is.
 * `.align 128` set current section to 128B alignment. Which means last section may need some padding if the offset of this section is not a multiple of 128B.
 * `.sectioninfo	@"SHI_REGISTERS=12"`: set register numbers used in current kernel. **NOTE**: For Turing and Ampere, 2 extra GPRs are occupied for some unknown reasons. Thus if the largest GPR number you used in your kernel is `R20`, you need to set `@"SHI_REGISTERS=23"` (GPR numbers from 0, `R20` means 21 used, plus 2 extra, that's 23). The maximum GPR number is 255 (the encoding of `R255` is occupied by `RZ`), which means `R252` is the largest GPR number used in kernel text.
+* For kernels utilize block-wide barriers(such as `__syncthreads()`), there may be another attribute specifying number of barriers required, such as `.sectionflags @"SHF_BARRIERS=1"`. Currently a kernel can use up to 16 barriers.
 * `.global _Z10simpletest4int4Pi`: a symbol is defined for current kernel. It will be used for both function exporting (global symbol is visible externally, which means it's accessible via driver API `cuModuleGetFunction`), and possibly debugging (see `.debug_frame` section). As stated before, symbols are all kept as is. 
-* `[----:B------:R-:W-:Y:S08]         /*0000*/                   MOV R1, c[0x0][0x28] ;`: this is the canonical form of instruction line. A control code, a commented address in hex, and then the instruction assembly string. The text form of control codes is slightly different from the one used in [maxas by Scott Gray]().
-    - Reuse flags:
-    - Scoreboard to wait:
-    - Set scoreboard for reading
-    - Set scoreboard for writing
-    - Yield
-    - Stall count
+* `[----:B------:R-:W-:Y:S08]         /*0000*/                   MOV R1, c[0x0][0x28] ;`: this is the canonical form of instruction line. A control code, a commented address in hex, and then the instruction assembly string. The text form of control codes is slightly different from the one used in [maxas by Scott Gray](https://github.com/NervanaSystems/maxas/wiki/Control-Codes). Here, the control codes are splitted into 6 fields seperated with colon `:`:
+    - **Reuse flags**: the 4bit reuse flags indicate the value of current slot of GPR will be re-read by later instructions. There are at least 3 slots (possibly 4? Never see the forth bit set...) of reuse caches, with each bit set to `R` for reuse, and `-` for none. It seems reuse caches only work for ALU instructions, with each slot corresponding to an operand position, which will be suffixed by `.reuse`(**NOTE**: CuAssembler will not care about the `.reuse` suffix in instruction string, only sequences in control codes part matter). But some inconsistency can also be found, such as:
   
-* 
+      >  [-R--:B------:R-:W-:-:S02]         /*09c0*/                   IABS R7, R5.reuse ;
+      
+    Reuse of GPR will not only help mitigating the register bank conflict, and may also reduce some power consumption.  
 
-Some conventions of CUDA SASS:
-* int imme
-* label/symbol
+    - **Barrier on scoreboard**:There are 6 scoreboards(called *dependency barrier* in maxas), numbered from 0 to 5 (1-6 in maxas), which are also consistent with `DEPBAR` scoreboard operands, such as `SB0` and `SB5`. This barrier field has 6 bits, one for each scoreboard. **NOTE**: instead of showing the aggregate number as in maxas, here all bits are unpacked, each bit will show wait(the scoreboard number) or no-wait(`-`), for better visual inspectation with respect to the instruction setting corresponding scoreboards. There may be multiple scoreboards to barrier, such as `B01--4-` means wait until scoreboards `0,1,4` are all cleared. 
+    - **Set scoreboard for reading**: `R#`, set a scoreboard (in number) to hold contents of some source GPR operands. Usually for memory instructions.
+    - **Set scoreboard for writing**: `W#`, set a scoreboard (in number) to prevent reading the destination GPR until it's ready. This is used for variable latency instructions, such as memory load, double precision instruction, transendental function instruction, S2R instructions, etc. The scoreboard dependency can be resolved by not only the barrier field of control codes, but also by `DEPBAR` instruction.
+    - **Yield**: Whether try to yield to another warp. This bit may have different meaning for different instruction context. `Y` for try to yield to another eligible warp, `-` for no yield.
+    - **Stall count**: Stall the instruction issue for a certain number of clock cycles(in digital number, 0~15). The yield field and stall count field may have different meaning for different instruction, which is not quite clear since no official information is disclosed.
+  
+* A special label `.CUASM_OFFSET_LABEL._Z10simpletest4int4Pi.EIATTR_COOP_GROUP_INSTR_OFFSETS.#`: for every kernel, there will be some associated NVINFO attributes. `OFFSETS` type of attributes will be generated for some special kind of instructions. Since rules of such instructions are far from complete yet, some of them cannot be handled by CuAssembler now. Thus we just add a special offset label in the form of `.CUASM_OFFSET_LABEL.{KernelName}.{AttrName}.#`, then this offset will be appended to corresponding NVINFO attributes list. For cuasm generated from cubin, those labels will be appended automatically. This treatment will help mitigate some manual works when NVINFO support is not complete, but still do not want to edit the NVINFO section by hand.
 
-## Traps and Pitfalls
+Some maybe useful conventions of CUDA SASS:
+* Integer immediate always in hex. That is, `0x1` means integer 1, `1` means float 1 (precision will depend on the opcode).  
+* Local labels will be `.L_###`, global labels (symbols) will usually have a name in `.symtab`. The local label address can be obtained and filled by assembler directly, such as `BRA ``.L0` for `.L0=0x1000` will be translated to `BRA 0x1000`. But an address of symbol may need an relocation, which may be set by the program loader. Such as `MOV R2, 32@lo(flist) ;` or `CALL.REL.NOINC R6` ``(_Z7argtestPiS_S_) ;`` will be filled with zero by assembler, but also generate a relocation entries in corresponding section. The address will be filled by the program loader.
+* Constant memory as ALU operands does not support GPR indexing, it is only allowed for `LDC` instruction.
+* And more...
 
+## Limitations, Traps and Pitfalls
+
+* Parser for instructions are not quite robust, some syntax errors cannot be identified.
+* No range check for all types, such as GPR index, barrier index, scoreboard index, float immediates, especially for integer immediates (as ALU operands, memory offsets, etc.).
+* Some instructions may have some restrictions of operands. Such as 64bit GPR address should start from even GPR index, address of some types should be aligned, etc. Currently it's user's obligation to guarantee the correctness.
+* Some hidden rules may exist for the combination of modifiers, which means the modifiers may not all work independently. However, we donot have a list of them, thus, we leave this work to user.
+* Section info and symbols are not modifiable (In the future, appending may be supported...). The reason have been stated several times: just keep all the hidden conventions as is, use CUDA C to generate those information.
 
 # How CuAssembler works
 
