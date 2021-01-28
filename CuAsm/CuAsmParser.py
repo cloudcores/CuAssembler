@@ -1344,7 +1344,9 @@ class CuAsmParser(object):
     def __dir_weak(self, args):
         '''.weak defines a weak symbol.
 
-            A weak symbol is declared in current module, but defined in external module.
+            A weak symbol is declared in current module, but may be overwritten by strong symbols.
+
+            Currently no scope is implemented, thus
         '''
 
         self.__assertArgc('.weak', args, 1, allowMore=False)
@@ -1353,9 +1355,10 @@ class CuAsmParser(object):
         if symbol not in self.__mSymbolDict:
             self.__mSymbolDict[symbol] = CuAsmSymbol(symbol)
         
+        CuAsmLogger.logWarning('Line %d: Weak symbol found! The implementation is not complete, please be cautious...'%self.__mLineNo)
         CuAsmLogger.logSubroutine('Line %6d: New weak symbol "%s"'%(self.__mLineNo, symbol))
 
-        self.__mSymbolDict[symbol].isGlobal = False
+        self.__mSymbolDict[symbol].isGlobal = True
 
     def __dir_zero(self, args):
         '''.zero emit zeros of specified length (in bytes).'''
