@@ -2,16 +2,16 @@ CuAssembler User Guide
 - [A simple tutorial for using CuAssembler with CUDA runtime API](#a-simple-tutorial-for-using-cuassembler-with-cuda-runtime-api)
   - [Start from a CUDA C example](#start-from-a-cuda-c-example)
   - [Build CUDA C into Cubin](#build-cuda-c-into-cubin)
-  - [Disassemble Cubin to CuAsm](#disassemble-cubin-to-cuasm)
+  - [Disassemble Cubin to Cuasm](#disassemble-cubin-to-cuasm)
   - [Adjust the assembly code in cuasm](#adjust-the-assembly-code-in-cuasm)
   - [Assemble cuasm into cubin](#assemble-cuasm-into-cubin)
   - [Hack the original executable](#hack-the-original-executable)
   - [Run or debug the executable](#run-or-debug-the-executable)
-- [Format of cubin and cuasm](#format-of-cubin-and-cuasm)
+- [A brief instruction on format of cubin and cuasm](#a-brief-instruction-on-format-of-cubin-and-cuasm)
   - [File Structure](#file-structure)
   - [Sections and Segments](#sections-and-segments)
   - [Basic syntax of cuasm](#basic-syntax-of-cuasm)
-  - [Kernel text sections and associated NVInfo section](#kernel-text-sections-and-associated-nvinfo-section)
+  - [Kernel text sections](#kernel-text-sections)
   - [Limitations, Traps and Pitfalls](#limitations-traps-and-pitfalls)
 - [How CuAssembler works](#how-cuassembler-works)
   - [Automatic Instruction Encoding](#automatic-instruction-encoding)
@@ -84,7 +84,7 @@ You may get something like this (some lines are ignored, you may have different 
 
 Saving those commands to a script file(e.g., `*.bat` for windows, `*.sh` for linux, remember to **uncomment** it first). We will need them when we want to embed the hacked cubin back to the executable, and run it as if the hacking does not happen at all.
 
-## Disassemble Cubin to CuAsm
+## Disassemble Cubin to Cuasm
 
 Then we can create a python script of CuAssembler to disassemble the `cubin` into `cuasm`:
 
@@ -103,7 +103,7 @@ cf.saveAsCuAsm(asmname)
 
 Most contents of `cuasm` file is copied from `nvdisasm` result of the cubin, with some supplementary ELF information explicitly recorded in text format , such as file header attributes, section header attributes, implicit sections(such as `.strtab/.shstrtab/.symtab`) not shown in disassembly. All these information inherited directly from the cubin should not be modified (unless have to, such the offset and size of sections, which will be done by the assembler automatically). This does not mean these information cannot be automatically generated, but since NVIDIA provides no information about their conventions, probing them all would be rather pain-staking. Thus it's much safer and easier to keep them as is. Actually, most adjustment of those information (such as add a kernel, global, etc.) can be achieved by modifying the original CUDA C code, which is officially supported and much more reliable.
 
-See an [example cuasm](TestData/CuTest/cudatest.7.sm_75.cuasm) in `TestData` for more information.
+See an [example cuasm](TestData/CuTest/cudatest.7.sm_75.cuasm) in `TestData` for more information. 
 
 ## Assemble cuasm into cubin
 
@@ -141,7 +141,7 @@ See next section for more info on the contents of cubin and cuasm.
 
 **NOTE**: debug version of cubin contains far too much information(DWARF for source line correlations...and many more), which is very difficult to process in assembler. Thus you should not use CuAssembler with debug version of cubin. That's another reason why it's recommended to work on a naive but correct version of CUDA C first. NVIDIA provides tools for final SASS level debugging (such as NSight VS version and `cuda-gdb`), there are no source code correlation in this level.
 
-# Format of cubin and cuasm
+# A brief instruction on format of cubin and cuasm
 
 **Cubin** is an ELF format binary, thus most of its file structure will follow the generic conventions of ELF. However, there are also many CUDA specific features involved. **Cuasm** is just a text form of cubin, with most of the cubin information explicitly described with assembly directives. Most of the assembly directives will follow the same semantics of `nvdisasm` (actually most of the cuasm contents are copied from `nvdisasm` output), but there are also some new directives, helping make some information clear and explicit.
 
@@ -213,7 +213,7 @@ Most of the syntax of cuasm will follow the convention of `nvdisasm`, but since 
 
 **Comments**:
 
-C style comments `/* ... */` and cpp style comments `// ...` are supported. A special form of branch target annotation `(* ... *)` will also be treated as comments. They will all be replaced to spaces. **NOTE**: Currently no cross line comments, all comments should be in the same line.
+C style comments `/* ... */` and cpp style comments `// ...` are supported. A special form of branch target annotation `(* ... *)` will also be treated as comments. They will all be replaced to spaces. **NOTE**: Currently no cross line comments are allowed, all comments should be in the same line.
 
 **Directives**:
 A directive is a predefined keyword, usually starts with a dot `.`. Current list of supported directives defined by `nvdisasm`:
@@ -281,7 +281,7 @@ Directives annotated with an asterisk are currently not really functional, since
 
 **Labels and Symbols**:
 
-A label is just an identifier(may include `.`, `$`, and any word character) followed by a colon `label:`, such as:
+A **label** is just an identifier(may include `.`, `$`, and any word character) followed by a colon `label:`, such as:
 
 ```
   _Z10local_testiiPi:
@@ -293,7 +293,7 @@ A label is just an identifier(may include `.`, `$`, and any word character) foll
 
 Labels can be used for reference when the real offset should be filled.
 
-A symbol is a special label that may be visible externally, i.e., give current address when the module is loaded. A symbol can be defined as:
+A **symbol** is a special label that may be visible externally, i.e., give current address when the module is loaded. A symbol can be defined as:
 
 ```asm
 .global         _Z10local_testiiPi
@@ -303,11 +303,13 @@ A symbol is a special label that may be visible externally, i.e., give current a
 _Z10local_testiiPi:
 ```
 
-The last line is actually a label(with **same identifier**) that tells the location of the symbol. Symbols without corresponding label are usually defined externally, such as `vprintf` and some other internal functions. Every symbol has an entry in `.symtab` section. `cuobjdump -elf *.cubin` can show those entries in human readable form.
+The last line is actually a label(with **same identifier**) that tells the location of the symbol. Symbols without corresponding label are usually defined externally, such as `vprintf` and some other internal non-inline device functions. Every symbol has an entry in `.symtab` section. `cuobjdump -elf *.cubin` can show those entries in human readable form.
 
-**CAUTION**: There are far too many treatments needed for different types of symbols. I don't want to follow those tedious or even troublesome treatments(and probably hidden convention privately defined by NVIDIA). Since most of those symbols can be prepared by CUDA C, I just copied them from original cubin, but still keeping those statements legal yet nonfunctional.
+**CAUTION**: 
+1. There are far too many treatments needed for different types of symbols. I don't want to follow those tedious or even troublesome treatments(and probably hidden convention privately defined by NVIDIA). Since most of those symbols can be prepared by CUDA C, I just copied them from original cubin, but still keeping those statements legal yet nonfunctional.
+2. Cubin of ELF type `ET_REL` may have more types of symbol, probably for later linking? It's quite difficult to support them all, thus `ET_REL` type of ELF will not be supported.
 
-## Kernel text sections and associated NVInfo section
+## Kernel text sections
 
 Kernel text sections are the most frequently part to be modified for CuAssembler. Here we use a simple kernel to show some basic conventions of `cuasm`.
 
@@ -450,7 +452,7 @@ For turing architecture, we have these elemental operands, each with some values
 * **Constant memory**: Constant memory `c[0x##][0x####]`, first bracket for constant memory bank, second for memory address. The value of constant memory is the list of the constant bank, and the value of the memory address. The label is `cA` followed by the label of the memory address of second bracket.
 * **Integer immediate**: Integer immediate such as `0x0` (**NOTE**: integer immediate should always be in hex, raw `1` or `0` will be treated as float immediates). The value is just the bit representation of the integer. NOTE: the negative sign should be treated as an modifier, since we don't know how many bits will the value takes. The label is `II`.
 * **Float immediate**: Float immediate such as `5`, `2.0`, `-2.34e-3`. The value of float immediate is just its binary representation, depend on the precision(32bit or 16bit, 64bit not found yet). Denormals such as `+Inf`, `-Inf` and `QNAN` are also possible. The label is `FI`.
-* **Scoreboard Set**: This type is only for instruction `DEPBAR` for setting the set of scoreboards to be waited, such as `{1,3}`. Currently there are 6 barriers, with each value corresponding to 1bit. Scoreboards count waited in control codes should be 0, yet `DEPBAR` is capable of waiting a scoreboard with non-zero number. For example, 8 requests is sent to scoreboard 5, every request will increment SB5, and every complete request will decrement SB5. If we only need 3 of them to be back, we can just wait the scoreboard dropping to `8-3=5`, which can be achieved by `DEPBAR.LE SB5, 0x5 ;`. **NOTE**: the comma inside the brakets will affect the splitting of operands, thus the scoreboard sets will be translated to an indexed type `SBSET#` during parsing. The label is `SBSET`.
+* **Scoreboard Set**: This type is only for instruction `DEPBAR` for setting the set of scoreboards to be waited, such as `{1,3}`. Currently there are 6 scoreboards, with each value corresponding to 1bit. Scoreboards count waited in control codes should be 0, yet `DEPBAR` is capable of waiting a scoreboard with non-zero number. For example, 8 requests is sent to scoreboard 5, every request will increment SB5, and every complete request will decrement SB5. If we only need 3 of them to be back, we can just wait the scoreboard dropping to `8-3=5`, which can be achieved by `DEPBAR.LE SB5, 0x5 ;`. **NOTE**: the comma inside the brakets will affect the splitting of operands, thus the scoreboard sets will be translated to an indexed type `SBSET#` during parsing. The label is `SBSET`.
 * **Label**: Any other type not included above. Usually a string, such as `SR_TID.X`, `SR_LEMASK`, `3D`, `ARRAY_2D`, etc. The value of label is quite like the modifier, its value will depend on the context. Usually we set the value to **1**, and let the weight be the real encoding. It's label is just itself.
 
 Then we can obtain the value list of the example instruction `@P0 FADD.FTZ R13, -R14, -RZ`:
@@ -494,3 +496,90 @@ According to our tests, all other type of instruction can be re-assembled with e
 
 ## Instruction Assembler Repository
 
+CuAssembler needs abundant inputs(with enough diversity) to build all the matrices for instruction encoding. Currently, with every release of CUDA toolkit, a bunch of libraries with buildin kernels are provided (usually in `bin` directory of CUDA installation path, suffixed `.dll` for windows, and `.so` for linux). The user can dump the sass to file of specific version as follows:
+
+```
+  cuobjdump -sass -arch sm_75 cublas64_11.dll > cublas64_11.sm_75.sass
+```
+
+**NOTE**: `cuobjdump` doesnot have an option to save the result to file, it always dumps to `stdout`, thus you need to redirect result to file if you want to save it.
+
+
+In the dumped SASS file, You will have a long list of kernel codes, such as:
+
+```
+Fatbin elf code:
+================
+arch = sm_75
+code version = [1,7]
+producer = <unknown>
+host = windows
+compile_size = 64bit
+
+	code for sm_75
+		Function : _Z7argtestPiS_S_
+	.headerflags    @"EF_CUDA_SM75 EF_CUDA_PTX_SM(EF_CUDA_SM75)"
+        /*0000*/                   IMAD.MOV.U32 R1, RZ, RZ, c[0x0][0x28] ;               /* 0x00000a00ff017624 */
+                                                                                         /* 0x000fd000078e00ff */
+        /*0010*/                   ULDC.64 UR36, c[0x0][0x160] ;                         /* 0x0000580000247ab9 */
+                                                                                         /* 0x000fe20000000a00 */
+        /*0020*/                   IADD3 R1, R1, -0x28, RZ ;                             /* 0xffffffd801017810 */
+                                                                                         /* 0x000fe20007ffe0ff */
+  ...
+```
+
+
+In CuAssembler, `CuInsFeeder` class can read this SASS file and iteratively yields instructions, including the address, instruction code, instruction string, control codes. `cuobjdump` utilizes almost the same syntax as `nvdisasm`, but no explicit labels or symbols are displayed, thus this format can not only work for instruction gathering, but also for assembling from `nvdisasm` assemblies. 
+
+`CuInsParser` will read in the instruction string and address, and then parse it into intruction value vector and modifier set. A sample code snippet:
+
+```python
+fname = r'TestData\CuTest\cudatest.sm_75.sass'
+feeder = CuInsFeeder(fname, arch='sm_75')
+
+cip = CuInsParser(arch='sm_75')
+
+for  addr, code, s, ctrlcodes in feeder:
+    print('0x%04x :   0x%06x   0x%028x   %s'% (addr, ctrlcodes, code, s))
+
+    ins_key, ins_vals, ins_modi = cip.parse(s, addr, code)
+    print('    Ins_Key = %s'%ins_key)
+    print('    Ins_Vals = %s'%str(ins_vals))
+    print('    Ins_Modi = %s'%str(ins_modi))
+```
+
+This may yield a list such as:
+
+```
+0x0000 :   0x0007e8   0x0000078e00ff00000a00ff017624   IMAD.MOV.U32 R1, RZ, RZ, c[0x0][0x28] ;
+    Ins_Key = IMAD_R_R_R_cAI
+    Ins_Vals = [7, 1, 255, 255, 0, 40]
+    Ins_Modi = ['0_IMAD', '0_MOV', '0_U32']
+0x0010 :   0x0007f1   0x000000000a000000580000247ab9   ULDC.64 UR36, c[0x0][0x160] ;
+    Ins_Key = ULDC_UR_cAI
+    Ins_Vals = [7, 36, 0, 352]
+    Ins_Modi = ['0_ULDC', '0_64']
+0x0020 :   0x0007f1   0x000007ffe0ffffffffd801017810   IADD3 R1, R1, -0x28, RZ ;
+    Ins_Key = IADD3_R_R_II_R
+    Ins_Vals = [7, 1, 1, -40, 255]
+    Ins_Modi = ['0_IADD3', '3_NegIntImme']
+0x0030 :   0x000751   0x00000c1ee90000000024ff057981   LDG.E.SYS R5, [UR36] ;
+    Ins_Key = LDG_R_AURI
+    Ins_Vals = [7, 5, 36, 0]
+    Ins_Modi = ['0_LDG', '0_E', '0_SYS']
+```
+
+The CuAssembler class `CuInsAssembler` is obligated to encode the instruction according to the value vector and modifier set. Since every instruction key has different value meaning and different modifier set, an instance of `CuInsAssembler` will only handle one key. An instance of `CuInsAssemblerRepos` class holds a repository for all known instruction keys. Given an SASS file source, `CuInsAssemblerRepos` can build the repository with instructions therein, and save the result to a file for later use:
+
+```python
+sassname = 'cublas64_11.sm_75.sass'
+arch = 'sm_75'
+feeder = CuInsFeeder(sassname, arch=arch)   # initialize a feeder
+repos = CuInsAssemblerRepos(arch=arch)      # initialize an empty repos
+repos.update(feeder)                        # Update the repos with instructions from feeder
+repos.save2file('Repos.'+arch+'.txt')       # Save the repos to file, may be loaded back later
+```
+
+Building repository is usually rather time-consuming, thus a prebuilt repository is available in the `InsAsmRepos` directory (The coverage of `sm_75` is good, but poor for `sm_61` and `sm_86`, and probably wrong treatments). `CuInsAssemblerRepos` also provides subroutines to update, verify, and merge the repository from a new SASS file, or even from another repository. 
+
+**NOTE**: Since there are quite a lot architecture dependent treatments needed, `CuInsFeeder`, `CuInsParser`, `CuInsAssembler`, `CuInAssemblerRepos` are all architecture dependent. You should not mix different SM versions of them. Some SM versions are quite close(such as maxwell and pascal), but it's still recommended to make seperate instances for them.
