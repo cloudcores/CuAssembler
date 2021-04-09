@@ -27,6 +27,7 @@ class CuInsFeeder():
         if isinstance(fstream, str):
             self.__mFileName = fstream
             self.__mFStream = open(self.__mFileName, 'r')
+                
         else:
             self.__mFileName = None
             self.__mFStream = fstream

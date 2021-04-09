@@ -1,4 +1,42 @@
 #include "cuda_runtime.h"
+
+__global__ void func1(int* a)
+{
+    int idx = threadIdx.x;
+    int v;
+    if (idx>32)
+        v = idx;
+    else
+        v = 32;
+    
+    a[idx] = v;
+}
+
+__global__ void func2(int* a)
+{
+    int idx = threadIdx.x;
+    int v = a[idx]*2;
+    if (idx>32)
+        v += 1;
+    
+    a[idx] = v;
+}
+
+__global__ void func3(int* a)
+{
+    int idx = threadIdx.x;
+    int v;
+    if (idx>32)
+    {
+        v = a[idx] + 1;
+    }
+    else{
+        v = a[idx+1024] * 2;
+    }
+
+    a[idx+2048] = v;
+}
+
 /*
 __global__ void func(int4 c, float* a)
 {
@@ -32,7 +70,7 @@ __global__ void func(int4 c, float* a)
     else{
         
     }
-}*/
+}
 
 __global__ void switchTest(int* a)
 {
@@ -64,7 +102,7 @@ __global__ void switchTest(int* a)
             break;
 
     }
-}
+}*/
 
 int main()
 {

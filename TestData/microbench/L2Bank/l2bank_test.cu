@@ -18,13 +18,21 @@ __global__ void l2bank_test_kernel(const int2 c, const int NIter, DType* a)
     else
         p = a + c.y;// + (tid&31);
 
+    DType val(0);
+
     for(int iter=0; iter<NIter; iter++)
     {
         #pragma unroll
         for(int n=0; n<16; n++)
+        {
+            // val += *p;
             atomicAdd(p, (DType)1);
-
+        }    
+            //atomicAdd(p, (DType)1);
     }
+
+    if (val>1e12)
+        *p = val;
 }
 
 template<typename DType>
@@ -45,7 +53,7 @@ float l2bank_test_run(const int2 c, const int NIter, DType* a, cudaEvent_t &even
 template<typename DType>
 void dotest()
 {
-    int N = 1024*1024; 
+    int N = 1024*1024*256; 
     int NTest = N/32;
 
     CuPtr<DType> da(N);
@@ -67,9 +75,9 @@ void dotest()
     float tmin(1e10), tmax(-1.f);
 
     printf("### Scanning threshold...\n");
-    for(int i=0; i<16; i++)
+    for(int i=0; i<1024; i++)
     {
-        int2 c = make_int2(0, i*32);
+        int2 c = make_int2(0, i);
 
         float elapsedTime = l2bank_test_run<DType>(c, NIter, da.GetPtr(), event_start, event_stop);
         printf("  Scan %2d: %10.3f ms\n", i, elapsedTime);
@@ -112,7 +120,7 @@ void dotest()
             float elapsedTime = l2bank_test_run<DType>(c, NIter, da.GetPtr(), event_start, event_stop);
             
             if ((dsp_counter%(NTest/32)==0) )
-                printf("    %8d  %8d  %10.4f ms.\n", nextGroup, j, elapsedTime);
+                printf("    %8d  %8d  %10.4f ms.\n", nextGroup, dsp_counter, elapsedTime);
 
             // tmat(i*NTest+j) = elapsedTime;
 

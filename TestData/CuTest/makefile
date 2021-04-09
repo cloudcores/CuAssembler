@@ -7,7 +7,7 @@ ARCH61=-gencode=arch=compute_61,code=\"sm_61,compute_61\"
 ARCH75=-gencode=arch=compute_75,code=\"sm_75,compute_75\"
 ARCH86=-gencode=arch=compute_86,code=\"sm_86,compute_86\"
 
-cudatest.exe:cudatest.cu
+cudatest.exe:cudatest.cu 
 	nvcc cudatest.cu ${ARCH50} ${ARCH61} ${ARCH75} ${ARCH86} -o cudatest.exe -I ${INCLUDE} ${LINK} 
 
 dsass:cudatest.exe

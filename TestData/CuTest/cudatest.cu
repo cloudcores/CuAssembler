@@ -63,8 +63,12 @@ __global__ void test(const float4 v0, float4* v)
         vv.y = fmaf(vv.y, v0.y, vv.y);
         vv.z = fmaf(vv.z, v0.z, vv.z);
         vv.w = fmaf(vv.w, v0.w, vv.w);
-    }    
+    }
+
+    float v1 = (vv.x * vv.y + vv.z);
+    float v2 = (vv.x + vv.z);
     
+    vv.w += v1*v2;
     v[tid] = vv;
 }
 
@@ -73,6 +77,17 @@ __global__ void child(int* v, int VAL)
     int idx = threadIdx.x + blockIdx.x * blockDim.x;
     v[idx] *= VAL + GlobalC1[idx%7]+ GlobalC2[idx%16];
     v[idx] += C1[VAL] + C2[VAL];
+}
+
+__global__ void simpletest(const int4 VAL, int* v)
+{
+    int idx = threadIdx.x + blockIdx.x * blockDim.x;
+    int a = v[idx]*VAL.x + GlobalC1[idx%16];
+    //__shfl_up_sync(unsigned mask, T var, unsigned int delta, int width=warpSize);
+    a = __shfl_up_sync(0xffffffff, a, 1);
+    if (VAL.z > 0)
+        a += C1[VAL.y];
+    v[idx] = a;
 }
 
 __global__ void argtest(int ArgC[8], int* a, int* b)

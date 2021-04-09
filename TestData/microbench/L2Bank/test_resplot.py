@@ -2,57 +2,49 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
+def match_bit(x, v, vbit, xbit):
+    rx = x ^ (1<<xbit)
+    vs = (v & (1<<vbit)) > 0
+    vc = vs ^ vs[rx]
+    
+    return vc.sum()
 
-def loadTimeFile():
-    t = np.fromfile('t.dat', dtype='float32')
+def binstr(b, l):
+    bs = bin(b)[2:]
+    nbs = len(bs)
+    if nbs<l:
+        bs = '0'*(l-nbs)+bs
     
-    NBase = 64
-    
-    t2 = (t>1.2)
-    t2 = t2.reshape((NBase,1024))
-    
-    ts = np.zeros((1024,), dtype='int32')
-    chn_counter = 0
-    for i in range(NBase):
-        #mask = t2[i*1024:(i+1)*1024]
-        mask = t2[i,:]
-        v = ts[mask][0]
+    return bs
+
+ts = np.fromfile('group_bak.dat', dtype='int32')-1
+
+nts = len(ts)
+
+N_xbit = nts.bit_length()-1
+N_vbit = 3
+
+NT = 2**N_xbit #len(ts)
+
+ts = ts[0:NT]
+
+x = np.r_[0:NT]
+
+cs = np.zeros((N_xbit, N_vbit), dtype='double')
+
+for vb in range(N_vbit):
+    for xb in range(N_xbit):
+        s = match_bit(x, ts, vb, xb)
+        print(' %2d  %2d  %8d  %s'%(vb, xb, s, binstr(s, N_xbit+1)))
         
-        if all(ts[mask]==v):
-            if v==0:
-                ts[mask] = chn_counter
-                chn_counter += 1
-        else:
-            print("%d set not match!"%i)
-            
+        cs[xb, vb] = s/NT
     
-#for i in range(NBase):
-#    for j in range(NBase):
-#        v = any(np.logical_xor(t2[i,:], t2[j,:]))
-#        if v:
-#            print('0  ',end='')
-#        else:
-#            print('1  ',end='')
-#    
-#    print()
-
-ts = np.fromfile('group.dat', dtype='int32')
-
-NSeg = 128
-yoffset = 0.1/NSeg
-
-tmat = ts.reshape((NSeg,-1))
+    print()
 
 plt.figure()
-plt.clf()
-#for i in range(16):
-#    plt.plot(i*1.5+t2[i,:])
-for i in range(NSeg):
-    plt.plot(tmat[i,:]+i*yoffset, label='%d'%i)
-    plt.text(0, tmat[i,0]+i*yoffset, '%d'%i)
-#plt.legend()
+plt.plot(cs)
 plt.show()
-
 
 
