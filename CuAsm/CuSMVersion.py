@@ -332,9 +332,9 @@ class CuSMVersion(object):
         while len(bs)==32:
             ccode = int.from_bytes(bs[0:8], 'little')
 
-            ctrl_code_list.append((ccode & 0x000000000001ffff)      )
-            ctrl_code_list.append((ccode & 0x0000003fffe00000) >> 21)
-            ctrl_code_list.append((ccode & 0x07fffc0000000000) >> 42)
+            ctrl_code_list.append((ccode & 0x00000000001fffff)      )
+            ctrl_code_list.append((ccode & 0x000003ffffe00000) >> 21)
+            ctrl_code_list.append((ccode & 0x7ffffc0000000000) >> 42)
 
             ins_code_list.append(int.from_bytes(bs[ 8:16], 'little'))
             ins_code_list.append(int.from_bytes(bs[16:24], 'little'))
