@@ -44,7 +44,8 @@ def parseArgs(args):
             arch = larg.split('=')[1]
         elif larg.startswith('-arch'):
             arch = args[iarg+1].lower()
-    
+
+    # print('    arch = %s\n    ptxpath = %s\n    binpath = %s'%(arch, ptxpath, binpath))
     return arch, ptxpath, binpath
 
 def checkPTXFile(arch:str, ptxpath:str, pf_list:list):
@@ -87,8 +88,10 @@ def buildPFList(pf_file):
         lines = fin.read()
         pf_list = ast.literal_eval(lines)
 
+    # print(pf_list)
+    
+    # Check the validity of rules
     validkeyset = set(['arch', 'ptxname', 'contents', 'replacement'])
-
     for i, rule in enumerate(pf_list):
         if 'replacement' not in rule:
             raise KeyError('No replacement file given for rule %d (%s)'%(i+1, str(rule)) )
@@ -100,7 +103,6 @@ def buildPFList(pf_file):
             raise KeyError('Invalid key (%s) for rule %d (%s)'%
                 (str(rulekeyset-validkeyset), i+1, str(rule)))
 
-    # print(pf_list)
     return pf_list
 
 def doFileCopy(src, dst):
