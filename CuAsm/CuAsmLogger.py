@@ -38,7 +38,7 @@ class CuAsmLogger(object):
         return '%s.log'%name
 
     @staticmethod
-    def initLogger(name='cuasm', log_file='', file_level=logging.DEBUG, file_backup_count=3, stdout_level=25):
+    def initLogger(name='cuasm', log_file=None, file_level=logging.DEBUG, file_backup_count=3, stdout_level=25):
         if name in CuAsmLogger.__LoggerRepos:
             CuAsmLogger.__CurrLogger = CuAsmLogger.__LoggerRepos[name]
             print('CuAsmLogger %s already exists! Skipping init...' % name)
