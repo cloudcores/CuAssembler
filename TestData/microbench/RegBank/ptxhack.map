@@ -1,0 +1,28 @@
+# PTXAS hacking map file 
+#
+# It specifies the matching rules for ptxas input.
+#     Once matched, the output will be replaced by another prepared cubin.
+#     If not matched, the original ptxas will be called.
+#
+# The map file contains a pythonic list of dict, with every dict corresponding to a replacement rule.
+# The string will be evaluated as literal python expression (by ast.literal_eval())
+# 
+#    Supported dict keys (some may be absent, but at least one rule should be provided):
+#        replacement (required) : cubin filename to copy from
+#        arch : cuda compute capability for cubin, such as sm_50, sm_75
+#        ptxname : regex pattern for input ptx filename
+#        contents : regex pattern for ptx file contents
+#
+#    Note:
+#        full path of ptx or cubin may be randomly generated for every build.
+#        do not rely on the fullpath to match.
+#        Usually the last part of filename will be like "*-filename.ptx" for "filename.cu"
+[ 
+# Rule1
+{'arch':'sm_50',
+ 'ptxname':'regbank_test\.ptx$', # Note:
+ 'contents':r'\.visible \.entry _Z19regbank_test_kernel4int2iPf',
+ 'replacement':'G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.rep.sm_50.cubin'
+},
+# And may be more ...
+]
