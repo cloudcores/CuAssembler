@@ -8,57 +8,56 @@ using namespace std;
 
 typedef unsigned int uint;
 
+#define GRD_SIZE (8192)
+#define BLK_SIZE (256)
+#define WARP_CUT (4)
+#define N_ITER (256)
+#define N_UNROLL (256)
+#define N_WARMUP (5)
+#define N_TEST (10)
 
-#define NUM (256)
-
-__device__ float f1(float a, float b, float c)
-{
-    float r = fma(a, b, c);
-
-    return r;    
-}
-
-__device__ float f2(float a, float b, float c)
-{
-    float r = a+b+c;
-    return r;
-}
-
-__global__ void regbank_test_kernel(const int2 c, const int NIter, float* a)
+__global__ void regbank_test_kernel(const int2 c, const int NIter, const float4 v, float* a)
 {
     int tid = threadIdx.x;
+    int bid = blockIdx.x;
     int wid = tid / 32;
+    int lid = tid % 32;
 
-    float v0 = a[tid];
-    float v1 = a[tid+1];
-    float v2 = a[tid+2];
+    float v0 = v.x;
+    float v1 = v.y;
+    float v2 = v.z;
 
     if (wid<c.x)
     {
         for(int i=0; i<NIter; i++)
         {
-            for(int n=0; n<NUM; n++)
-                v0 = f1(v0, v1, v2);
+            #pragma unroll
+            for(int n=0; n<N_UNROLL; n++)
+                v0 = v0+v1;
         }
     }
     else{
         for(int i=0; i<NIter; i++)
         {
-            for(int n=0; n<NUM; n++)
-                v0 = f2(v0, v1, v2);
+            #pragma unroll
+            for(int n=0; n<N_UNROLL; n++)
+                v0 = fmaf(v0, v2, v1);
         }
     }
 
-    if( v0 > 1e38)
-        a[tid] = v0;
+    __syncthreads();
+    
+    // only first lane of warp in first block writes to memory
+    if( bid ==0 && lid==0)
+        a[wid] = v0;
 }
 
-float regbank_test_run(const int2 c, const int NIter, float* a, cudaEvent_t &event_start, cudaEvent_t &event_stop)
+float regbank_test_run(const int2 c, const int NIter, const float4 v, float* a, cudaEvent_t &event_start, cudaEvent_t &event_stop)
 {
     float elapsedTime;
     checkCudaErrors(cudaEventRecord(event_start, 0));
 
-    regbank_test_kernel<<<400, 256>>>(c, NIter, a);
+    regbank_test_kernel<<<GRD_SIZE, BLK_SIZE>>>(c, NIter, v, a);
 
     checkCudaErrors(cudaEventRecord(event_stop, 0));
     checkCudaErrors(cudaEventSynchronize(event_stop));
@@ -70,31 +69,45 @@ float regbank_test_run(const int2 c, const int NIter, float* a, cudaEvent_t &eve
 void dotest()
 {
     CuPtr<float> da(4096);
-    int NIter = 128;
+    int NIter = N_ITER;
 
     cudaEvent_t event_start, event_stop;
     checkCudaErrors(cudaEventCreate(&event_start));
     checkCudaErrors(cudaEventCreate(&event_stop));
 
+    //double giga_instr = (1e-9 * GRD_SIZE) * BLK_SIZE * N_ITER * N_UNROLL;
+
+    int2 c = make_int2(WARP_CUT, 0);
+    float4 v = make_float4(0, 1.0f, 0, 0);
+
     printf("### Warm up...\n");
-    for(int i=0; i<3; i++)
+    for(int i=0; i<N_WARMUP; i++)
     {
-        int2 c = make_int2(4, 0);
-        float elapsedTime = regbank_test_run(c, NIter, da.GetPtr(), event_start, event_stop);
+        da.SetZeros();
+        float elapsedTime = regbank_test_run(c, NIter, v, da.GetPtr(), event_start, event_stop); // in ms
         printf("  Warmup %2d: %10.3f ms\n", i, elapsedTime);
     }
     
     printf("### Testing...\n");
-    for(int i=0; i<8; i++)
+    for(int i=0; i<N_TEST; i++)
     {
-        int2 c = make_int2(4, 0);
-        float elapsedTime = regbank_test_run(c, NIter, da.GetPtr(), event_start, event_stop);
+        da.SetZeros();
+        float elapsedTime = regbank_test_run(c, NIter, v, da.GetPtr(), event_start, event_stop); // in ms
         printf("  Test %2d: %10.3f ms\n", i, elapsedTime);
     }
 
     checkCudaErrors(cudaEventDestroy(event_start));
     checkCudaErrors(cudaEventDestroy(event_stop));
 
+    printf("\n### Result checking...\n");
+
+    HostPtr<float> ha;
+    da.ToHostPtr(ha);
+    for(int i=0; i<BLK_SIZE/32; i++)
+    {
+        unsigned int xa = *(unsigned int *)(&ha(i));
+        printf("%3d : %8g  0x%08x\n", i, ha(i), xa);
+    }
 }
 
 int main()

@@ -23,7 +23,7 @@ dcubin:${BASENAME}.exe
 	cuobjdump -xelf all ${BASENAME}.exe
 
 dptx:${BASENAME}.exe
-	cuobjdump -ptx ${BASENAME}.exe > ${BASENAME}.ptx
+	cuobjdump -xptx all ${BASENAME}.exe
 
 .PHONY:clean
 clean:

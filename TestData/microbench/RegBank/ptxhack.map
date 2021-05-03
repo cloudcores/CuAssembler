@@ -21,7 +21,7 @@
 # Rule1
 {'arch':'sm_50',
  'ptxname':'regbank_test\.ptx$', # Note:
- 'contents':r'\.visible \.entry _Z19regbank_test_kernel4int2iPf',
+ 'contents':r'\.visible \.entry _Z19regbank_test_kernel4int2i6float4Pf',
  'replacement':'G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.rep.sm_50.cubin'
 },
 # And may be more ...

@@ -1,0 +1,1105 @@
+// --------------------- FileHeader --------------------------
+	// All file header info is kept as is (unless offset/size attributes)
+	// The original header flags is not complete, thus discarded. 
+	// 	.headerflags	@"EF_CUDA_TEXMODE_UNIFIED EF_CUDA_64BIT_ADDRESS EF_CUDA_SM50 EF_CUDA_VIRTUAL_SM(EF_CUDA_SM50)"
+	// 	.elftype	@"ET_EXEC"
+	// 
+	// 
+	.__elf_ident_osabi      51
+	.__elf_ident_abiversion 7
+	.__elf_type             ET_EXEC
+	.__elf_machine          EM_CUDA
+	.__elf_version          111 		// CUDA toolkit version 
+	.__elf_entry            0 		// entry point address 
+	.__elf_phoff            0x1f60 		// program header offset, maybe updated by assembler
+	.__elf_shoff            0x1d20 		// section header offset, maybe updated by assembler
+	.__elf_flags            0x320532 		// Flags, SM_50(0x32), COMPUTE_50(0x32) 
+	.__elf_ehsize           64 		// elf header size 
+	.__elf_phentsize        56 		// program entry size
+	.__elf_phnum            3 		// number of program entries
+	.__elf_shentsize        64 		// section entry size
+	.__elf_shnum            9 		// number of sections, currently no sections can be appended/removed
+	.__elf_shstrndx         1 		// Section name string table index 
+
+
+  //-------------------------------------------------
+  //------------ END of FileHeader ------------------
+  //-------------------------------------------------
+
+
+
+// ---------------------                                  --------------------------
+	// there will always be an empty section at index 0
+	.section  "", 0, SHT_NULL
+	.__section_name         0x0 	// offset in .shstrtab
+	.__section_type         SHT_NULL
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x0 	// maybe updated by assembler
+	.__section_size         0x0 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x0
+	.__section_entsize      0
+	.align                0 	// equivalent to set sh_addralign
+
+// --------------------- .shstrtab                        --------------------------
+	.section  ".shstrtab", 0, SHT_STRTAB
+	// all strings in .shstrtab section will be kept as is.
+	.__section_name         0x1 	// offset in .shstrtab
+	.__section_type         SHT_STRTAB
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x40 	// maybe updated by assembler
+	.__section_size         0x105 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x0
+	.__section_entsize      0
+	.align                1 	// equivalent to set sh_addralign
+    // .shstrtab[0] = b'\x00' 
+    /*0000*/ .byte 0x00
+
+    // .shstrtab[1] = b'.shstrtab\x00' 
+    /*0001*/ .byte 0x2e, 0x73, 0x68, 0x73, 0x74, 0x72, 0x74, 0x61
+    /*0009*/ .byte 0x62, 0x00
+
+    // .shstrtab[2] = b'.strtab\x00' 
+    /*000b*/ .byte 0x2e, 0x73, 0x74, 0x72, 0x74, 0x61, 0x62, 0x00
+
+    // .shstrtab[3] = b'.symtab\x00' 
+    /*0013*/ .byte 0x2e, 0x73, 0x79, 0x6d, 0x74, 0x61, 0x62, 0x00
+
+    // .shstrtab[4] = b'.symtab_shndx\x00' 
+    /*001b*/ .byte 0x2e, 0x73, 0x79, 0x6d, 0x74, 0x61, 0x62, 0x5f
+    /*0023*/ .byte 0x73, 0x68, 0x6e, 0x64, 0x78, 0x00
+
+    // .shstrtab[5] = b'.nv.info\x00' 
+    /*0029*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*0031*/ .byte 0x00
+
+    // .shstrtab[6] = b'.text._Z19regbank_test_kernel4int2i6float4Pf\x00' 
+    /*0032*/ .byte 0x2e, 0x74, 0x65, 0x78, 0x74, 0x2e, 0x5f, 0x5a
+    /*003a*/ .byte 0x31, 0x39, 0x72, 0x65, 0x67, 0x62, 0x61, 0x6e
+    /*0042*/ .byte 0x6b, 0x5f, 0x74, 0x65, 0x73, 0x74, 0x5f, 0x6b
+    /*004a*/ .byte 0x65, 0x72, 0x6e, 0x65, 0x6c, 0x34, 0x69, 0x6e
+    /*0052*/ .byte 0x74, 0x32, 0x69, 0x36, 0x66, 0x6c, 0x6f, 0x61
+    /*005a*/ .byte 0x74, 0x34, 0x50, 0x66, 0x00
+
+    // .shstrtab[7] = b'.nv.info._Z19regbank_test_kernel4int2i6float4Pf\x00' 
+    /*005f*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*0067*/ .byte 0x2e, 0x5f, 0x5a, 0x31, 0x39, 0x72, 0x65, 0x67
+    /*006f*/ .byte 0x62, 0x61, 0x6e, 0x6b, 0x5f, 0x74, 0x65, 0x73
+    /*0077*/ .byte 0x74, 0x5f, 0x6b, 0x65, 0x72, 0x6e, 0x65, 0x6c
+    /*007f*/ .byte 0x34, 0x69, 0x6e, 0x74, 0x32, 0x69, 0x36, 0x66
+    /*0087*/ .byte 0x6c, 0x6f, 0x61, 0x74, 0x34, 0x50, 0x66, 0x00
+
+    // .shstrtab[8] = b'.nv.shared._Z19regbank_test_kernel4int2i6float4Pf\x00' 
+    /*008f*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x73, 0x68, 0x61, 0x72
+    /*0097*/ .byte 0x65, 0x64, 0x2e, 0x5f, 0x5a, 0x31, 0x39, 0x72
+    /*009f*/ .byte 0x65, 0x67, 0x62, 0x61, 0x6e, 0x6b, 0x5f, 0x74
+    /*00a7*/ .byte 0x65, 0x73, 0x74, 0x5f, 0x6b, 0x65, 0x72, 0x6e
+    /*00af*/ .byte 0x65, 0x6c, 0x34, 0x69, 0x6e, 0x74, 0x32, 0x69
+    /*00b7*/ .byte 0x36, 0x66, 0x6c, 0x6f, 0x61, 0x74, 0x34, 0x50
+    /*00bf*/ .byte 0x66, 0x00
+
+    // .shstrtab[9] = b'.nv.constant0._Z19regbank_test_kernel4int2i6float4Pf\x00' 
+    /*00c1*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*00c9*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x30, 0x2e, 0x5f, 0x5a
+    /*00d1*/ .byte 0x31, 0x39, 0x72, 0x65, 0x67, 0x62, 0x61, 0x6e
+    /*00d9*/ .byte 0x6b, 0x5f, 0x74, 0x65, 0x73, 0x74, 0x5f, 0x6b
+    /*00e1*/ .byte 0x65, 0x72, 0x6e, 0x65, 0x6c, 0x34, 0x69, 0x6e
+    /*00e9*/ .byte 0x74, 0x32, 0x69, 0x36, 0x66, 0x6c, 0x6f, 0x61
+    /*00f1*/ .byte 0x74, 0x34, 0x50, 0x66, 0x00
+
+    // .shstrtab[10] = b'.nv.rel.action\x00' 
+    /*00f6*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x72, 0x65, 0x6c, 0x2e
+    /*00fe*/ .byte 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x00
+
+
+// --------------------- .strtab                          --------------------------
+	.section  ".strtab", 0, SHT_STRTAB
+	// all strings in .strtab section will be kept as is.
+	.__section_name         0xb 	// offset in .shstrtab
+	.__section_type         SHT_STRTAB
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x145 	// maybe updated by assembler
+	.__section_size         0x133 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x0
+	.__section_entsize      0
+	.align                1 	// equivalent to set sh_addralign
+    // .strtab[0] = b'\x00' 
+    /*0000*/ .byte 0x00
+
+    // .strtab[1] = b'.shstrtab\x00' 
+    /*0001*/ .byte 0x2e, 0x73, 0x68, 0x73, 0x74, 0x72, 0x74, 0x61
+    /*0009*/ .byte 0x62, 0x00
+
+    // .strtab[2] = b'.strtab\x00' 
+    /*000b*/ .byte 0x2e, 0x73, 0x74, 0x72, 0x74, 0x61, 0x62, 0x00
+
+    // .strtab[3] = b'.symtab\x00' 
+    /*0013*/ .byte 0x2e, 0x73, 0x79, 0x6d, 0x74, 0x61, 0x62, 0x00
+
+    // .strtab[4] = b'.symtab_shndx\x00' 
+    /*001b*/ .byte 0x2e, 0x73, 0x79, 0x6d, 0x74, 0x61, 0x62, 0x5f
+    /*0023*/ .byte 0x73, 0x68, 0x6e, 0x64, 0x78, 0x00
+
+    // .strtab[5] = b'.nv.info\x00' 
+    /*0029*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*0031*/ .byte 0x00
+
+    // .strtab[6] = b'_Z19regbank_test_kernel4int2i6float4Pf\x00' 
+    /*0032*/ .byte 0x5f, 0x5a, 0x31, 0x39, 0x72, 0x65, 0x67, 0x62
+    /*003a*/ .byte 0x61, 0x6e, 0x6b, 0x5f, 0x74, 0x65, 0x73, 0x74
+    /*0042*/ .byte 0x5f, 0x6b, 0x65, 0x72, 0x6e, 0x65, 0x6c, 0x34
+    /*004a*/ .byte 0x69, 0x6e, 0x74, 0x32, 0x69, 0x36, 0x66, 0x6c
+    /*0052*/ .byte 0x6f, 0x61, 0x74, 0x34, 0x50, 0x66, 0x00
+
+    // .strtab[7] = b'.text._Z19regbank_test_kernel4int2i6float4Pf\x00' 
+    /*0059*/ .byte 0x2e, 0x74, 0x65, 0x78, 0x74, 0x2e, 0x5f, 0x5a
+    /*0061*/ .byte 0x31, 0x39, 0x72, 0x65, 0x67, 0x62, 0x61, 0x6e
+    /*0069*/ .byte 0x6b, 0x5f, 0x74, 0x65, 0x73, 0x74, 0x5f, 0x6b
+    /*0071*/ .byte 0x65, 0x72, 0x6e, 0x65, 0x6c, 0x34, 0x69, 0x6e
+    /*0079*/ .byte 0x74, 0x32, 0x69, 0x36, 0x66, 0x6c, 0x6f, 0x61
+    /*0081*/ .byte 0x74, 0x34, 0x50, 0x66, 0x00
+
+    // .strtab[8] = b'.nv.info._Z19regbank_test_kernel4int2i6float4Pf\x00' 
+    /*0086*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*008e*/ .byte 0x2e, 0x5f, 0x5a, 0x31, 0x39, 0x72, 0x65, 0x67
+    /*0096*/ .byte 0x62, 0x61, 0x6e, 0x6b, 0x5f, 0x74, 0x65, 0x73
+    /*009e*/ .byte 0x74, 0x5f, 0x6b, 0x65, 0x72, 0x6e, 0x65, 0x6c
+    /*00a6*/ .byte 0x34, 0x69, 0x6e, 0x74, 0x32, 0x69, 0x36, 0x66
+    /*00ae*/ .byte 0x6c, 0x6f, 0x61, 0x74, 0x34, 0x50, 0x66, 0x00
+
+    // .strtab[9] = b'.nv.shared._Z19regbank_test_kernel4int2i6float4Pf\x00' 
+    /*00b6*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x73, 0x68, 0x61, 0x72
+    /*00be*/ .byte 0x65, 0x64, 0x2e, 0x5f, 0x5a, 0x31, 0x39, 0x72
+    /*00c6*/ .byte 0x65, 0x67, 0x62, 0x61, 0x6e, 0x6b, 0x5f, 0x74
+    /*00ce*/ .byte 0x65, 0x73, 0x74, 0x5f, 0x6b, 0x65, 0x72, 0x6e
+    /*00d6*/ .byte 0x65, 0x6c, 0x34, 0x69, 0x6e, 0x74, 0x32, 0x69
+    /*00de*/ .byte 0x36, 0x66, 0x6c, 0x6f, 0x61, 0x74, 0x34, 0x50
+    /*00e6*/ .byte 0x66, 0x00
+
+    // .strtab[10] = b'.nv.constant0._Z19regbank_test_kernel4int2i6float4Pf\x00' 
+    /*00e8*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*00f0*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x30, 0x2e, 0x5f, 0x5a
+    /*00f8*/ .byte 0x31, 0x39, 0x72, 0x65, 0x67, 0x62, 0x61, 0x6e
+    /*0100*/ .byte 0x6b, 0x5f, 0x74, 0x65, 0x73, 0x74, 0x5f, 0x6b
+    /*0108*/ .byte 0x65, 0x72, 0x6e, 0x65, 0x6c, 0x34, 0x69, 0x6e
+    /*0110*/ .byte 0x74, 0x32, 0x69, 0x36, 0x66, 0x6c, 0x6f, 0x61
+    /*0118*/ .byte 0x74, 0x34, 0x50, 0x66, 0x00
+
+    // .strtab[11] = b'_param\x00' 
+    /*011d*/ .byte 0x5f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x00
+
+    // .strtab[12] = b'.nv.rel.action\x00' 
+    /*0124*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x72, 0x65, 0x6c, 0x2e
+    /*012c*/ .byte 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x00
+
+
+// --------------------- .symtab                          --------------------------
+	.section  ".symtab", 0, SHT_SYMTAB
+	// all symbols in .symtab sections will be kept
+	// but the symbol size may be changed accordingly
+	.__section_name         0x13 	// offset in .shstrtab
+	.__section_type         SHT_SYMTAB
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x278 	// maybe updated by assembler
+	.__section_size         0x78 	// maybe updated by assembler
+	.__section_link         2
+	.__section_info         0x3
+	.__section_entsize      24
+	.align                8 	// equivalent to set sh_addralign
+    // Symbol[0] "": Container({'st_name': 0, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_NOTYPE'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
+    /*0000*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0008*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0010*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[1] ".text._Z19regbank_test_kernel4int2i6float4Pf": Container({'st_name': 89, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 8, 'st_value': 0, 'st_size': 0})
+    /*0018*/ .byte 0x59, 0x00, 0x00, 0x00, 0x03, 0x00, 0x08, 0x00
+    /*0020*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0028*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[2] ".nv.constant0._Z19regbank_test_kernel4int2i6float4Pf": Container({'st_name': 232, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 7, 'st_value': 0, 'st_size': 0})
+    /*0030*/ .byte 0xe8, 0x00, 0x00, 0x00, 0x03, 0x00, 0x07, 0x00
+    /*0038*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0040*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[3] ".nv.rel.action": Container({'st_name': 292, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 6, 'st_value': 0, 'st_size': 0})
+    /*0048*/ .byte 0x24, 0x01, 0x00, 0x00, 0x03, 0x00, 0x06, 0x00
+    /*0050*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0058*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[4] "_Z19regbank_test_kernel4int2i6float4Pf": Container({'st_name': 50, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 8, 'st_value': 0, 'st_size': 5952})
+    /*0060*/ .byte 0x32, 0x00, 0x00, 0x00, 0x12, 0x10, 0x08, 0x00
+    /*0068*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0070*/ .byte 0x40, 0x17, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+
+// --------------------- .nv.info                         --------------------------
+	.section	.nv.info,"",@"SHT_CUDA_INFO"
+	.__section_name         0x29 	// offset in .shstrtab
+	.__section_type         1879048192
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x2f0 	// maybe updated by assembler
+	.__section_size         0x30 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x0
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  
+  
+  	//----- nvinfo : EIATTR_REGCOUNT
+  	.align		4
+          /*0000*/ 	.byte	0x04, 0x2f
+          /*0002*/ 	.short	(.L_7 - .L_6)
+  	.align		4
+  .L_6:
+          /*0004*/ 	.word	index@(_Z19regbank_test_kernel4int2i6float4Pf)
+          /*0008*/ 	.word	0x00000006
+  
+  
+  	//----- nvinfo : EIATTR_MAX_STACK_SIZE
+  	.align		4
+  .L_7:
+          /*000c*/ 	.byte	0x04, 0x23
+          /*000e*/ 	.short	(.L_9 - .L_8)
+  	.align		4
+  .L_8:
+          /*0010*/ 	.word	index@(_Z19regbank_test_kernel4int2i6float4Pf)
+          /*0014*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MIN_STACK_SIZE
+  	.align		4
+  .L_9:
+          /*0018*/ 	.byte	0x04, 0x12
+          /*001a*/ 	.short	(.L_11 - .L_10)
+  	.align		4
+  .L_10:
+          /*001c*/ 	.word	index@(_Z19regbank_test_kernel4int2i6float4Pf)
+          /*0020*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_FRAME_SIZE
+  	.align		4
+  .L_11:
+          /*0024*/ 	.byte	0x04, 0x11
+          /*0026*/ 	.short	(.L_13 - .L_12)
+  	.align		4
+  .L_12:
+          /*0028*/ 	.word	index@(_Z19regbank_test_kernel4int2i6float4Pf)
+          /*002c*/ 	.word	0x00000000
+  .L_13:
+  
+  
+// --------------------- .nv.info._Z19regbank_test_kernel4int2i6float4Pf --------------------------
+	.section	.nv.info._Z19regbank_test_kernel4int2i6float4Pf,"",@"SHT_CUDA_INFO"
+	.__section_name         0x5f 	// offset in .shstrtab
+	.__section_type         1879048192
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x320 	// maybe updated by assembler
+	.__section_size         0x78 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x8
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  
+  
+  	//----- nvinfo : EIATTR_CUDA_API_VERSION
+  	.align		4
+          /*0000*/ 	.byte	0x04, 0x37
+          /*0002*/ 	.short	(.L_15 - .L_14)
+  .L_14:
+          /*0004*/ 	.word	0x0000006f
+  
+  
+  	//----- nvinfo : EIATTR_SW2393858_WAR
+  	.align		4
+  .L_15:
+          /*0008*/ 	.byte	0x01, 0x30
+  	.zero		2
+  
+  
+  	//----- nvinfo : EIATTR_SW1850030_WAR
+  	.align		4
+          /*000c*/ 	.byte	0x01, 0x2a
+  	.zero		2
+  
+  
+  	//----- nvinfo : EIATTR_PARAM_CBANK
+  	.align		4
+          /*0010*/ 	.byte	0x04, 0x0a
+          /*0012*/ 	.short	(.L_17 - .L_16)
+  	.align		4
+  .L_16:
+          /*0014*/ 	.word	index@(.nv.constant0._Z19regbank_test_kernel4int2i6float4Pf)
+          /*0018*/ 	.short	0x0140
+          /*001a*/ 	.short	0x0028
+  
+  
+  	//----- nvinfo : EIATTR_CBANK_PARAM_SIZE
+  	.align		4
+  .L_17:
+          /*001c*/ 	.byte	0x03, 0x19
+          /*001e*/ 	.short	0x0028
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+          /*0020*/ 	.byte	0x04, 0x17
+          /*0022*/ 	.short	(.L_19 - .L_18)
+  .L_18:
+          /*0024*/ 	.word	0x00000000
+          /*0028*/ 	.short	0x0003
+          /*002a*/ 	.short	0x0020
+          /*002c*/ 	.byte	0x00, 0xf0, 0x21, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+  .L_19:
+          /*0030*/ 	.byte	0x04, 0x17
+          /*0032*/ 	.short	(.L_21 - .L_20)
+  .L_20:
+          /*0034*/ 	.word	0x00000000
+          /*0038*/ 	.short	0x0002
+          /*003a*/ 	.short	0x0010
+          /*003c*/ 	.byte	0x00, 0xf0, 0x41, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+  .L_21:
+          /*0040*/ 	.byte	0x04, 0x17
+          /*0042*/ 	.short	(.L_23 - .L_22)
+  .L_22:
+          /*0044*/ 	.word	0x00000000
+          /*0048*/ 	.short	0x0001
+          /*004a*/ 	.short	0x0008
+          /*004c*/ 	.byte	0x00, 0xf0, 0x11, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+  .L_23:
+          /*0050*/ 	.byte	0x04, 0x17
+          /*0052*/ 	.short	(.L_25 - .L_24)
+  .L_24:
+          /*0054*/ 	.word	0x00000000
+          /*0058*/ 	.short	0x0000
+          /*005a*/ 	.short	0x0000
+          /*005c*/ 	.byte	0x00, 0xf0, 0x21, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_MAXREG_COUNT
+  	.align		4
+  .L_25:
+          /*0060*/ 	.byte	0x03, 0x1b
+          /*0062*/ 	.short	0x00ff
+  
+  
+  	//----- nvinfo : EIATTR_S2RCTAID_INSTR_OFFSETS
+  	.align		4
+          /*0064*/ 	.byte	0x04, 0x1d
+          /*0066*/ 	.short	(.L_27 - .L_26)
+  
+  
+  	//   ....[0]....
+  .L_26:
+          /*0068*/ 	.word	0x00001668
+  
+  
+  	//----- nvinfo : EIATTR_EXIT_INSTR_OFFSETS
+  	.align		4
+  .L_27:
+          /*006c*/ 	.byte	0x04, 0x1c
+          /*006e*/ 	.short	(.L_29 - .L_28)
+  
+  
+  	//   ....[0]....
+  .L_28:
+          /*0070*/ 	.word	0x000016b0
+  
+  
+  	//   ....[1]....
+          /*0074*/ 	.word	0x00001708
+  .L_29:
+  
+  
+// --------------------- .nv.rel.action                   --------------------------
+	.section	.nv.rel.action,"",@"SHT_CUDA_RELOCINFO"
+	.__section_name         0xf6 	// offset in .shstrtab
+	.__section_type         1879048203
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x398 	// maybe updated by assembler
+	.__section_size         0xd0 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x0
+	.__section_entsize      8
+	.align                8 	// equivalent to set sh_addralign
+  	.align	8
+  	.sectionentsize	8
+          /*0000*/ 	.byte	0x4b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x02, 0x08, 0x10, 0x0a, 0x2f, 0x22
+          /*0010*/ 	.byte	0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0020*/ 	.byte	0x00, 0x00, 0x10, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0030*/ 	.byte	0x00, 0x00, 0x20, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x28, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0040*/ 	.byte	0x00, 0x00, 0x30, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x38, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0050*/ 	.byte	0x01, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x08, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0060*/ 	.byte	0x01, 0x00, 0x10, 0x08, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x18, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0070*/ 	.byte	0x01, 0x00, 0x20, 0x08, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x28, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0080*/ 	.byte	0x01, 0x00, 0x30, 0x08, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x38, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0090*/ 	.byte	0x02, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x08, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*00a0*/ 	.byte	0x02, 0x00, 0x10, 0x08, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x18, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*00b0*/ 	.byte	0x02, 0x00, 0x20, 0x08, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x28, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*00c0*/ 	.byte	0x02, 0x00, 0x30, 0x08, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x38, 0x08, 0x00, 0x00, 0x00, 0x00
+  
+  
+// --------------------- .nv.constant0._Z19regbank_test_kernel4int2i6float4Pf --------------------------
+	.section	.nv.constant0._Z19regbank_test_kernel4int2i6float4Pf,"a",@progbits
+	.__section_name         0xc1 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x2
+	.__section_addr         0x0
+	.__section_offset       0x468 	// maybe updated by assembler
+	.__section_size         0x168 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x8
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  .nv.constant0._Z19regbank_test_kernel4int2i6float4Pf:
+  	.zero		360
+  
+  
+// --------------------- .text._Z19regbank_test_kernel4int2i6float4Pf --------------------------
+	.section	.text._Z19regbank_test_kernel4int2i6float4Pf,"ax",@progbits
+	.__section_name         0x32 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x100006
+	.__section_addr         0x0
+	.__section_offset       0x5e0 	// maybe updated by assembler
+	.__section_size         0x1740 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x6000004
+	.__section_entsize      0
+	.align                32 	// equivalent to set sh_addralign
+  	.sectionflags	@"SHF_BARRIERS=1"
+  	.sectioninfo	@"SHI_REGISTERS=6"
+  	.align	32
+          .global         _Z19regbank_test_kernel4int2i6float4Pf
+          .type           _Z19regbank_test_kernel4int2i6float4Pf,@function
+          .size           _Z19regbank_test_kernel4int2i6float4Pf,(.L_30 - _Z19regbank_test_kernel4int2i6float4Pf)
+          .other          _Z19regbank_test_kernel4int2i6float4Pf,@"STO_CUDA_ENTRY STV_DEFAULT"
+  _Z19regbank_test_kernel4int2i6float4Pf:
+  .text._Z19regbank_test_kernel4int2i6float4Pf:
+      [----:B------:R-:W-:-:S06]         /*0008*/                   MOV R1, c[0x0][0x20] ;
+      [----:B------:R-:W-:-:S00]         /*0010*/         {         MOV R4, c[0x0][0x150] ;
+      [----:B------:R-:W0:-:S15]         /*0018*/                   S2R R0, SR_TID.X         }
+      [----:B0-----:R-:W-:-:S06]         /*0028*/                   SHR R2, R0, 0x1f ;
+      [----:B------:R-:W-:-:S06]         /*0030*/                   LEA.HI R2, R2, R0, RZ, 0x5 ;
+      [----:B------:R-:W-:-:S06]         /*0038*/                   SHR R2, R2, 0x5 ;
+      [----:B------:R-:W-:Y:S13]         /*0048*/                   ISETP.LT.AND P0, PT, R2, c[0x0][0x140], PT ;
+      [----:B------:R-:W-:-:S13]         /*0050*/               @P0 BRA `(.L_1) ;
+      [----:B------:R-:W-:-:S06]         /*0058*/                   MOV R3, c[0x0][0x148] ;
+      [----:B------:R-:W-:Y:S13]         /*0068*/                   ISETP.LT.AND P0, PT, R3, 0x1, PT ;
+      [----:B------:R-:W-:-:S13]         /*0070*/               @P0 BRA `(.L_2) ;
+      [----:B------:R-:W-:-:S06]         /*0078*/                   MOV R5, RZ ;
+  .L_3:
+      [----:B------:R-:W-:-:S01]         /*0088*/                   MOV R3, c[0x0][0x158] ;
+      [----:B------:R-:W-:-:S05]         /*0090*/                   IADD32I R5, R5, 0x1 ;
+      [-R--:B------:R-:W-:-:S01]         /*0098*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S05]         /*00a8*/                   ISETP.LT.AND P0, PT, R5, c[0x0][0x148], PT ;
+      [-R--:B------:R-:W-:-:S06]         /*00b0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*00b8*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*00c8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*00d0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*00d8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*00e8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*00f0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*00f8*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0108*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0110*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0118*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0128*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0130*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0138*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0148*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0150*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0158*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0168*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0170*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0178*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0188*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0190*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0198*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*01a8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*01b0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*01b8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*01c8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*01d0*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*01d8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*01e8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*01f0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*01f8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0208*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0210*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0218*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0228*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0230*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0238*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0248*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0250*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0258*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0268*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0270*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0278*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0288*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0290*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0298*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*02a8*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*02b0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*02b8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*02c8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*02d0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*02d8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*02e8*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*02f0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*02f8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0308*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0310*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0318*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0328*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0330*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0338*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0348*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0350*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0358*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0368*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0370*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0378*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0388*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0390*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0398*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*03a8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*03b0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*03b8*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*03c8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*03d0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*03d8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*03e8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*03f0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*03f8*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0408*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0410*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0418*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0428*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0430*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0438*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0448*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0450*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0458*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0468*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0470*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0478*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0488*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0490*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0498*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*04a8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*04b0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*04b8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*04c8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*04d0*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*04d8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*04e8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*04f0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*04f8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0508*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0510*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0518*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0528*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0530*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0538*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0548*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0550*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0558*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0568*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0570*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0578*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0588*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0590*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0598*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*05a8*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*05b0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*05b8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*05c8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*05d0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*05d8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*05e8*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*05f0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*05f8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0608*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0610*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0618*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0628*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0630*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0638*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0648*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0650*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0658*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0668*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0670*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0678*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0688*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0690*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0698*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*06a8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*06b0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*06b8*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*06c8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*06d0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*06d8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*06e8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*06f0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*06f8*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0708*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0710*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0718*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0728*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0730*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0738*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0748*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0750*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0758*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0768*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0770*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0778*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0788*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0790*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0798*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*07a8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*07b0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*07b8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*07c8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*07d0*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*07d8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*07e8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*07f0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*07f8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0808*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0810*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0818*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0828*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0830*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0838*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0848*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0850*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0858*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0868*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0870*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0878*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0888*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0890*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0898*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*08a8*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*08b0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*08b8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*08c8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*08d0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*08d8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*08e8*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*08f0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*08f8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0908*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0910*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0918*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0928*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0930*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0938*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0948*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0950*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0958*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0968*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0970*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0978*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0988*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0990*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0998*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*09a8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*09b0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*09b8*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*09c8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*09d0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*09d8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*09e8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*09f0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*09f8*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0a08*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0a10*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0a18*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0a28*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0a30*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0a38*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0a48*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0a50*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0a58*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0a68*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0a70*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0a78*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0a88*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0a90*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0a98*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0aa8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0ab0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0ab8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0ac8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0ad0*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0ad8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0ae8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0af0*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0af8*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0b08*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0b10*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0b18*/                   FFMA R4, R4, R3, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0b28*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0b30*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [-R--:B------:R-:W-:-:S06]         /*0b38*/                   FFMA R4, R4, R3.reuse, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S00]         /*0b48*/         {         FFMA R4, R4, R3, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0b50*/               @P0 BRA `(.L_3)         }
+      [----:B------:R-:W-:-:S13]         /*0b58*/                   BRA `(.L_2) ;
+  .L_1:
+      [----:B------:R-:W-:-:S06]         /*0b68*/                   MOV R3, c[0x0][0x148] ;
+      [----:B------:R-:W-:Y:S13]         /*0b70*/                   ISETP.LT.AND P0, PT, R3, 0x1, PT ;
+      [----:B------:R-:W-:-:S13]         /*0b78*/               @P0 BRA `(.L_2) ;
+      [----:B------:R-:W-:-:S06]         /*0b88*/                   MOV R3, RZ ;
+  .L_4:
+      [----:B------:R-:W-:-:S01]         /*0b90*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S05]         /*0b98*/                   IADD32I R3, R3, 0x1 ;
+      [----:B------:R-:W-:-:S01]         /*0ba8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S05]         /*0bb0*/                   ISETP.LT.AND P0, PT, R3, c[0x0][0x148], PT ;
+      [----:B------:R-:W-:-:S06]         /*0bb8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0bc8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0bd0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0bd8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0be8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0bf0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0bf8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0c08*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0c10*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0c18*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0c28*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0c30*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0c38*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0c48*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0c50*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0c58*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0c68*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0c70*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0c78*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0c88*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0c90*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0c98*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0ca8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0cb0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0cb8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0cc8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0cd0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0cd8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0ce8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0cf0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0cf8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0d08*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0d10*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0d18*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0d28*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0d30*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0d38*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0d48*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0d50*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0d58*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0d68*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0d70*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0d78*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0d88*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0d90*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0d98*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0da8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0db0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0db8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0dc8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0dd0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0dd8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0de8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0df0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0df8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0e08*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0e10*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0e18*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0e28*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0e30*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0e38*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0e48*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0e50*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0e58*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0e68*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0e70*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0e78*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0e88*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0e90*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0e98*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0ea8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0eb0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0eb8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0ec8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0ed0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0ed8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0ee8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0ef0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0ef8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0f08*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0f10*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0f18*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0f28*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0f30*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0f38*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0f48*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0f50*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0f58*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0f68*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0f70*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0f78*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0f88*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*0f90*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0f98*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0fa8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0fb0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0fb8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0fc8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0fd0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*0fd8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0fe8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0ff0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*0ff8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1008*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*1010*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1018*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*1028*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1030*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1038*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1048*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1050*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1058*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*1068*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1070*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1078*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1088*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*1090*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1098*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*10a8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*10b0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*10b8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*10c8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*10d0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*10d8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*10e8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*10f0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*10f8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1108*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*1110*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1118*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1128*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1130*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*1138*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1148*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1150*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1158*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1168*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1170*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*1178*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1188*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*1190*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1198*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*11a8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*11b0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*11b8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*11c8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*11d0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*11d8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*11e8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*11f0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*11f8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*1208*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*1210*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1218*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1228*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1230*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1238*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1248*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*1250*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1258*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1268*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1270*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1278*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1288*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*1290*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*1298*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*12a8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*12b0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*12b8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*12c8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*12d0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*12d8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*12e8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*12f0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*12f8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1308*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*1310*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1318*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*1328*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1330*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1338*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1348*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1350*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1358*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*1368*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1370*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1378*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1388*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*1390*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1398*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*13a8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*13b0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*13b8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*13c8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*13d0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*13d8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*13e8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*13f0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*13f8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1408*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*1410*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1418*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1428*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1430*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*1438*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1448*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1450*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1458*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1468*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1470*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*1478*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1488*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*1490*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1498*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*14a8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*14b0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*14b8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*14c8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*14d0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*14d8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*14e8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*14f0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*14f8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*1508*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*1510*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1518*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1528*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1530*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1538*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1548*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*1550*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1558*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1568*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1570*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1578*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1588*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*1590*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*1598*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*15a8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*15b0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*15b8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*15c8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*15d0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*15d8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*15e8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*15f0*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*15f8*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1608*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*1610*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1618*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:Y:S06]         /*1628*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1630*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S06]         /*1638*/                   FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S00]         /*1648*/         {         FADD R4, R4, c[0x0][0x154] ;
+      [----:B------:R-:W-:-:S13]         /*1650*/               @P0 BRA `(.L_4)         }
+  .L_2:
+      [----:B------:R-:W-:-:S00]         /*1658*/         {         MOV32I R5, 0x1f ;
+      [----:B------:R-:W0:-:S01]         /*1668*/                   S2R R3, SR_CTAID.X         }
+      [----:B------:R-:W-:-:S15]         /*1670*/                   BAR.SYNC 0x0 ;
+      [----:B------:R-:W-:-:S05]         /*1678*/                   MEMBAR.CTA ;
+      [----:B0-----:R-:W-:Y:S13]         /*1688*/                   LOP3.LUT.NZ P0, RZ, R3, R5, R0, 0xf8 ;
+      [----:B------:R-:W-:Y:S15]         /*1690*/                   NOP ;
+      [----:B------:R-:W-:Y:S15]         /*1698*/                   NOP ;
+      [----:B------:R-:W-:Y:S10]         /*16a8*/                   NOP ;
+      [----:B------:R-:W-:-:S13]         /*16b0*/               @P0 EXIT ;
+      [R---:B------:R-:W-:-:S01]         /*16b8*/                   SHR R0, R2.reuse, 0x1e ;
+      [----:B------:R-:W-:-:S06]         /*16c8*/                   ISCADD R2.CC, R2, c[0x0][0x160], 0x2 ;
+      [----:B------:R-:W-:-:S02]         /*16d0*/                   IADD.X R3, R0, c[0x0][0x164] ;
+      [----:B------:R-:W-:-:S05]         /*16d8*/                   STG.E [R2], R4 ;
+      [----:B------:R-:W-:Y:S15]         /*16e8*/                   NOP ;
+      [----:B------:R-:W-:Y:S15]         /*16f0*/                   NOP ;
+      [----:B------:R-:W-:Y:S05]         /*16f8*/                   NOP ;
+      [----:B------:R-:W-:-:S15]         /*1708*/                   EXIT ;
+  .L_5:
+      [----:B------:R-:W-:-:S15]         /*1710*/                   BRA `(.L_5) ;
+  .L_30:
+
+  //-------------------------------------------------
+  //---------------- END of sections ----------------
+  //-------------------------------------------------
+
+
+// Program segment PT_PHDR, 5 
+  .__segment  "PT_PHDR", 5 
+  .__segment_offset  0x1f60   		// maybe updated by assembler 
+  .__segment_vaddr   0x0   		// Seems always 0? 
+  .__segment_paddr   0x0   		// ??? 
+  .__segment_filesz  0xa8   		// file size, maybe updated by assembler 
+  .__segment_memsz   0xa8   		// file size + nobits sections, maybe updated by assembler 
+  .__segment_align     8   		//  
+
+// Program segment PT_LOAD, 5 
+  .__segment  "PT_LOAD", 5 
+  .__segment_offset  0x468   		// maybe updated by assembler 
+  .__segment_vaddr   0x0   		// Seems always 0? 
+  .__segment_paddr   0x0   		// ??? 
+  .__segment_filesz  0x18b8   		// file size, maybe updated by assembler 
+  .__segment_memsz   0x18b8   		// file size + nobits sections, maybe updated by assembler 
+  .__segment_align     8   		//  
+  .__segment_startsection    ".nv.constant0._Z19regbank_test_kernel4int2i6float4Pf"  		// first section in this segment 
+  .__segment_endsection      ".text._Z19regbank_test_kernel4int2i6float4Pf"  		// last  section in this segment 
+
+// Program segment PT_LOAD, 6 
+  .__segment  "PT_LOAD", 6 
+  .__segment_offset  0x0   		// maybe updated by assembler 
+  .__segment_vaddr   0x0   		// Seems always 0? 
+  .__segment_paddr   0x0   		// ??? 
+  .__segment_filesz  0x0   		// file size, maybe updated by assembler 
+  .__segment_memsz   0x0   		// file size + nobits sections, maybe updated by assembler 
+  .__segment_align     8   		//  
+  .__segment_startsection    ""  		// first section in this segment 
+  .__segment_endsection      ""  		// last  section in this segment 
+
+
+  //-------------------------------------------------
+  //---------------- END of segments ----------------
+  //-------------------------------------------------
+
+
