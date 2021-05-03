@@ -93,7 +93,8 @@ class CuNVInfo(object):
 
     def setRegCount(self, reg_count_dict):
         ''' Update NVInfo for regcount, only for SM_70 and above.
-
+            
+            (???) : Seems for latest CUDA(at least 11.2?), this attr is set for every SM version?
 
             NOTE: this should only be called by section '.nv.info', not '.nv.info.{kernelname}'
 
@@ -105,7 +106,8 @@ class CuNVInfo(object):
 
         d = {}
         for k, v in reg_count_dict.items():
-            d[k.to_bytes(4, 'little')] = struct.pack('II', k, v)
+            #d[k.to_bytes(4, 'little')] = struct.pack('II', k, v)
+            d[k] = [k, v]
             
         for i, (attr, val) in enumerate(self.m_AttrList):
             if attr == 'EIATTR_REGCOUNT' :

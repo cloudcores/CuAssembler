@@ -202,7 +202,8 @@ class CuSMVersion(object):
             Return: flag for whether found and updated.
         '''
         if self.__mMajor<=6: # No this nvinfo for SM<=6x
-            return True
+            return nvinfo.setRegCount(reg_count_dict)
+            # return True
         else:
             return nvinfo.setRegCount(reg_count_dict)
 
