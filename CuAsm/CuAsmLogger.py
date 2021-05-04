@@ -197,5 +197,13 @@ class CuAsmLogger(object):
         CuAsmLogger.__IndentLevel = val
         CuAsmLogger.__IndentString = '    ' * CuAsmLogger.__IndentLevel
 
+    @staticmethod
+    def setLevel(level):
+        CuAsmLogger.__CurrLogger.setLevel(level)
+    
+    @staticmethod
+    def disable():
+        CuAsmLogger.__CurrLogger.setLevel(logging.ERROR)
+
 # Init a default logger when the module is imported
 CuAsmLogger.initLogger()
