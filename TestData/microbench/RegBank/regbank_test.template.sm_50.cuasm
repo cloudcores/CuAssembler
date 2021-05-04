@@ -535,7 +535,7 @@
       // @CUASM_INSERT_MARKER_POS.FINALIZE  
       [----:B------:R-:W-:-:S00]         /*1658*/         {         MOV32I R5, 0x1f ;
       [----:B------:R-:W0:-:S01]         /*1668*/                   S2R R3, SR_CTAID.X         }
-      [----:B------:R-:W-:-:S15]         /*1670*/                   BAR.SYNC 0x0 ;
+      // [----:B------:R-:W-:-:S15]         /*1670*/                   BAR.SYNC 0x0 ;
       [----:B------:R-:W-:-:S05]         /*1678*/                   MEMBAR.CTA ;
       [----:B0-----:R-:W-:Y:S13]         /*1688*/                   LOP3.LUT.NZ P0, RZ, R3, R5, R0, 0xf8 ;
       [----:B------:R-:W-:Y:S15]         /*1690*/                   NOP ;

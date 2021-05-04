@@ -9,11 +9,11 @@ using namespace std;
 typedef unsigned int uint;
 
 #define GRD_SIZE (8192)
-#define BLK_SIZE (256)
-#define WARP_CUT (4)
+#define BLK_SIZE (128)
+#define WARP_CUT (16)
 #define N_ITER (256)
 #define N_UNROLL (256)
-#define N_WARMUP (5)
+#define N_WARMUP (10)
 #define N_TEST (10)
 
 __global__ void regbank_test_kernel(const int2 c, const int NIter, const float4 v, float* a)
@@ -106,7 +106,7 @@ void dotest()
     for(int i=0; i<BLK_SIZE/32; i++)
     {
         unsigned int xa = *(unsigned int *)(&ha(i));
-        printf("%3d : %8g  0x%08x\n", i, ha(i), xa);
+        printf("res[%2d] : %8g  0x%08x\n", i, ha(i), xa);
     }
 }
 
