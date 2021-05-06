@@ -100,8 +100,8 @@ class CuInsFeeder():
 
                 ccode = int(rc.groups()[0], 16)
 
-                self.__mCtrlCodes = [(ccode & 0x000000000001ffff),
-                                     (ccode & 0x0000003fffe00000) >> 21,
+                self.__mCtrlCodes = [(ccode & 0x00000000001fffff),
+                                     (ccode & 0x000003ffffe00000) >> 21,
                                      (ccode & 0x07fffc0000000000) >> 42]
                 self.__mGroupIdx = 0
                 continue
