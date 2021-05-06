@@ -102,7 +102,7 @@ class CuInsFeeder():
 
                 self.__mCtrlCodes = [(ccode & 0x00000000001fffff),
                                      (ccode & 0x000003ffffe00000) >> 21,
-                                     (ccode & 0x07fffc0000000000) >> 42]
+                                     (ccode & 0x7ffffc0000000000) >> 42]
                 self.__mGroupIdx = 0
                 continue
 
