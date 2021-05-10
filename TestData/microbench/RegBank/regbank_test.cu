@@ -1,6 +1,7 @@
 #include "cuda_runtime.h"
 #include "helper_cuda.h"
 #include "cuptr.hpp"
+#include "cuda.h"
 
 #include <cstdio>
 #include <iostream>
@@ -10,11 +11,11 @@ typedef unsigned int uint;
 
 #define GRD_SIZE (8192)
 #define BLK_SIZE (128)
-#define WARP_CUT (16)
-#define N_ITER (256)
+#define WARP_CUT (4)
+#define N_ITER (1024)
 #define N_UNROLL (256)
-#define N_WARMUP (10)
-#define N_TEST (10)
+#define N_WARMUP (3)
+#define N_TEST (5)
 
 __global__ void regbank_test_kernel(const int2 c, const int NIter, const float4 v, float* a)
 {
@@ -66,6 +67,43 @@ float regbank_test_run(const int2 c, const int NIter, const float4 v, float* a, 
     return elapsedTime;
 }
 
+float regbank_test_run_drv(const int2 c, const int NIter, const float4 v, float* a, cudaEvent_t &event_start, cudaEvent_t &event_stop)
+{
+    static CUmodule cuModule;
+    static CUfunction kernel;
+    static bool isInitialized = false;
+
+    if (!isInitialized)
+    {
+        cuInit(0);
+
+        // Create module from binary file
+        cuModuleLoad(&cuModule, "regbank_test.rep.sm_50.cubin");
+
+        // Get function handle from module
+        cuModuleGetFunction(&kernel, cuModule, "_Z19regbank_test_kernel4int2i6float4Pf");
+
+        printf("cuModule = %#llx\n", (unsigned long long)cuModule);
+        printf("cuFunction = %#llx\n", (unsigned long long)kernel);
+        isInitialized = true;
+    }
+
+    float elapsedTime;
+    checkCudaErrors(cudaEventRecord(event_start, 0));
+
+    void* args[] = { (void*)&c, (void*)&NIter, (void*)&v, (void*)&a };
+    cuLaunchKernel(kernel,
+                   GRD_SIZE, 1, 1, BLK_SIZE, 1, 1,
+                    0, 0, args, 0);
+    //regbank_test_kernel<<<GRD_SIZE, BLK_SIZE>>>(c, NIter, v, a);
+
+    checkCudaErrors(cudaEventRecord(event_stop, 0));
+    checkCudaErrors(cudaEventSynchronize(event_stop));
+    checkCudaErrors(cudaEventElapsedTime(&elapsedTime, event_start, event_stop));
+
+    return elapsedTime;
+}
+
 void dotest()
 {
     CuPtr<float> da(4096);
@@ -84,7 +122,7 @@ void dotest()
     for(int i=0; i<N_WARMUP; i++)
     {
         da.SetZeros();
-        float elapsedTime = regbank_test_run(c, NIter, v, da.GetPtr(), event_start, event_stop); // in ms
+        float elapsedTime = regbank_test_run_drv(c, NIter, v, da.GetPtr(), event_start, event_stop); // in ms
         printf("  Warmup %2d: %10.3f ms\n", i, elapsedTime);
     }
     
@@ -92,7 +130,7 @@ void dotest()
     for(int i=0; i<N_TEST; i++)
     {
         da.SetZeros();
-        float elapsedTime = regbank_test_run(c, NIter, v, da.GetPtr(), event_start, event_stop); // in ms
+        float elapsedTime = regbank_test_run_drv(c, NIter, v, da.GetPtr(), event_start, event_stop); // in ms
         printf("  Test %2d: %10.3f ms\n", i, elapsedTime);
     }
 

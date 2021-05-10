@@ -493,6 +493,7 @@
 	.align                32 	// equivalent to set sh_addralign
   	.sectionflags	@"SHF_BARRIERS=1"
   	.sectioninfo	@"SHI_REGISTERS=32"
+        // @CUASM_INSERT_MARKER_POS.REGNUM   
   	.align	32
           .global         _Z19regbank_test_kernel4int2i6float4Pf
           .type           _Z19regbank_test_kernel4int2i6float4Pf,@function
