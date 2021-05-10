@@ -123,7 +123,7 @@ def parseResult(res:str):
         if r2 is not None:
             tres = r2.groups()[0].strip()
 
-    assert(nt==10)
+    assert(nt==5)
     
     tavg = tsum/nt
     tstd = math.sqrt(tsq/nt - tavg*tavg)
