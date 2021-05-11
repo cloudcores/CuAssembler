@@ -9,10 +9,10 @@ using namespace std;
 
 typedef unsigned int uint;
 
-#define GRD_SIZE (8192)
+#define GRD_SIZE (1600)
 #define BLK_SIZE (128)
 #define WARP_CUT (4)
-#define N_ITER (1024)
+#define N_ITER (256)
 #define N_UNROLL (256)
 #define N_WARMUP (3)
 #define N_TEST (5)
