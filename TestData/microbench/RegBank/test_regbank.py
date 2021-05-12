@@ -130,32 +130,23 @@ def parseResult(res:str):
     sfull = '[' + (', '.join(['%8.3f'%t for t in tlist])) + ']'
     return tavg, tstd, tres, sfull
 
-def test_NoBankConflict(stall=1, yflag='-'):
+def test_NoBankConflict(stall1, stall2, yflag):
     cat = CuAsmTemplate('G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.template.sm_50.cuasm')
     
     s_init  = '[----:B------:R-:W-:-:S06]  MOV R4, RZ ; \n'
-    s_init += '[----:B------:R-:W-:-:S06]  MOV32I R9, 0x3f800000 ; \n'
-    s_init += '[----:B------:R-:W-:-:S06]  MOV32I R10, 0x3f800000 ; \n'
-    s_init += '[----:B------:R-:W-:-:S06]  MOV32I R11, 0x3f800000 ; \n'
-    s_init += '[----:B------:R-:W-:-:S06]  MOV32I R12, 0x3f800000 ; \n'
-    s_init += '[----:B------:R-:W-:-:S06]  MOV32I R13, 0x3f800000 ; \n'
-    # s_init += '[----:B------:R-:W-:-:S06]  MOV R11, 0x3f8 ; \n'
-    # s_init += '[----:B------:R-:W-:-:S06]  MOV R12, 0x3f8 ; \n'
-    # s_init += '[----:B------:R-:W-:Y:S15]  MOV32I R10, 0x3f800000 ; \n'
+    for r in range(8,17):
+        s_init += f'[----:B------:R-:W-:-:S06]  MOV32I R{r:d}, 0x3f800000 ; \n'
 
-    s_work1  = f'      [----:B------:R-:W-:{yflag}:S{stall:02d}]  FFMA R4, R9, R10, R4; \n' # R4 += 1
+    s_work1  = f'      [----:B------:R-:W-:{yflag}:S{stall1:02d}]  FFMA R4, R9, R10, R4; \n' # R4 += 1
     for i in range(5):
-        s_work1 += f'      [----:B------:R-:W-:{yflag}:S{stall:02d}]  FFMA R{i+12}, R9, R10, R11; \n' # R4 += 1
+        s_work1 += f'      [----:B------:R-:W-:{yflag}:S{stall2:02d}]  FFMA R{i+12}, R9, R10, R11; \n' # R4 += 1
     s_work1 = s_work1 * 32
 
     s_work2 = s_work1
 
-    # s_final  = '[----:B------:R-:W-:-:S06]  MOV32I R4, 0x3f800000 ; \n'
-
     cat.setMarker('INIT', s_init)
     cat.setMarker('WORK_1', s_work1)
     cat.setMarker('WORK_2', s_work2)
-    # cat.setMarker('FINALIZE', s_final)
 
     cat.generate('G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.rep.sm_50.cuasm')
 
@@ -166,16 +157,27 @@ def test_NoBankConflict(stall=1, yflag='-'):
 
 def doTest_NoBankConflict():
     with open('res_NoBankConflict.txt', 'w') as fout:
-        for stall in range(1,13):
+        print(f'{"":8s} {"tavg":>8s}  {"tstd":>8s}   {"Results":s}')
+        for stall in range(1,16):
             for yflag in ['-', 'Y']:
-            
-                tavg, tstd, tres, sfull = test_NoBankConflict(stall)
+                tavg, tstd, tres, sfull = test_NoBankConflict(stall, stall, yflag)
+                s = f'[{yflag}:S{stall:02d}]: {tavg:8.3f}, {tstd:8.3f},  {tres:s}  {sfull}'
+                print(s)
+                fout.write(s+'\n')
+        
+        s = '\nS## + 5*S01\n' + f'{"":8s} {"tavg":>8s}  {"tstd":>8s}   {"Results":s}'
+        print(s)
+        fout.write(s+'\n')
+        for stall in range(1,16):
+            for yflag in ['-', 'Y']:
+                tavg, tstd, tres, sfull = test_NoBankConflict(stall, 1, yflag)
                 s = f'[{yflag}:S{stall:02d}]: {tavg:8.3f}, {tstd:8.3f},  {tres:s}  {sfull}'
                 print(s)
                 fout.write(s+'\n')
                 fout.flush()
 
-def test_ReuseBankConflict(r1, r2, reuse1='-', reuse2='-'):
+
+def test_ReuseBankConflict(r1, r2, reuse1, reuse2):
     cat = CuAsmTemplate('G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.template.sm_50.cuasm')
     
     s_init  = '[----:B------:R-:W-:-:S06]  MOV R4, RZ ; \n'
@@ -185,7 +187,7 @@ def test_ReuseBankConflict(r1, r2, reuse1='-', reuse2='-'):
     reuse_s = reuse1 + reuse2 + '--'
     s_work1  = f'      [{reuse_s}:B------:R-:W-:-:S01]  FFMA R4, R{r1}, R{r2}, R4; \n' # R4 += 1
     for i in range(5):
-        s_work1 += f'      [{reuse_s}:B------:R-:W-:-:S01]  FFMA R{i+16}, R{r1}, R{r2}, R8; \n' # R4 += 1
+        s_work1 += f'      [{reuse_s}:B------:R-:W-:-:S01]  FFMA R{i+20}, R{r1}, R{r2}, R16; \n' #
     s_work1 = s_work1 * 32
 
     s_work2 = s_work1
@@ -207,7 +209,7 @@ def doTest_ReuseBankConflict():
     with open('res_ReuseBankConflict.txt', 'w') as fout:
         for r1 in range(8, 16):
             r1s = f'R{r1}'
-            for r2 in range(r1, 16):
+            for r2 in range(8, 16):
                 r2s = f'R{r2}'
                 for reuse1 in ['-', 'R']:
                     for reuse2 in ['-', 'R']:
@@ -341,7 +343,38 @@ def test_Simple():
     res = subprocess.check_output('regbank_test.exe')
     print(res.decode())
 
+def test_Simple2():
+    cat = CuAsmTemplate('G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.template.sm_50.cuasm')
+    
+    s_init  = '[----:B------:R-:W-:-:S06]  MOV R4, RZ ; \n'
+    for r in range(8,17):
+        s_init += f'[----:B------:R-:W-:-:S06]  MOV32I R{r:d}, 0x3f800000 ; \n'
+
+    stall = 1
+    s_work1  = f'      [----:B------:R-:W-:-:S03]  FFMA R4, R9, R10, R4; \n' # R4 += 1
+    s_work1 += f'      [----:B------:R-:W-:-:S03]  FFMA R18, R9, R10, R11; \n'
+    s_work1 += f'      [----:B------:R-:W-:-:S03]  FFMA R19, R9, R10, R11; \n'
+    s_work1 += f'      [----:B------:R-:W-:-:S03]  FFMA R20, R9, R10, R11; \n'
+    s_work1 += f'      [----:B------:R-:W-:-:S03]  FFMA R21, R9, R10, R11; \n'
+    s_work1 += f'      [----:B------:R-:W-:-:S03]  FFMA R22, R9, R10, R11; \n'
+
+    s_work1 = s_work1 * 32
+    s_work2 = s_work1
+    cat.setMarker('INIT', s_init)
+    cat.setMarker('WORK_1', s_work1)
+    cat.setMarker('WORK_2', s_work2)
+
+    cat.generate('G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.rep.sm_50.cuasm')
+
+    build()
+
+    res = subprocess.check_output('regbank_test.exe')
+    print(res.decode())
+
 if __name__ == '__main__':
+    
+    # os.system('nvidia-smi -ac 2505,954')
+
     # cubin2cuasm('G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.2.sm_50.cubin')
     # cubin2cuasm('G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.uni.sm_50.cubin')
     # cubin2cuasm('G:\\Temp\CubinSample\\eigenvalues\\NVIDIA.4.sm_50.cubin')
@@ -350,11 +383,11 @@ if __name__ == '__main__':
     # tmp_test()
     
     # doTest_NoBankConflict()
-    # doTest_ReuseBankConflict()
+    doTest_ReuseBankConflict()
 
     # doTest_ReuseSwitch()
     # doTest_ReuseStall()
 
-    test_Simple()
+    # test_Simple2()
 
     
