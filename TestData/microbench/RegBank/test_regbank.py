@@ -130,12 +130,21 @@ def parseResult(res:str):
     sfull = '[' + (', '.join(['%8.3f'%t for t in tlist])) + ']'
     return tavg, tstd, tres, sfull
 
-def test_NoBankConflict(stall1, stall2, yflag):
+
+def run_exe():
+    try:
+        res = subprocess.check_output('regbank_test.exe')
+        return res
+    except subprocess.CalledProcessError as e:
+        print(f'Error happened when running exe (return code={e.returncode})!')
+        exit(e.returncode)
+
+def test_NoBankConflict(stall1, stall2, yflag, regnum):
     cat = CuAsmTemplate('G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.template.sm_50.cuasm')
     
-    s_init  = '[----:B------:R-:W-:-:S06]  MOV R4, RZ ; \n'
+    s_init  = '[----:B------:R-:W-:-:S01]  MOV R4, RZ ; \n'
     for r in range(8,17):
-        s_init += f'[----:B------:R-:W-:-:S06]  MOV32I R{r:d}, 0x3f800000 ; \n'
+        s_init += f'[----:B------:R-:W-:-:S01]  MOV32I R{r:d}, 0x3f800000 ; \n'
 
     s_work1  = f'      [----:B------:R-:W-:{yflag}:S{stall1:02d}]  FFMA R4, R9, R10, R4; \n' # R4 += 1
     for i in range(5):
@@ -148,19 +157,24 @@ def test_NoBankConflict(stall1, stall2, yflag):
     cat.setMarker('WORK_1', s_work1)
     cat.setMarker('WORK_2', s_work2)
 
+    s_regnum = f'  	.sectioninfo	@"SHI_REGISTERS={regnum}"'
+    cat.setMarker('REGNUM', s_regnum)
+
     cat.generate('G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.rep.sm_50.cuasm')
 
     build()
 
-    res = subprocess.check_output('regbank_test.exe')
+    res = run_exe()
     return parseResult(res.decode())
 
 def doTest_NoBankConflict():
     with open('res_NoBankConflict.txt', 'w') as fout:
+        regnum = 32
         print(f'{"":8s} {"tavg":>8s}  {"tstd":>8s}   {"Results":s}')
         for stall in range(1,16):
             for yflag in ['-', 'Y']:
-                tavg, tstd, tres, sfull = test_NoBankConflict(stall, stall, yflag)
+
+                tavg, tstd, tres, sfull = test_NoBankConflict(stall, stall, yflag, regnum)
                 s = f'[{yflag}:S{stall:02d}]: {tavg:8.3f}, {tstd:8.3f},  {tres:s}  {sfull}'
                 print(s)
                 fout.write(s+'\n')
@@ -170,19 +184,17 @@ def doTest_NoBankConflict():
         fout.write(s+'\n')
         for stall in range(1,16):
             for yflag in ['-', 'Y']:
-                tavg, tstd, tres, sfull = test_NoBankConflict(stall, 1, yflag)
+                tavg, tstd, tres, sfull = test_NoBankConflict(stall, 1, yflag, 32)
                 s = f'[{yflag}:S{stall:02d}]: {tavg:8.3f}, {tstd:8.3f},  {tres:s}  {sfull}'
                 print(s)
                 fout.write(s+'\n')
-                fout.flush()
-
-
+                
 def test_ReuseBankConflict(r1, r2, reuse1, reuse2):
     cat = CuAsmTemplate('G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.template.sm_50.cuasm')
     
-    s_init  = '[----:B------:R-:W-:-:S06]  MOV R4, RZ ; \n'
+    s_init  = '[----:B------:R-:W-:-:S01]  MOV R4, RZ ; \n'
     for r in range(8,17):
-        s_init += f'[----:B------:R-:W-:-:S06]  MOV32I R{r:d}, 0x3f800000 ; \n'
+        s_init += f'[----:B------:R-:W-:-:S01]  MOV32I R{r:d}, 0x3f800000 ; \n'
 
     reuse_s = reuse1 + reuse2 + '--'
     s_work1  = f'      [{reuse_s}:B------:R-:W-:-:S01]  FFMA R4, R{r1}, R{r2}, R4; \n' # R4 += 1
@@ -201,7 +213,7 @@ def test_ReuseBankConflict(r1, r2, reuse1, reuse2):
 
     build()
 
-    res = subprocess.check_output('regbank_test.exe')
+    res = run_exe()
     
     return parseResult(res.decode()) 
 
@@ -217,20 +229,20 @@ def doTest_ReuseBankConflict():
                         s = f'({r1s:3s}, {r2s:3s}, "{reuse1}{reuse2}"): {tavg:8.3f}, {tstd:8.3f},  {tres:s}  {sfull}'
                         print(s)
                         fout.write(s+'\n')
-                        fout.flush()
+                        
 
-def test_ReuseStall(stall, reuse_s, regnum=32):
+def test_ReuseStall(r1, r2, stall, reuse_s, regnum):
     cat = CuAsmTemplate('G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.template.sm_50.cuasm')
     
-    s_init  = '[----:B------:R-:W-:-:S06]  MOV R4, RZ ; \n'
+    s_init  = '[----:B------:R-:W-:-:S01]  MOV R4, RZ ; \n'
     for r in range(8,17):
-        s_init += f'[----:B------:R-:W-:-:S06]  MOV32I R{r:d}, 0x3f800000 ; \n'
+        s_init += f'[----:B------:R-:W-:-:S01]  MOV32I R{r:d}, 0x3f800000 ; \n'
 
-    r1 = 8
-    r2 = 12
+    # r1 = 8
+    # r2 = 12
     s_work1  = f'      [{reuse_s}:B------:R-:W-:-:S{stall:02d}]  FFMA R4, R{r1}, R{r2}, R4; \n' # R4 += 1
     for i in range(5):
-        s_work1 += f'      [{reuse_s}:B------:R-:W-:-:S{stall:02d}]  FFMA R{i+16}, R{r1}, R{r2}, R4; \n' # R4 += 1
+        s_work1 += f'      [{reuse_s}:B------:R-:W-:-:S{stall:02d}]  FFMA R{i+20}, R{r1}, R{r2}, R16; \n' #
     s_work1 = s_work1 * 32
 
     s_work2 = s_work1
@@ -246,37 +258,56 @@ def test_ReuseStall(stall, reuse_s, regnum=32):
 
     build()
 
-    res = subprocess.check_output('regbank_test.exe')
+    res = run_exe()
     return parseResult(res.decode())
 
 def doTest_ReuseStall():
     with open('res_ReuseStall.txt', 'w') as fout:
-        for stall in range(1, 13):
+        
+        s = '\n#### (R8, R12) ####\n'
+        print(s)
+        fout.write(s+'\n')
+
+        for stall in range(1, 16):
             for reuse_s in ['----', 'RR--']:
-                for regnum in [254, 170, 128, 102, 85, 73, 64, 42, 32, 24]:
-                    occu = 512//regnum
-                    tavg, tstd, tres, sfull = test_ReuseStall(stall, reuse_s, regnum)
+                for regnum in [254, 160, 128, 96, 80, 64, 40, 32]: 
+                    occu = min(16, 512//regnum)
+                    tavg, tstd, tres, sfull = test_ReuseStall(8, 12, stall, reuse_s, regnum)
                     s = f'[{reuse_s}:S{stall:02d}] (RegNum={regnum:3d}, Occu={occu:2d}): {tavg:8.3f}, {tstd:8.3f},  {tres:s}  {sfull}'
                     print(s)
                     fout.write(s+'\n')
-                    fout.flush()
+        
+        s = '\n#### (R8, R9) ####\n'
+        print(s)
+        fout.write(s+'\n')
+        for stall in range(1, 16):
+            for reuse_s in ['----', 'R---']:
+                for regnum in [254, 160, 128, 96, 80, 64, 40, 32]:
+                    occu = min(16, 512//regnum)
+                    tavg, tstd, tres, sfull = test_ReuseStall(8, 9, stall, reuse_s, regnum)
+                    s = f'[{reuse_s}:S{stall:02d}] (RegNum={regnum:3d}, Occu={occu:2d}): {tavg:8.3f}, {tstd:8.3f},  {tres:s}  {sfull}'
+                    print(s)
+                    fout.write(s+'\n')
+                    
 
 def test_ReuseSwitch(stall, cycle, clip):
     cat = CuAsmTemplate('G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.template.sm_50.cuasm')
     
-    s_init  = '[----:B------:R-:W-:-:S06]  MOV R4, RZ ; \n'
+    s_init  = '[----:B------:R-:W-:-:S01]  MOV R4, RZ ; \n'
     for r in range(8,17):
-        s_init += f'[----:B------:R-:W-:-:S06]  MOV32I R{r:d}, 0x3f800000 ; \n'
+        s_init += f'[----:B------:R-:W-:-:S01]  MOV32I R{r:d}, 0x3f800000 ; \n'
 
     RList = [(8,12,16), (9,13,5), (10,14,6), (11,15,7)]
     s_work1  = f'      [RR--:B------:R-:W-:-:S{stall:02d}]  FFMA R4, R8, R12, R4; \n' # R4 += 1
-    for i in range(1,12):
+    for i in range(1,6):
         idx = i%cycle
-        r1, r2, r3 = RList[idx]
+        
         if idx>=clip:
             reuse_s = '----'
+            r1, r2, r3 = 8, 9, 10
         else:
             reuse_s = 'RR--'
+            r1, r2, r3 = RList[idx]
         s_work1 += f'      [{reuse_s}:B------:R-:W-:-:S{stall:02d}]  FFMA R{i+17}, R{r1}, R{r2}, R{r3}; \n' # R4 += 1
     
     s_work1 = s_work1 * 32
@@ -291,20 +322,22 @@ def test_ReuseSwitch(stall, cycle, clip):
 
     build()
 
-    res = subprocess.check_output('regbank_test.exe')
+    res = run_exe()
     
     return parseResult(res.decode()) 
 
 def doTest_ReuseSwitch():
     with open('res_ReuseSwitch.txt', 'w') as fout:
-        for stall in range(1, 8):
-            for cycle in range(1, 5):
+        for stall in range(1, 7):
+            for cycle in [1, 2, 3]:
                 for clip in range(0, cycle+1):
                     tavg, tstd, tres, sfull = test_ReuseSwitch(stall, cycle, clip)
                     s = f'[S{stall:02d}, Cycle{cycle:d}, Clip{clip:d}]: {tavg:8.3f}, {tstd:8.3f},  {tres:s}  {sfull}'
                     print(s)
                     fout.write(s+'\n')
-                    fout.flush()
+
+                print()
+                fout.write('\n')
 
 def test_Simple():
     cat = CuAsmTemplate('G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.template.sm_50.cuasm')
@@ -340,7 +373,7 @@ def test_Simple():
 
     build()
 
-    res = subprocess.check_output('regbank_test.exe')
+    res = run_exe()
     print(res.decode())
 
 def test_Simple2():
@@ -368,7 +401,7 @@ def test_Simple2():
 
     build()
 
-    res = subprocess.check_output('regbank_test.exe')
+    res = run_exe()
     print(res.decode())
 
 if __name__ == '__main__':
@@ -383,9 +416,9 @@ if __name__ == '__main__':
     # tmp_test()
     
     # doTest_NoBankConflict()
-    doTest_ReuseBankConflict()
+    # doTest_ReuseBankConflict()
 
-    # doTest_ReuseSwitch()
+    doTest_ReuseSwitch()
     # doTest_ReuseStall()
 
     # test_Simple2()
