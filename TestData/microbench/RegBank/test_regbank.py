@@ -11,6 +11,12 @@ import re
 import subprocess
 import math
 
+# baseline result for:
+# -  grid=1600, block=128, NIter=256, 192 instruction per iteration
+# -  No bank conflict
+# -  MemFreq = 2505 MHz, SMFreq = 954 MHz
+BASELINE = 16.74
+
 class CuAsmTemplate:
     def __init__(self, template_name):
         self.m_FileParts = []
@@ -103,7 +109,7 @@ def template_test():
 
 def parseResult(res:str):
 
-    nt = 0
+    nt = 0      
     tsum = 0.0
     tsq = 0.0
     tres = ''
@@ -123,13 +129,14 @@ def parseResult(res:str):
         if r2 is not None:
             tres = r2.groups()[0].strip()
 
-    assert(nt==5)
+    # assert(nt==5)
     
     tavg = tsum/nt
     tstd = math.sqrt(tsq/nt - tavg*tavg)
+
+    # teq = tavg * 6 / 16.74 # ratio to base line per instruction
     sfull = '[' + (', '.join(['%8.3f'%t for t in tlist])) + ']'
     return tavg, tstd, tres, sfull
-
 
 def run_exe():
     try:
@@ -170,25 +177,71 @@ def test_NoBankConflict(stall1, stall2, yflag, regnum):
 def doTest_NoBankConflict():
     with open('res_NoBankConflict.txt', 'w') as fout:
         regnum = 32
-        print(f'{"":8s} {"tavg":>8s}  {"tstd":>8s}   {"Results":s}')
+        # print(f'{"":8s} {"TAvg":>8s} ({"TRatio":>8s}) {"TStd":>8s}    {"Results":s}')
         for stall in range(1,16):
             for yflag in ['-', 'Y']:
 
                 tavg, tstd, tres, sfull = test_NoBankConflict(stall, stall, yflag, regnum)
-                s = f'[{yflag}:S{stall:02d}]: {tavg:8.3f}, {tstd:8.3f},  {tres:s}  {sfull}'
+                tratio = tavg * 6 / BASELINE
+                s = f'[{yflag}:S{stall:02d}]: {tavg:8.3f} ({tratio:8.4f}), {tstd:8.3f},  {tres:s}  {sfull}'
                 print(s)
                 fout.write(s+'\n')
         
-        s = '\nS## + 5*S01\n' + f'{"":8s} {"tavg":>8s}  {"tstd":>8s}   {"Results":s}'
+        s = '\n######### S## + 5*S01 ############\n' # + f'{"":8s} {"TAvg":>8s}  {"TStd":>8s} ({"TRatio":>8s})   {"Results":s}'
         print(s)
         fout.write(s+'\n')
         for stall in range(1,16):
             for yflag in ['-', 'Y']:
                 tavg, tstd, tres, sfull = test_NoBankConflict(stall, 1, yflag, 32)
-                s = f'[{yflag}:S{stall:02d}]: {tavg:8.3f}, {tstd:8.3f},  {tres:s}  {sfull}'
+                s = f'[{yflag}:S{stall:02d}]: {tavg:8.3f} ({tratio:8.4f}), {tstd:8.3f},  {tres:s}  {sfull}'
                 print(s)
                 fout.write(s+'\n')
-                
+
+def test_BankConflictComb(stall, ins_seq):
+    cat = CuAsmTemplate('G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.template.sm_50.cuasm')
+
+    s_init  = '[----:B------:R-:W-:-:S01]  MOV32I R4, 0x7ff00000 ; \n' # R4 should not be modified in ins_seq
+    s_work1 = ''
+    for ins in ins_seq:
+        s_work1 += f'      [----:B------:R-:W-:-:S{stall:02d}] {ins} \n' #
+
+    s_work1 = s_work1 * 32
+    s_work2 = s_work1
+
+    cat.setMarker('INIT', s_init)
+    cat.setMarker('WORK_1', s_work1)
+    cat.setMarker('WORK_2', s_work2)
+    cat.generate('G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.rep.sm_50.cuasm')
+
+    build()
+    res = run_exe()
+    
+    return parseResult(res.decode()) 
+
+def doTest_BankConflictComb():
+    from test_bc_enum import buildCombDict, getCombStr, genBankConflictInsSeq
+
+    comb_dict = buildCombDict()
+    comb_keys = list(comb_dict.keys())
+    comb_keys.sort(reverse=True)
+
+    with open('res_BankConflictComb.txt', 'w') as fout:
+        
+        for i,k in enumerate(comb_keys):    
+            i0, i1, i2 = comb_dict[k]
+            ks = getCombStr(i0, i1, i2)
+            ins_seq = genBankConflictInsSeq(i0,i1,i2)
+
+            bsum = [i0[0]+i1[0]+i2[0], i0[1]+i1[1]+i2[1], i0[2]+i1[2]+i2[2], i0[3]+i1[3]+i2[3]]
+            bs = ''.join(['%d'%x for x in bsum])
+            besti = 2*max(bsum)
+
+            tavg, tstd, tres, sfull = test_BankConflictComb(1, ins_seq)
+            tratio = tavg * 6 / BASELINE
+            s = f'Comb{i+1:4d} : [{ks}] ({bs}:{besti:2d}): {tavg:8.3f} ({tratio:8.4f}), {tstd:8.3f},  {tres:s}  {sfull}'
+            print(s)
+            fout.write(s+'\n')
+
 def test_ReuseBankConflict(r1, r2, reuse1, reuse2):
     cat = CuAsmTemplate('G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.template.sm_50.cuasm')
     
@@ -226,7 +279,8 @@ def doTest_ReuseBankConflict():
                 for reuse1 in ['-', 'R']:
                     for reuse2 in ['-', 'R']:
                         tavg, tstd, tres, sfull = test_ReuseBankConflict(r1, r2, reuse1, reuse2)
-                        s = f'({r1s:3s}, {r2s:3s}, "{reuse1}{reuse2}"): {tavg:8.3f}, {tstd:8.3f},  {tres:s}  {sfull}'
+                        tratio = tavg * 6 / BASELINE
+                        s = f'({r1s:3s}, {r2s:3s}, "{reuse1}{reuse2}"): {tavg:8.3f} ({tratio:8.4f}), {tstd:8.3f},  {tres:s}  {sfull}'
                         print(s)
                         fout.write(s+'\n')
                         
@@ -273,7 +327,8 @@ def doTest_ReuseStall():
                 for regnum in [254, 160, 128, 96, 80, 64, 40, 32]: 
                     occu = min(16, 512//regnum)
                     tavg, tstd, tres, sfull = test_ReuseStall(8, 12, stall, reuse_s, regnum)
-                    s = f'[{reuse_s}:S{stall:02d}] (RegNum={regnum:3d}, Occu={occu:2d}): {tavg:8.3f}, {tstd:8.3f},  {tres:s}  {sfull}'
+                    tratio = tavg * 6 / BASELINE
+                    s = f'[{reuse_s}:S{stall:02d}] (RegNum={regnum:3d}, Occu={occu:2d}): {tavg:8.3f} ({tratio:8.4f}), {tstd:8.3f},  {tres:s}  {sfull}'
                     print(s)
                     fout.write(s+'\n')
         
@@ -285,7 +340,8 @@ def doTest_ReuseStall():
                 for regnum in [254, 160, 128, 96, 80, 64, 40, 32]:
                     occu = min(16, 512//regnum)
                     tavg, tstd, tres, sfull = test_ReuseStall(8, 9, stall, reuse_s, regnum)
-                    s = f'[{reuse_s}:S{stall:02d}] (RegNum={regnum:3d}, Occu={occu:2d}): {tavg:8.3f}, {tstd:8.3f},  {tres:s}  {sfull}'
+                    tratio = tavg * 6 / BASELINE
+                    s = f'[{reuse_s}:S{stall:02d}] (RegNum={regnum:3d}, Occu={occu:2d}): {tavg:8.3f} ({tratio:8.4f}), {tstd:8.3f},  {tres:s}  {sfull}'
                     print(s)
                     fout.write(s+'\n')
                     
@@ -298,18 +354,25 @@ def test_ReuseSwitch(stall, cycle, clip):
         s_init += f'[----:B------:R-:W-:-:S01]  MOV32I R{r:d}, 0x3f800000 ; \n'
 
     RList = [(8,12,16), (9,13,5), (10,14,6), (11,15,7)]
-    s_work1  = f'      [RR--:B------:R-:W-:-:S{stall:02d}]  FFMA R4, R8, R12, R4; \n' # R4 += 1
+    if clip==0:
+        s_work1  = f'      [----:B------:R-:W-:-:S{stall:02d}]  FFMA R4, R8, R12, R4; \n' # R4 += 1
+    else:
+        s_work1  = f'      [RR--:B------:R-:W-:-:S{stall:02d}]  FFMA R4, R8, R12, R4; \n' # R4 += 1
     for i in range(1,6):
         idx = i%cycle
+        r1, r2, r3 = RList[idx]
         
         if idx>=clip:
             reuse_s = '----'
-            r1, r2, r3 = 8, 9, 10
+            # r1, r2, r3 = 10, 9, 8
         else:
             reuse_s = 'RR--'
-            r1, r2, r3 = RList[idx]
+            
         s_work1 += f'      [{reuse_s}:B------:R-:W-:-:S{stall:02d}]  FFMA R{i+17}, R{r1}, R{r2}, R{r3}; \n' # R4 += 1
     
+    #print(s_work1)
+    s1s = s_work1
+
     s_work1 = s_work1 * 32
 
     s_work2 = s_work1
@@ -324,20 +387,24 @@ def test_ReuseSwitch(stall, cycle, clip):
 
     res = run_exe()
     
-    return parseResult(res.decode()) 
+    return parseResult(res.decode()), s1s
 
 def doTest_ReuseSwitch():
     with open('res_ReuseSwitch.txt', 'w') as fout:
         for stall in range(1, 7):
             for cycle in [1, 2, 3]:
                 for clip in range(0, cycle+1):
-                    tavg, tstd, tres, sfull = test_ReuseSwitch(stall, cycle, clip)
-                    s = f'[S{stall:02d}, Cycle{cycle:d}, Clip{clip:d}]: {tavg:8.3f}, {tstd:8.3f},  {tres:s}  {sfull}'
+                    (tavg, tstd, tres, sfull), s1s = test_ReuseSwitch(stall, cycle, clip)
+                    tratio = tavg * 6 / BASELINE
+                    s = f'[S{stall:02d}, Cycle{cycle:d}, Clip{clip:d}]: {tavg:8.3f} ({tratio:8.4f}), {tstd:8.3f},  {tres:s}  {sfull}'
+                    
+                    print('---------------------------------\n')
+                    print(s1s, end='')
                     print(s)
-                    fout.write(s+'\n')
 
-                print()
-                fout.write('\n')
+                    fout.write('---------------------------------\n')
+                    fout.write(s1s)
+                    fout.write(s+'\n')
 
 def test_Simple():
     cat = CuAsmTemplate('G:\\Work\\CuAssembler\\TestData\\microbench\\RegBank\\regbank_test.template.sm_50.cuasm')
@@ -416,9 +483,10 @@ if __name__ == '__main__':
     # tmp_test()
     
     # doTest_NoBankConflict()
+    doTest_BankConflictComb()
     # doTest_ReuseBankConflict()
 
-    doTest_ReuseSwitch()
+    # doTest_ReuseSwitch()
     # doTest_ReuseStall()
 
     # test_Simple2()
