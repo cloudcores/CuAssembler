@@ -113,11 +113,19 @@ class CubinFile():
                 p0 = segh['p_offset']
                 p1 = p0 + segh['p_memsz'] # filesz will not count NOBITS sections
 
-                if p0 not in sec_start_dict or p1 not in sec_end_dict:
-                    raise Exception('The segment range (0x%x, 0x%x) doesnot align with sections!'%(p0, p1))
-
+                if p0 not in sec_start_dict:
+                    raise Exception('The segment start (0x%x, 0x%x) doesnot align with sections!'%(p0, p1))
+                
                 sec_start = sec_start_dict[p0]
-                sec_end = sec_end_dict[p1]
+
+                if p1 not in sec_end_dict:
+                    CuAsmLogger.logWarning('The segment end (0x%x, 0x%x) doesnot align with sections!'%(p0, p1))
+                    CuAsmLogger.logWarning('Try to seek the nearest one...')
+                    
+                    min_d = min([k if k>p1 else 2**32 for k in sec_end_dict])
+                    sec_end = sec_end_dict[min_d]
+                else:
+                    sec_end = sec_end_dict[p1]
                 self.__mELFSegmentRange.append((sec_start, sec_end))
             else:
                 self.__mELFSegmentRange.append((None,None))
