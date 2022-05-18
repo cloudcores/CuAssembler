@@ -68,8 +68,8 @@ class CubinFile():
                 raise Exception(msg)
             elif ef.header['e_phoff'] == 0 or ef.header['e_phnum'] == 0:
                 msg = 'Abnormal elf layout detected! No program header found!'
-                CuAsmLogger.logError(msg)
-                raise Exception(msg)
+                CuAsmLogger.logWarning(msg)
+                # raise Exception(msg)
 
             # Example: type=2, abi=7, sm=86, toolkit=111, flags = 0x500556
             # flags>>16 = 0x50 = 80, means virtual arch compute_80
