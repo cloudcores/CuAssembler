@@ -827,242 +827,242 @@
 	.__section_info         0x23
 	.__section_entsize      24
 	.align                8 	// equivalent to set sh_addralign
-    // Symbol[0] "": Container({'st_name': 0, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_NOTYPE'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
+    // Symbol[0] "": Container({'st_name': 0, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_NOTYPE'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
     /*0000*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0008*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0010*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[1] ".text._Z7argtestPiS_S_": Container({'st_name': 67, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 0, 'st_size': 0})
+    // Symbol[1] ".text._Z7argtestPiS_S_": Container({'st_name': 67, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 0, 'st_size': 0})
     /*0018*/ .byte 0x43, 0x00, 0x00, 0x00, 0x03, 0x00, 0x1a, 0x00
     /*0020*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0028*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[2] ".nv.constant3": Container({'st_name': 189, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 17, 'st_value': 0, 'st_size': 0})
+    // Symbol[2] ".nv.constant3": Container({'st_name': 189, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 17, 'st_value': 0, 'st_size': 0})
     /*0030*/ .byte 0xbd, 0x00, 0x00, 0x00, 0x03, 0x00, 0x11, 0x00
     /*0038*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0040*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[3] "C1": Container({'st_name': 203, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 17, 'st_value': 0, 'st_size': 44})
+    // Symbol[3] "C1": Container({'st_name': 203, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 17, 'st_value': 0, 'st_size': 44})
     /*0048*/ .byte 0xcb, 0x00, 0x00, 0x00, 0x01, 0x00, 0x11, 0x00
     /*0050*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0058*/ .byte 0x2c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[4] "C2": Container({'st_name': 206, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 17, 'st_value': 44, 'st_size': 260})
+    // Symbol[4] "C2": Container({'st_name': 206, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 17, 'st_value': 44, 'st_size': 260})
     /*0060*/ .byte 0xce, 0x00, 0x00, 0x00, 0x01, 0x00, 0x11, 0x00
     /*0068*/ .byte 0x2c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0070*/ .byte 0x04, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[5] "C3": Container({'st_name': 209, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 17, 'st_value': 304, 'st_size': 17})
+    // Symbol[5] "C3": Container({'st_name': 209, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 17, 'st_value': 304, 'st_size': 17})
     /*0078*/ .byte 0xd1, 0x00, 0x00, 0x00, 0x01, 0x00, 0x11, 0x00
     /*0080*/ .byte 0x30, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0088*/ .byte 0x11, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[6] ".nv.global": Container({'st_name': 212, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 35, 'st_value': 0, 'st_size': 0})
+    // Symbol[6] ".nv.global": Container({'st_name': 212, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 35, 'st_value': 0, 'st_size': 0})
     /*0090*/ .byte 0xd4, 0x00, 0x00, 0x00, 0x03, 0x00, 0x23, 0x00
     /*0098*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*00a0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[7] "GlobalC1": Container({'st_name': 223, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 35, 'st_value': 0, 'st_size': 28})
+    // Symbol[7] "GlobalC1": Container({'st_name': 223, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 35, 'st_value': 0, 'st_size': 28})
     /*00a8*/ .byte 0xdf, 0x00, 0x00, 0x00, 0x01, 0x00, 0x23, 0x00
     /*00b0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*00b8*/ .byte 0x1c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[8] "GlobalC2": Container({'st_name': 232, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 35, 'st_value': 28, 'st_size': 132})
+    // Symbol[8] "GlobalC2": Container({'st_name': 232, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 35, 'st_value': 28, 'st_size': 132})
     /*00c0*/ .byte 0xe8, 0x00, 0x00, 0x00, 0x01, 0x00, 0x23, 0x00
     /*00c8*/ .byte 0x1c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*00d0*/ .byte 0x84, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[9] ".nv.global.init": Container({'st_name': 241, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 33, 'st_value': 0, 'st_size': 0})
+    // Symbol[9] ".nv.global.init": Container({'st_name': 241, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 33, 'st_value': 0, 'st_size': 0})
     /*00d8*/ .byte 0xf1, 0x00, 0x00, 0x00, 0x03, 0x00, 0x21, 0x00
     /*00e0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*00e8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[10] "flist": Container({'st_name': 257, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 33, 'st_value': 0, 'st_size': 56})
+    // Symbol[10] "flist": Container({'st_name': 257, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 33, 'st_value': 0, 'st_size': 56})
     /*00f0*/ .byte 0x01, 0x01, 0x00, 0x00, 0x01, 0x00, 0x21, 0x00
     /*00f8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0100*/ .byte 0x38, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[11] "$str": Container({'st_name': 263, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 33, 'st_value': 80, 'st_size': 12})
+    // Symbol[11] "$str": Container({'st_name': 263, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 33, 'st_value': 80, 'st_size': 12})
     /*0108*/ .byte 0x07, 0x01, 0x00, 0x00, 0x01, 0x00, 0x21, 0x00
     /*0110*/ .byte 0x50, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0118*/ .byte 0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[12] "__cudart_i2opi_f": Container({'st_name': 268, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 33, 'st_value': 56, 'st_size': 24})
+    // Symbol[12] "__cudart_i2opi_f": Container({'st_name': 268, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_OBJECT'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 33, 'st_value': 56, 'st_size': 24})
     /*0120*/ .byte 0x0c, 0x01, 0x00, 0x00, 0x01, 0x00, 0x21, 0x00
     /*0128*/ .byte 0x38, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0130*/ .byte 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[13] ".nv.constant2._Z7argtestPiS_S_": Container({'st_name': 293, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 18, 'st_value': 0, 'st_size': 0})
+    // Symbol[13] ".nv.constant2._Z7argtestPiS_S_": Container({'st_name': 293, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 18, 'st_value': 0, 'st_size': 0})
     /*0138*/ .byte 0x25, 0x01, 0x00, 0x00, 0x03, 0x00, 0x12, 0x00
     /*0140*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0148*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[14] "$_Z7argtestPiS_S_$_Z2f1ii": Container({'st_name': 336, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 1616, 'st_size': 8})
+    // Symbol[14] "$_Z7argtestPiS_S_$_Z2f1ii": Container({'st_name': 336, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 1616, 'st_size': 8})
     /*0150*/ .byte 0x50, 0x01, 0x00, 0x00, 0x02, 0x00, 0x1a, 0x00
     /*0158*/ .byte 0x50, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0160*/ .byte 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[15] "$_Z7argtestPiS_S_$_Z2f2ii": Container({'st_name': 362, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 1624, 'st_size': 8})
+    // Symbol[15] "$_Z7argtestPiS_S_$_Z2f2ii": Container({'st_name': 362, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 1624, 'st_size': 8})
     /*0168*/ .byte 0x6a, 0x01, 0x00, 0x00, 0x02, 0x00, 0x1a, 0x00
     /*0170*/ .byte 0x58, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0178*/ .byte 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[16] "$_Z7argtestPiS_S_$_Z2f3ii": Container({'st_name': 388, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 1632, 'st_size': 16})
+    // Symbol[16] "$_Z7argtestPiS_S_$_Z2f3ii": Container({'st_name': 388, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 1632, 'st_size': 16})
     /*0180*/ .byte 0x84, 0x01, 0x00, 0x00, 0x02, 0x00, 0x1a, 0x00
     /*0188*/ .byte 0x60, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0190*/ .byte 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[17] "$_Z7argtestPiS_S_$_Z2f4ii": Container({'st_name': 414, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 1648, 'st_size': 8})
+    // Symbol[17] "$_Z7argtestPiS_S_$_Z2f4ii": Container({'st_name': 414, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 1648, 'st_size': 8})
     /*0198*/ .byte 0x9e, 0x01, 0x00, 0x00, 0x02, 0x00, 0x1a, 0x00
     /*01a0*/ .byte 0x70, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*01a8*/ .byte 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[18] "$_Z7argtestPiS_S_$_Z2f5ii": Container({'st_name': 440, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 1656, 'st_size': 24})
+    // Symbol[18] "$_Z7argtestPiS_S_$_Z2f5ii": Container({'st_name': 440, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 1656, 'st_size': 24})
     /*01b0*/ .byte 0xb8, 0x01, 0x00, 0x00, 0x02, 0x00, 0x1a, 0x00
     /*01b8*/ .byte 0x78, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*01c0*/ .byte 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[19] "$_Z7argtestPiS_S_$_Z2f6ii": Container({'st_name': 466, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 1680, 'st_size': 424})
+    // Symbol[19] "$_Z7argtestPiS_S_$_Z2f6ii": Container({'st_name': 466, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 1680, 'st_size': 424})
     /*01c8*/ .byte 0xd2, 0x01, 0x00, 0x00, 0x02, 0x00, 0x1a, 0x00
     /*01d0*/ .byte 0x90, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*01d8*/ .byte 0xa8, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[20] "$_Z7argtestPiS_S_$_Z2f7ii": Container({'st_name': 492, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 2104, 'st_size': 456})
+    // Symbol[20] "$_Z7argtestPiS_S_$_Z2f7ii": Container({'st_name': 492, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_FUNC'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 2104, 'st_size': 456})
     /*01e0*/ .byte 0xec, 0x01, 0x00, 0x00, 0x02, 0x00, 0x1a, 0x00
     /*01e8*/ .byte 0x38, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*01f0*/ .byte 0xc8, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[21] ".nv.constant0._Z7argtestPiS_S_": Container({'st_name': 571, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 19, 'st_value': 0, 'st_size': 0})
+    // Symbol[21] ".nv.constant0._Z7argtestPiS_S_": Container({'st_name': 571, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 19, 'st_value': 0, 'st_size': 0})
     /*01f8*/ .byte 0x3b, 0x02, 0x00, 0x00, 0x03, 0x00, 0x13, 0x00
     /*0200*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0208*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[22] ".text._Z10local_testiiPi": Container({'st_name': 781, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 27, 'st_value': 0, 'st_size': 0})
+    // Symbol[22] ".text._Z10local_testiiPi": Container({'st_name': 781, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 27, 'st_value': 0, 'st_size': 0})
     /*0210*/ .byte 0x0d, 0x03, 0x00, 0x00, 0x03, 0x00, 0x1b, 0x00
     /*0218*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0220*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[23] ".nv.constant0._Z10local_testiiPi": Container({'st_name': 892, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 20, 'st_value': 0, 'st_size': 0})
+    // Symbol[23] ".nv.constant0._Z10local_testiiPi": Container({'st_name': 892, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 20, 'st_value': 0, 'st_size': 0})
     /*0228*/ .byte 0x7c, 0x03, 0x00, 0x00, 0x03, 0x00, 0x14, 0x00
     /*0230*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0238*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[24] ".text._Z5childPii": Container({'st_name': 937, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 28, 'st_value': 0, 'st_size': 0})
+    // Symbol[24] ".text._Z5childPii": Container({'st_name': 937, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 28, 'st_value': 0, 'st_size': 0})
     /*0240*/ .byte 0xa9, 0x03, 0x00, 0x00, 0x03, 0x00, 0x1c, 0x00
     /*0248*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0250*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[25] ".nv.constant0._Z5childPii": Container({'st_name': 1042, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 21, 'st_value': 0, 'st_size': 0})
+    // Symbol[25] ".nv.constant0._Z5childPii": Container({'st_name': 1042, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 21, 'st_value': 0, 'st_size': 0})
     /*0258*/ .byte 0x12, 0x04, 0x00, 0x00, 0x03, 0x00, 0x15, 0x00
     /*0260*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0268*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[26] ".text._Z11shared_testfPf": Container({'st_name': 1087, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 29, 'st_value': 0, 'st_size': 0})
+    // Symbol[26] ".text._Z11shared_testfPf": Container({'st_name': 1087, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 29, 'st_value': 0, 'st_size': 0})
     /*0270*/ .byte 0x3f, 0x04, 0x00, 0x00, 0x03, 0x00, 0x1d, 0x00
     /*0278*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0280*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[27] ".nv.shared._Z11shared_testfPf": Container({'st_name': 1140, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 38, 'st_value': 0, 'st_size': 0})
+    // Symbol[27] ".nv.shared._Z11shared_testfPf": Container({'st_name': 1140, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 38, 'st_value': 0, 'st_size': 0})
     /*0288*/ .byte 0x74, 0x04, 0x00, 0x00, 0x03, 0x00, 0x26, 0x00
     /*0290*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0298*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[28] ".nv.constant0._Z11shared_testfPf": Container({'st_name': 1235, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 22, 'st_value': 0, 'st_size': 0})
+    // Symbol[28] ".nv.constant0._Z11shared_testfPf": Container({'st_name': 1235, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 22, 'st_value': 0, 'st_size': 0})
     /*02a0*/ .byte 0xd3, 0x04, 0x00, 0x00, 0x03, 0x00, 0x16, 0x00
     /*02a8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*02b0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[29] ".text._Z4test6float4PS_": Container({'st_name': 1286, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 30, 'st_value': 0, 'st_size': 0})
+    // Symbol[29] ".text._Z4test6float4PS_": Container({'st_name': 1286, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 30, 'st_value': 0, 'st_size': 0})
     /*02b8*/ .byte 0x06, 0x05, 0x00, 0x00, 0x03, 0x00, 0x1e, 0x00
     /*02c0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*02c8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[30] ".nv.constant0._Z4test6float4PS_": Container({'st_name': 1393, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 23, 'st_value': 0, 'st_size': 0})
+    // Symbol[30] ".nv.constant0._Z4test6float4PS_": Container({'st_name': 1393, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 23, 'st_value': 0, 'st_size': 0})
     /*02d0*/ .byte 0x71, 0x05, 0x00, 0x00, 0x03, 0x00, 0x17, 0x00
     /*02d8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*02e0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[31] ".text._Z11nvinfo_testiiPi": Container({'st_name': 1445, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 31, 'st_value': 0, 'st_size': 0})
+    // Symbol[31] ".text._Z11nvinfo_testiiPi": Container({'st_name': 1445, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 31, 'st_value': 0, 'st_size': 0})
     /*02e8*/ .byte 0xa5, 0x05, 0x00, 0x00, 0x03, 0x00, 0x1f, 0x00
     /*02f0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*02f8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[32] ".nv.constant0._Z11nvinfo_testiiPi": Container({'st_name': 1560, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 24, 'st_value': 0, 'st_size': 0})
+    // Symbol[32] ".nv.constant0._Z11nvinfo_testiiPi": Container({'st_name': 1560, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 24, 'st_value': 0, 'st_size': 0})
     /*0300*/ .byte 0x18, 0x06, 0x00, 0x00, 0x03, 0x00, 0x18, 0x00
     /*0308*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0310*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[33] ".text._Z10simpletest4int4Pi": Container({'st_name': 1616, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 32, 'st_value': 0, 'st_size': 0})
+    // Symbol[33] ".text._Z10simpletest4int4Pi": Container({'st_name': 1616, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 32, 'st_value': 0, 'st_size': 0})
     /*0318*/ .byte 0x50, 0x06, 0x00, 0x00, 0x03, 0x00, 0x20, 0x00
     /*0320*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0328*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[34] ".nv.constant0._Z10simpletest4int4Pi": Container({'st_name': 1771, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 25, 'st_value': 0, 'st_size': 0})
+    // Symbol[34] ".nv.constant0._Z10simpletest4int4Pi": Container({'st_name': 1771, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 25, 'st_value': 0, 'st_size': 0})
     /*0330*/ .byte 0xeb, 0x06, 0x00, 0x00, 0x03, 0x00, 0x19, 0x00
     /*0338*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0340*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[35] ".nv.rel.action": Container({'st_name': 2045, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 12, 'st_value': 0, 'st_size': 0})
+    // Symbol[35] ".nv.rel.action": Container({'st_name': 2045, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 12, 'st_value': 0, 'st_size': 0})
     /*0348*/ .byte 0xfd, 0x07, 0x00, 0x00, 0x03, 0x00, 0x0c, 0x00
     /*0350*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0358*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[36] "_Z7argtestPiS_S_": Container({'st_name': 50, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 0, 'st_size': 2560})
+    // Symbol[36] "_Z7argtestPiS_S_": Container({'st_name': 50, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 26, 'st_value': 0, 'st_size': 2560})
     /*0360*/ .byte 0x32, 0x00, 0x00, 0x00, 0x12, 0x10, 0x1a, 0x00
     /*0368*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0370*/ .byte 0x00, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[37] "texRef2d": Container({'st_name': 144, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_LOOS'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
+    // Symbol[37] "texRef2d": Container({'st_name': 144, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_LOOS'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
     /*0378*/ .byte 0x90, 0x00, 0x00, 0x00, 0x1a, 0x00, 0x00, 0x00
     /*0380*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0388*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[38] "texRef1d": Container({'st_name': 153, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_LOOS'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
+    // Symbol[38] "texRef1d": Container({'st_name': 153, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_LOOS'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
     /*0390*/ .byte 0x99, 0x00, 0x00, 0x00, 0x1a, 0x00, 0x00, 0x00
     /*0398*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*03a0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[39] "inputSurfRef": Container({'st_name': 162, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_HIOS'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
+    // Symbol[39] "inputSurfRef": Container({'st_name': 162, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_HIOS'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
     /*03a8*/ .byte 0xa2, 0x00, 0x00, 0x00, 0x1c, 0x00, 0x00, 0x00
     /*03b0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*03b8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[40] "outputSurfRef": Container({'st_name': 175, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_HIOS'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
+    // Symbol[40] "outputSurfRef": Container({'st_name': 175, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_HIOS'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
     /*03c0*/ .byte 0xaf, 0x00, 0x00, 0x00, 0x1c, 0x00, 0x00, 0x00
     /*03c8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*03d0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[41] "vprintf": Container({'st_name': 285, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
+    // Symbol[41] "vprintf": Container({'st_name': 285, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
     /*03d8*/ .byte 0x1d, 0x01, 0x00, 0x00, 0x12, 0x00, 0x00, 0x00
     /*03e0*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*03e8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[42] "_Z10local_testiiPi": Container({'st_name': 762, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 27, 'st_value': 0, 'st_size': 320})
+    // Symbol[42] "_Z10local_testiiPi": Container({'st_name': 762, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 27, 'st_value': 0, 'st_size': 320})
     /*03f0*/ .byte 0xfa, 0x02, 0x00, 0x00, 0x12, 0x10, 0x1b, 0x00
     /*03f8*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0400*/ .byte 0x40, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[43] "_Z5childPii": Container({'st_name': 925, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 28, 'st_value': 0, 'st_size': 576})
+    // Symbol[43] "_Z5childPii": Container({'st_name': 925, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 28, 'st_value': 0, 'st_size': 576})
     /*0408*/ .byte 0x9d, 0x03, 0x00, 0x00, 0x12, 0x10, 0x1c, 0x00
     /*0410*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0418*/ .byte 0x40, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[44] "_Z11shared_testfPf": Container({'st_name': 1068, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 29, 'st_value': 0, 'st_size': 384})
+    // Symbol[44] "_Z11shared_testfPf": Container({'st_name': 1068, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 29, 'st_value': 0, 'st_size': 384})
     /*0420*/ .byte 0x2c, 0x04, 0x00, 0x00, 0x12, 0x10, 0x1d, 0x00
     /*0428*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0430*/ .byte 0x80, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[45] "_Z4test6float4PS_": Container({'st_name': 1268, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 30, 'st_value': 0, 'st_size': 832})
+    // Symbol[45] "_Z4test6float4PS_": Container({'st_name': 1268, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 30, 'st_value': 0, 'st_size': 832})
     /*0438*/ .byte 0xf4, 0x04, 0x00, 0x00, 0x12, 0x10, 0x1e, 0x00
     /*0440*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0448*/ .byte 0x40, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[46] "_Z11nvinfo_testiiPi": Container({'st_name': 1425, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 31, 'st_value': 0, 'st_size': 192})
+    // Symbol[46] "_Z11nvinfo_testiiPi": Container({'st_name': 1425, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 31, 'st_value': 0, 'st_size': 192})
     /*0450*/ .byte 0x91, 0x05, 0x00, 0x00, 0x12, 0x10, 0x1f, 0x00
     /*0458*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0460*/ .byte 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 
-    // Symbol[47] "_Z10simpletest4int4Pi": Container({'st_name': 1594, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 32, 'st_value': 0, 'st_size': 384})
+    // Symbol[47] "_Z10simpletest4int4Pi": Container({'st_name': 1594, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'local': 0, 'visibility': 'STV_DEFAULT'}), 'st_shndx': 32, 'st_value': 0, 'st_size': 384})
     /*0468*/ .byte 0x3a, 0x06, 0x00, 0x00, 0x12, 0x10, 0x20, 0x00
     /*0470*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     /*0478*/ .byte 0x80, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
@@ -1086,540 +1086,540 @@
   	//----- nvinfo : EIATTR_REGCOUNT
   	.align		4
           /*0000*/ 	.byte	0x04, 0x2f
-          /*0002*/ 	.short	(.L_21 - .L_20)
+          /*0002*/ 	.short	(.L_10 - .L_9)
   	.align		4
-  .L_20:
+  .L_9:
           /*0004*/ 	.word	index@(_Z10simpletest4int4Pi)
           /*0008*/ 	.word	0x00000009
   
   
   	//----- nvinfo : EIATTR_MAX_STACK_SIZE
   	.align		4
-  .L_21:
+  .L_10:
           /*000c*/ 	.byte	0x04, 0x23
-          /*000e*/ 	.short	(.L_23 - .L_22)
+          /*000e*/ 	.short	(.L_12 - .L_11)
   	.align		4
-  .L_22:
+  .L_11:
           /*0010*/ 	.word	index@(_Z10simpletest4int4Pi)
           /*0014*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MIN_STACK_SIZE
   	.align		4
-  .L_23:
+  .L_12:
           /*0018*/ 	.byte	0x04, 0x12
-          /*001a*/ 	.short	(.L_25 - .L_24)
+          /*001a*/ 	.short	(.L_14 - .L_13)
   	.align		4
-  .L_24:
+  .L_13:
           /*001c*/ 	.word	index@(_Z10simpletest4int4Pi)
           /*0020*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_FRAME_SIZE
   	.align		4
-  .L_25:
+  .L_14:
           /*0024*/ 	.byte	0x04, 0x11
-          /*0026*/ 	.short	(.L_27 - .L_26)
+          /*0026*/ 	.short	(.L_16 - .L_15)
   	.align		4
-  .L_26:
+  .L_15:
           /*0028*/ 	.word	index@(_Z10simpletest4int4Pi)
           /*002c*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_REGCOUNT
   	.align		4
-  .L_27:
+  .L_16:
           /*0030*/ 	.byte	0x04, 0x2f
-          /*0032*/ 	.short	(.L_29 - .L_28)
+          /*0032*/ 	.short	(.L_18 - .L_17)
   	.align		4
-  .L_28:
+  .L_17:
           /*0034*/ 	.word	index@(_Z11nvinfo_testiiPi)
           /*0038*/ 	.word	0x00000008
   
   
   	//----- nvinfo : EIATTR_MAX_STACK_SIZE
   	.align		4
-  .L_29:
+  .L_18:
           /*003c*/ 	.byte	0x04, 0x23
-          /*003e*/ 	.short	(.L_31 - .L_30)
+          /*003e*/ 	.short	(.L_20 - .L_19)
   	.align		4
-  .L_30:
+  .L_19:
           /*0040*/ 	.word	index@(_Z11nvinfo_testiiPi)
           /*0044*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MIN_STACK_SIZE
   	.align		4
-  .L_31:
+  .L_20:
           /*0048*/ 	.byte	0x04, 0x12
-          /*004a*/ 	.short	(.L_33 - .L_32)
+          /*004a*/ 	.short	(.L_22 - .L_21)
   	.align		4
-  .L_32:
+  .L_21:
           /*004c*/ 	.word	index@(_Z11nvinfo_testiiPi)
           /*0050*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_FRAME_SIZE
   	.align		4
-  .L_33:
+  .L_22:
           /*0054*/ 	.byte	0x04, 0x11
-          /*0056*/ 	.short	(.L_35 - .L_34)
+          /*0056*/ 	.short	(.L_24 - .L_23)
   	.align		4
-  .L_34:
+  .L_23:
           /*0058*/ 	.word	index@(_Z11nvinfo_testiiPi)
           /*005c*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_REGCOUNT
   	.align		4
-  .L_35:
+  .L_24:
           /*0060*/ 	.byte	0x04, 0x2f
-          /*0062*/ 	.short	(.L_37 - .L_36)
+          /*0062*/ 	.short	(.L_26 - .L_25)
   	.align		4
-  .L_36:
+  .L_25:
           /*0064*/ 	.word	index@(_Z4test6float4PS_)
           /*0068*/ 	.word	0x0000000a
   
   
   	//----- nvinfo : EIATTR_MAX_STACK_SIZE
   	.align		4
-  .L_37:
+  .L_26:
           /*006c*/ 	.byte	0x04, 0x23
-          /*006e*/ 	.short	(.L_39 - .L_38)
+          /*006e*/ 	.short	(.L_28 - .L_27)
   	.align		4
-  .L_38:
+  .L_27:
           /*0070*/ 	.word	index@(_Z4test6float4PS_)
           /*0074*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MIN_STACK_SIZE
   	.align		4
-  .L_39:
+  .L_28:
           /*0078*/ 	.byte	0x04, 0x12
-          /*007a*/ 	.short	(.L_41 - .L_40)
+          /*007a*/ 	.short	(.L_30 - .L_29)
   	.align		4
-  .L_40:
+  .L_29:
           /*007c*/ 	.word	index@(_Z4test6float4PS_)
           /*0080*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_FRAME_SIZE
   	.align		4
-  .L_41:
+  .L_30:
           /*0084*/ 	.byte	0x04, 0x11
-          /*0086*/ 	.short	(.L_43 - .L_42)
+          /*0086*/ 	.short	(.L_32 - .L_31)
   	.align		4
-  .L_42:
+  .L_31:
           /*0088*/ 	.word	index@(_Z4test6float4PS_)
           /*008c*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_REGCOUNT
   	.align		4
-  .L_43:
+  .L_32:
           /*0090*/ 	.byte	0x04, 0x2f
-          /*0092*/ 	.short	(.L_45 - .L_44)
+          /*0092*/ 	.short	(.L_34 - .L_33)
   	.align		4
-  .L_44:
+  .L_33:
           /*0094*/ 	.word	index@(_Z11shared_testfPf)
           /*0098*/ 	.word	0x0000000a
   
   
   	//----- nvinfo : EIATTR_MAX_STACK_SIZE
   	.align		4
-  .L_45:
+  .L_34:
           /*009c*/ 	.byte	0x04, 0x23
-          /*009e*/ 	.short	(.L_47 - .L_46)
+          /*009e*/ 	.short	(.L_36 - .L_35)
   	.align		4
-  .L_46:
+  .L_35:
           /*00a0*/ 	.word	index@(_Z11shared_testfPf)
           /*00a4*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MIN_STACK_SIZE
   	.align		4
-  .L_47:
+  .L_36:
           /*00a8*/ 	.byte	0x04, 0x12
-          /*00aa*/ 	.short	(.L_49 - .L_48)
+          /*00aa*/ 	.short	(.L_38 - .L_37)
   	.align		4
-  .L_48:
+  .L_37:
           /*00ac*/ 	.word	index@(_Z11shared_testfPf)
           /*00b0*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_FRAME_SIZE
   	.align		4
-  .L_49:
+  .L_38:
           /*00b4*/ 	.byte	0x04, 0x11
-          /*00b6*/ 	.short	(.L_51 - .L_50)
+          /*00b6*/ 	.short	(.L_40 - .L_39)
   	.align		4
-  .L_50:
+  .L_39:
           /*00b8*/ 	.word	index@(_Z11shared_testfPf)
           /*00bc*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_REGCOUNT
   	.align		4
-  .L_51:
+  .L_40:
           /*00c0*/ 	.byte	0x04, 0x2f
-          /*00c2*/ 	.short	(.L_53 - .L_52)
+          /*00c2*/ 	.short	(.L_42 - .L_41)
   	.align		4
-  .L_52:
+  .L_41:
           /*00c4*/ 	.word	index@(_Z5childPii)
           /*00c8*/ 	.word	0x0000000b
   
   
   	//----- nvinfo : EIATTR_MAX_STACK_SIZE
   	.align		4
-  .L_53:
+  .L_42:
           /*00cc*/ 	.byte	0x04, 0x23
-          /*00ce*/ 	.short	(.L_55 - .L_54)
+          /*00ce*/ 	.short	(.L_44 - .L_43)
   	.align		4
-  .L_54:
+  .L_43:
           /*00d0*/ 	.word	index@(_Z5childPii)
           /*00d4*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MIN_STACK_SIZE
   	.align		4
-  .L_55:
+  .L_44:
           /*00d8*/ 	.byte	0x04, 0x12
-          /*00da*/ 	.short	(.L_57 - .L_56)
+          /*00da*/ 	.short	(.L_46 - .L_45)
   	.align		4
-  .L_56:
+  .L_45:
           /*00dc*/ 	.word	index@(_Z5childPii)
           /*00e0*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_FRAME_SIZE
   	.align		4
-  .L_57:
+  .L_46:
           /*00e4*/ 	.byte	0x04, 0x11
-          /*00e6*/ 	.short	(.L_59 - .L_58)
+          /*00e6*/ 	.short	(.L_48 - .L_47)
   	.align		4
-  .L_58:
+  .L_47:
           /*00e8*/ 	.word	index@(_Z5childPii)
           /*00ec*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_REGCOUNT
   	.align		4
-  .L_59:
+  .L_48:
           /*00f0*/ 	.byte	0x04, 0x2f
-          /*00f2*/ 	.short	(.L_61 - .L_60)
+          /*00f2*/ 	.short	(.L_50 - .L_49)
   	.align		4
-  .L_60:
+  .L_49:
           /*00f4*/ 	.word	index@(_Z10local_testiiPi)
           /*00f8*/ 	.word	0x0000000b
   
   
   	//----- nvinfo : EIATTR_MAX_STACK_SIZE
   	.align		4
-  .L_61:
+  .L_50:
           /*00fc*/ 	.byte	0x04, 0x23
-          /*00fe*/ 	.short	(.L_63 - .L_62)
+          /*00fe*/ 	.short	(.L_52 - .L_51)
   	.align		4
-  .L_62:
+  .L_51:
           /*0100*/ 	.word	index@(_Z10local_testiiPi)
           /*0104*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MIN_STACK_SIZE
   	.align		4
-  .L_63:
+  .L_52:
           /*0108*/ 	.byte	0x04, 0x12
-          /*010a*/ 	.short	(.L_65 - .L_64)
+          /*010a*/ 	.short	(.L_54 - .L_53)
   	.align		4
-  .L_64:
+  .L_53:
           /*010c*/ 	.word	index@(_Z10local_testiiPi)
           /*0110*/ 	.word	0x00000048
   
   
   	//----- nvinfo : EIATTR_FRAME_SIZE
   	.align		4
-  .L_65:
+  .L_54:
           /*0114*/ 	.byte	0x04, 0x11
-          /*0116*/ 	.short	(.L_67 - .L_66)
+          /*0116*/ 	.short	(.L_56 - .L_55)
   	.align		4
-  .L_66:
+  .L_55:
           /*0118*/ 	.word	index@(_Z10local_testiiPi)
           /*011c*/ 	.word	0x00000048
   
   
   	//----- nvinfo : EIATTR_REGCOUNT
   	.align		4
-  .L_67:
+  .L_56:
           /*0120*/ 	.byte	0x04, 0x2f
-          /*0122*/ 	.short	(.L_69 - .L_68)
+          /*0122*/ 	.short	(.L_58 - .L_57)
   	.align		4
-  .L_68:
+  .L_57:
           /*0124*/ 	.word	index@(_Z7argtestPiS_S_)
           /*0128*/ 	.word	0x00000019
   
   
   	//----- nvinfo : EIATTR_MAX_STACK_SIZE
   	.align		4
-  .L_69:
+  .L_58:
           /*012c*/ 	.byte	0x04, 0x23
-          /*012e*/ 	.short	(.L_71 - .L_70)
+          /*012e*/ 	.short	(.L_60 - .L_59)
   	.align		4
-  .L_70:
+  .L_59:
           /*0130*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f7ii)
           /*0134*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MIN_STACK_SIZE
   	.align		4
-  .L_71:
+  .L_60:
           /*0138*/ 	.byte	0x04, 0x12
-          /*013a*/ 	.short	(.L_73 - .L_72)
+          /*013a*/ 	.short	(.L_62 - .L_61)
   	.align		4
-  .L_72:
+  .L_61:
           /*013c*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f7ii)
           /*0140*/ 	.word	0x00000008
   
   
   	//----- nvinfo : EIATTR_FRAME_SIZE
   	.align		4
-  .L_73:
+  .L_62:
           /*0144*/ 	.byte	0x04, 0x11
-          /*0146*/ 	.short	(.L_75 - .L_74)
+          /*0146*/ 	.short	(.L_64 - .L_63)
   	.align		4
-  .L_74:
+  .L_63:
           /*0148*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f7ii)
           /*014c*/ 	.word	0x00000008
   
   
   	//----- nvinfo : EIATTR_MAX_STACK_SIZE
   	.align		4
-  .L_75:
+  .L_64:
           /*0150*/ 	.byte	0x04, 0x23
-          /*0152*/ 	.short	(.L_77 - .L_76)
+          /*0152*/ 	.short	(.L_66 - .L_65)
   	.align		4
-  .L_76:
+  .L_65:
           /*0154*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f6ii)
           /*0158*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MIN_STACK_SIZE
   	.align		4
-  .L_77:
+  .L_66:
           /*015c*/ 	.byte	0x04, 0x12
-          /*015e*/ 	.short	(.L_79 - .L_78)
+          /*015e*/ 	.short	(.L_68 - .L_67)
   	.align		4
-  .L_78:
+  .L_67:
           /*0160*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f6ii)
           /*0164*/ 	.word	0x00000008
   
   
   	//----- nvinfo : EIATTR_FRAME_SIZE
   	.align		4
-  .L_79:
+  .L_68:
           /*0168*/ 	.byte	0x04, 0x11
-          /*016a*/ 	.short	(.L_81 - .L_80)
+          /*016a*/ 	.short	(.L_70 - .L_69)
   	.align		4
-  .L_80:
+  .L_69:
           /*016c*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f6ii)
           /*0170*/ 	.word	0x00000008
   
   
   	//----- nvinfo : EIATTR_MAX_STACK_SIZE
   	.align		4
-  .L_81:
+  .L_70:
           /*0174*/ 	.byte	0x04, 0x23
-          /*0176*/ 	.short	(.L_83 - .L_82)
+          /*0176*/ 	.short	(.L_72 - .L_71)
   	.align		4
-  .L_82:
+  .L_71:
           /*0178*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f5ii)
           /*017c*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MIN_STACK_SIZE
   	.align		4
-  .L_83:
+  .L_72:
           /*0180*/ 	.byte	0x04, 0x12
-          /*0182*/ 	.short	(.L_85 - .L_84)
+          /*0182*/ 	.short	(.L_74 - .L_73)
   	.align		4
-  .L_84:
+  .L_73:
           /*0184*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f5ii)
           /*0188*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_FRAME_SIZE
   	.align		4
-  .L_85:
+  .L_74:
           /*018c*/ 	.byte	0x04, 0x11
-          /*018e*/ 	.short	(.L_87 - .L_86)
+          /*018e*/ 	.short	(.L_76 - .L_75)
   	.align		4
-  .L_86:
+  .L_75:
           /*0190*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f5ii)
           /*0194*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MAX_STACK_SIZE
   	.align		4
-  .L_87:
+  .L_76:
           /*0198*/ 	.byte	0x04, 0x23
-          /*019a*/ 	.short	(.L_89 - .L_88)
+          /*019a*/ 	.short	(.L_78 - .L_77)
   	.align		4
-  .L_88:
+  .L_77:
           /*019c*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f4ii)
           /*01a0*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MIN_STACK_SIZE
   	.align		4
-  .L_89:
+  .L_78:
           /*01a4*/ 	.byte	0x04, 0x12
-          /*01a6*/ 	.short	(.L_91 - .L_90)
+          /*01a6*/ 	.short	(.L_80 - .L_79)
   	.align		4
-  .L_90:
+  .L_79:
           /*01a8*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f4ii)
           /*01ac*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_FRAME_SIZE
   	.align		4
-  .L_91:
+  .L_80:
           /*01b0*/ 	.byte	0x04, 0x11
-          /*01b2*/ 	.short	(.L_93 - .L_92)
+          /*01b2*/ 	.short	(.L_82 - .L_81)
   	.align		4
-  .L_92:
+  .L_81:
           /*01b4*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f4ii)
           /*01b8*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MAX_STACK_SIZE
   	.align		4
-  .L_93:
+  .L_82:
           /*01bc*/ 	.byte	0x04, 0x23
-          /*01be*/ 	.short	(.L_95 - .L_94)
+          /*01be*/ 	.short	(.L_84 - .L_83)
   	.align		4
-  .L_94:
+  .L_83:
           /*01c0*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f3ii)
           /*01c4*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MIN_STACK_SIZE
   	.align		4
-  .L_95:
+  .L_84:
           /*01c8*/ 	.byte	0x04, 0x12
-          /*01ca*/ 	.short	(.L_97 - .L_96)
+          /*01ca*/ 	.short	(.L_86 - .L_85)
   	.align		4
-  .L_96:
+  .L_85:
           /*01cc*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f3ii)
           /*01d0*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_FRAME_SIZE
   	.align		4
-  .L_97:
+  .L_86:
           /*01d4*/ 	.byte	0x04, 0x11
-          /*01d6*/ 	.short	(.L_99 - .L_98)
+          /*01d6*/ 	.short	(.L_88 - .L_87)
   	.align		4
-  .L_98:
+  .L_87:
           /*01d8*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f3ii)
           /*01dc*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MAX_STACK_SIZE
   	.align		4
-  .L_99:
+  .L_88:
           /*01e0*/ 	.byte	0x04, 0x23
-          /*01e2*/ 	.short	(.L_101 - .L_100)
+          /*01e2*/ 	.short	(.L_90 - .L_89)
   	.align		4
-  .L_100:
+  .L_89:
           /*01e4*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f2ii)
           /*01e8*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MIN_STACK_SIZE
   	.align		4
-  .L_101:
+  .L_90:
           /*01ec*/ 	.byte	0x04, 0x12
-          /*01ee*/ 	.short	(.L_103 - .L_102)
+          /*01ee*/ 	.short	(.L_92 - .L_91)
   	.align		4
-  .L_102:
+  .L_91:
           /*01f0*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f2ii)
           /*01f4*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_FRAME_SIZE
   	.align		4
-  .L_103:
+  .L_92:
           /*01f8*/ 	.byte	0x04, 0x11
-          /*01fa*/ 	.short	(.L_105 - .L_104)
+          /*01fa*/ 	.short	(.L_94 - .L_93)
   	.align		4
-  .L_104:
+  .L_93:
           /*01fc*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f2ii)
           /*0200*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MAX_STACK_SIZE
   	.align		4
-  .L_105:
+  .L_94:
           /*0204*/ 	.byte	0x04, 0x23
-          /*0206*/ 	.short	(.L_107 - .L_106)
+          /*0206*/ 	.short	(.L_96 - .L_95)
   	.align		4
-  .L_106:
+  .L_95:
           /*0208*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f1ii)
           /*020c*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MIN_STACK_SIZE
   	.align		4
-  .L_107:
+  .L_96:
           /*0210*/ 	.byte	0x04, 0x12
-          /*0212*/ 	.short	(.L_109 - .L_108)
+          /*0212*/ 	.short	(.L_98 - .L_97)
   	.align		4
-  .L_108:
+  .L_97:
           /*0214*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f1ii)
           /*0218*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_FRAME_SIZE
   	.align		4
-  .L_109:
+  .L_98:
           /*021c*/ 	.byte	0x04, 0x11
-          /*021e*/ 	.short	(.L_111 - .L_110)
+          /*021e*/ 	.short	(.L_100 - .L_99)
   	.align		4
-  .L_110:
+  .L_99:
           /*0220*/ 	.word	index@($_Z7argtestPiS_S_$_Z2f1ii)
           /*0224*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MAX_STACK_SIZE
   	.align		4
-  .L_111:
+  .L_100:
           /*0228*/ 	.byte	0x04, 0x23
-          /*022a*/ 	.short	(.L_113 - .L_112)
+          /*022a*/ 	.short	(.L_102 - .L_101)
   	.align		4
-  .L_112:
+  .L_101:
           /*022c*/ 	.word	index@(_Z7argtestPiS_S_)
           /*0230*/ 	.word	0x00000000
   
   
   	//----- nvinfo : EIATTR_MIN_STACK_SIZE
   	.align		4
-  .L_113:
+  .L_102:
           /*0234*/ 	.byte	0x04, 0x12
-          /*0236*/ 	.short	(.L_115 - .L_114)
+          /*0236*/ 	.short	(.L_104 - .L_103)
   	.align		4
-  .L_114:
+  .L_103:
           /*0238*/ 	.word	index@(_Z7argtestPiS_S_)
           /*023c*/ 	.word	0x00000030
   
   
   	//----- nvinfo : EIATTR_FRAME_SIZE
   	.align		4
-  .L_115:
+  .L_104:
           /*0240*/ 	.byte	0x04, 0x11
-          /*0242*/ 	.short	(.L_117 - .L_116)
+          /*0242*/ 	.short	(.L_106 - .L_105)
   	.align		4
-  .L_116:
+  .L_105:
           /*0244*/ 	.word	index@(_Z7argtestPiS_S_)
           /*0248*/ 	.word	0x00000028
-  .L_117:
+  .L_106:
   
   
 // --------------------- .nv.info._Z7argtestPiS_S_        --------------------------
@@ -1640,14 +1640,14 @@
   	//----- nvinfo : EIATTR_CUDA_API_VERSION
   	.align		4
           /*0000*/ 	.byte	0x04, 0x37
-          /*0002*/ 	.short	(.L_119 - .L_118)
-  .L_118:
+          /*0002*/ 	.short	(.L_108 - .L_107)
+  .L_107:
           /*0004*/ 	.word	0x0000006f
   
   
   	//----- nvinfo : EIATTR_SW2393858_WAR
   	.align		4
-  .L_119:
+  .L_108:
           /*0008*/ 	.byte	0x01, 0x30
   	.zero		2
   
@@ -1661,9 +1661,9 @@
   	//----- nvinfo : EIATTR_PARAM_CBANK
   	.align		4
           /*0010*/ 	.byte	0x04, 0x0a
-          /*0012*/ 	.short	(.L_121 - .L_120)
+          /*0012*/ 	.short	(.L_110 - .L_109)
   	.align		4
-  .L_120:
+  .L_109:
           /*0014*/ 	.word	index@(.nv.constant0._Z7argtestPiS_S_)
           /*0018*/ 	.short	0x0140
           /*001a*/ 	.short	0x0018
@@ -1671,7 +1671,7 @@
   
   	//----- nvinfo : EIATTR_CBANK_PARAM_SIZE
   	.align		4
-  .L_121:
+  .L_110:
           /*001c*/ 	.byte	0x03, 0x19
           /*001e*/ 	.short	0x0018
   
@@ -1679,8 +1679,8 @@
   	//----- nvinfo : EIATTR_KPARAM_INFO
   	.align		4
           /*0020*/ 	.byte	0x04, 0x17
-          /*0022*/ 	.short	(.L_123 - .L_122)
-  .L_122:
+          /*0022*/ 	.short	(.L_112 - .L_111)
+  .L_111:
           /*0024*/ 	.word	0x00000000
           /*0028*/ 	.short	0x0002
           /*002a*/ 	.short	0x0010
@@ -1689,10 +1689,10 @@
   
   	//----- nvinfo : EIATTR_KPARAM_INFO
   	.align		4
-  .L_123:
+  .L_112:
           /*0030*/ 	.byte	0x04, 0x17
-          /*0032*/ 	.short	(.L_125 - .L_124)
-  .L_124:
+          /*0032*/ 	.short	(.L_114 - .L_113)
+  .L_113:
           /*0034*/ 	.word	0x00000000
           /*0038*/ 	.short	0x0001
           /*003a*/ 	.short	0x0008
@@ -1701,10 +1701,10 @@
   
   	//----- nvinfo : EIATTR_KPARAM_INFO
   	.align		4
-  .L_125:
+  .L_114:
           /*0040*/ 	.byte	0x04, 0x17
-          /*0042*/ 	.short	(.L_127 - .L_126)
-  .L_126:
+          /*0042*/ 	.short	(.L_116 - .L_115)
+  .L_115:
           /*0044*/ 	.word	0x00000000
           /*0048*/ 	.short	0x0000
           /*004a*/ 	.short	0x0000
@@ -1713,7 +1713,7 @@
   
   	//----- nvinfo : EIATTR_MAXREG_COUNT
   	.align		4
-  .L_127:
+  .L_116:
           /*0050*/ 	.byte	0x03, 0x1b
           /*0052*/ 	.short	0x00ff
   
@@ -1735,36 +1735,36 @@
   	//----- nvinfo : EIATTR_EXTERNS
   	.align		4
           /*005c*/ 	.byte	0x04, 0x0f
-          /*005e*/ 	.short	(.L_129 - .L_128)
+          /*005e*/ 	.short	(.L_118 - .L_117)
   
   
   	//   ....[0]....
   	.align		4
-  .L_128:
+  .L_117:
           /*0060*/ 	.word	index@(vprintf)
   
   
   	//----- nvinfo : EIATTR_S2RCTAID_INSTR_OFFSETS
   	.align		4
-  .L_129:
+  .L_118:
           /*0064*/ 	.byte	0x04, 0x1d
-          /*0066*/ 	.short	(.L_131 - .L_130)
+          /*0066*/ 	.short	(.L_120 - .L_119)
   
   
   	//   ....[0]....
-  .L_130:
+  .L_119:
           /*0068*/ 	.word	0x00000030
   
   
   	//----- nvinfo : EIATTR_EXIT_INSTR_OFFSETS
   	.align		4
-  .L_131:
+  .L_120:
           /*006c*/ 	.byte	0x04, 0x1c
-          /*006e*/ 	.short	(.L_133 - .L_132)
+          /*006e*/ 	.short	(.L_122 - .L_121)
   
   
   	//   ....[0]....
-  .L_132:
+  .L_121:
           /*0070*/ 	.word	0x000005c8
   
   
@@ -1774,51 +1774,51 @@
   
   	//----- nvinfo : EIATTR_INDIRECT_BRANCH_TARGETS
   	.align		4
-  .L_133:
+  .L_122:
           /*0078*/ 	.byte	0x04, 0x34
-          /*007a*/ 	.short	(.L_135 - .L_134)
+          /*007a*/ 	.short	(.L_124 - .L_123)
   
   
   	//   ....[0]....
-  .L_134:
-          /*007c*/ 	.word	.L_136@srel
+  .L_123:
+          /*007c*/ 	.word	.L_x_11@srel
           /*0080*/ 	.short	0x1
           /*0082*/ 	.short	0x0
           /*0084*/ 	.word	0x0
   
   
   	//   ....[1]....
-          /*0088*/ 	.word	(.L_137@srel + 0x8)
+          /*0088*/ 	.word	(.L_x_12@srel + 0x8)
           /*008c*/ 	.short	0x0
           /*008e*/ 	.short	0x0
           /*0090*/ 	.word	0x1
-          /*0094*/ 	.word	.L_10@srel
+          /*0094*/ 	.word	.L_x_1@srel
   
   
   	//   ....[2]....
-          /*0098*/ 	.word	(.L_139@srel + 0x10)
+          /*0098*/ 	.word	(.L_x_14@srel + 0x10)
           /*009c*/ 	.short	0x0
           /*009e*/ 	.short	0x0
           /*00a0*/ 	.word	0x1
-          /*00a4*/ 	.word	.L_10@srel
+          /*00a4*/ 	.word	.L_x_1@srel
   
   
   	//   ....[3]....
-          /*00a8*/ 	.word	(.L_11@srel + 0x8)
+          /*00a8*/ 	.word	(.L_x_2@srel + 0x8)
           /*00ac*/ 	.short	0x0
           /*00ae*/ 	.short	0x0
           /*00b0*/ 	.word	0x1
-          /*00b4*/ 	.word	.L_10@srel
+          /*00b4*/ 	.word	.L_x_1@srel
   
   
   	//----- nvinfo : EIATTR_CRS_STACK_SIZE
   	.align		4
-  .L_135:
+  .L_124:
           /*00b8*/ 	.byte	0x04, 0x1e
-          /*00ba*/ 	.short	(.L_144 - .L_143)
-  .L_143:
+          /*00ba*/ 	.short	(.L_126 - .L_125)
+  .L_125:
           /*00bc*/ 	.word	0x00000220
-  .L_144:
+  .L_126:
   
   
 // --------------------- .nv.info._Z10local_testiiPi      --------------------------
@@ -1839,14 +1839,14 @@
   	//----- nvinfo : EIATTR_CUDA_API_VERSION
   	.align		4
           /*0000*/ 	.byte	0x04, 0x37
-          /*0002*/ 	.short	(.L_146 - .L_145)
-  .L_145:
+          /*0002*/ 	.short	(.L_128 - .L_127)
+  .L_127:
           /*0004*/ 	.word	0x0000006f
   
   
   	//----- nvinfo : EIATTR_SW2393858_WAR
   	.align		4
-  .L_146:
+  .L_128:
           /*0008*/ 	.byte	0x01, 0x30
   	.zero		2
   
@@ -1860,9 +1860,9 @@
   	//----- nvinfo : EIATTR_PARAM_CBANK
   	.align		4
           /*0010*/ 	.byte	0x04, 0x0a
-          /*0012*/ 	.short	(.L_148 - .L_147)
+          /*0012*/ 	.short	(.L_130 - .L_129)
   	.align		4
-  .L_147:
+  .L_129:
           /*0014*/ 	.word	index@(.nv.constant0._Z10local_testiiPi)
           /*0018*/ 	.short	0x0140
           /*001a*/ 	.short	0x0010
@@ -1870,7 +1870,7 @@
   
   	//----- nvinfo : EIATTR_CBANK_PARAM_SIZE
   	.align		4
-  .L_148:
+  .L_130:
           /*001c*/ 	.byte	0x03, 0x19
           /*001e*/ 	.short	0x0010
   
@@ -1878,8 +1878,8 @@
   	//----- nvinfo : EIATTR_KPARAM_INFO
   	.align		4
           /*0020*/ 	.byte	0x04, 0x17
-          /*0022*/ 	.short	(.L_150 - .L_149)
-  .L_149:
+          /*0022*/ 	.short	(.L_132 - .L_131)
+  .L_131:
           /*0024*/ 	.word	0x00000000
           /*0028*/ 	.short	0x0002
           /*002a*/ 	.short	0x0008
@@ -1888,10 +1888,10 @@
   
   	//----- nvinfo : EIATTR_KPARAM_INFO
   	.align		4
-  .L_150:
+  .L_132:
           /*0030*/ 	.byte	0x04, 0x17
-          /*0032*/ 	.short	(.L_152 - .L_151)
-  .L_151:
+          /*0032*/ 	.short	(.L_134 - .L_133)
+  .L_133:
           /*0034*/ 	.word	0x00000000
           /*0038*/ 	.short	0x0001
           /*003a*/ 	.short	0x0004
@@ -1900,10 +1900,10 @@
   
   	//----- nvinfo : EIATTR_KPARAM_INFO
   	.align		4
-  .L_152:
+  .L_134:
           /*0040*/ 	.byte	0x04, 0x17
-          /*0042*/ 	.short	(.L_154 - .L_153)
-  .L_153:
+          /*0042*/ 	.short	(.L_136 - .L_135)
+  .L_135:
           /*0044*/ 	.word	0x00000000
           /*0048*/ 	.short	0x0000
           /*004a*/ 	.short	0x0000
@@ -1912,7 +1912,7 @@
   
   	//----- nvinfo : EIATTR_MAXREG_COUNT
   	.align		4
-  .L_154:
+  .L_136:
           /*0050*/ 	.byte	0x03, 0x1b
           /*0052*/ 	.short	0x00ff
   
@@ -1920,25 +1920,25 @@
   	//----- nvinfo : EIATTR_S2RCTAID_INSTR_OFFSETS
   	.align		4
           /*0054*/ 	.byte	0x04, 0x1d
-          /*0056*/ 	.short	(.L_156 - .L_155)
+          /*0056*/ 	.short	(.L_138 - .L_137)
   
   
   	//   ....[0]....
-  .L_155:
+  .L_137:
           /*0058*/ 	.word	0x00000030
   
   
   	//----- nvinfo : EIATTR_EXIT_INSTR_OFFSETS
   	.align		4
-  .L_156:
+  .L_138:
           /*005c*/ 	.byte	0x04, 0x1c
-          /*005e*/ 	.short	(.L_158 - .L_157)
+          /*005e*/ 	.short	(.L_140 - .L_139)
   
   
   	//   ....[0]....
-  .L_157:
+  .L_139:
           /*0060*/ 	.word	0x00000110
-  .L_158:
+  .L_140:
   
   
 // --------------------- .nv.info._Z5childPii             --------------------------
@@ -1959,14 +1959,14 @@
   	//----- nvinfo : EIATTR_CUDA_API_VERSION
   	.align		4
           /*0000*/ 	.byte	0x04, 0x37
-          /*0002*/ 	.short	(.L_160 - .L_159)
-  .L_159:
+          /*0002*/ 	.short	(.L_142 - .L_141)
+  .L_141:
           /*0004*/ 	.word	0x0000006f
   
   
   	//----- nvinfo : EIATTR_SW2393858_WAR
   	.align		4
-  .L_160:
+  .L_142:
           /*0008*/ 	.byte	0x01, 0x30
   	.zero		2
   
@@ -1980,9 +1980,9 @@
   	//----- nvinfo : EIATTR_PARAM_CBANK
   	.align		4
           /*0010*/ 	.byte	0x04, 0x0a
-          /*0012*/ 	.short	(.L_162 - .L_161)
+          /*0012*/ 	.short	(.L_144 - .L_143)
   	.align		4
-  .L_161:
+  .L_143:
           /*0014*/ 	.word	index@(.nv.constant0._Z5childPii)
           /*0018*/ 	.short	0x0140
           /*001a*/ 	.short	0x000c
@@ -1990,7 +1990,7 @@
   
   	//----- nvinfo : EIATTR_CBANK_PARAM_SIZE
   	.align		4
-  .L_162:
+  .L_144:
           /*001c*/ 	.byte	0x03, 0x19
           /*001e*/ 	.short	0x000c
   
@@ -1998,8 +1998,8 @@
   	//----- nvinfo : EIATTR_KPARAM_INFO
   	.align		4
           /*0020*/ 	.byte	0x04, 0x17
-          /*0022*/ 	.short	(.L_164 - .L_163)
-  .L_163:
+          /*0022*/ 	.short	(.L_146 - .L_145)
+  .L_145:
           /*0024*/ 	.word	0x00000000
           /*0028*/ 	.short	0x0001
           /*002a*/ 	.short	0x0008
@@ -2008,10 +2008,10 @@
   
   	//----- nvinfo : EIATTR_KPARAM_INFO
   	.align		4
-  .L_164:
+  .L_146:
           /*0030*/ 	.byte	0x04, 0x17
-          /*0032*/ 	.short	(.L_166 - .L_165)
-  .L_165:
+          /*0032*/ 	.short	(.L_148 - .L_147)
+  .L_147:
           /*0034*/ 	.word	0x00000000
           /*0038*/ 	.short	0x0000
           /*003a*/ 	.short	0x0000
@@ -2020,7 +2020,7 @@
   
   	//----- nvinfo : EIATTR_MAXREG_COUNT
   	.align		4
-  .L_166:
+  .L_148:
           /*0040*/ 	.byte	0x03, 0x1b
           /*0042*/ 	.short	0x00ff
   
@@ -2028,25 +2028,25 @@
   	//----- nvinfo : EIATTR_S2RCTAID_INSTR_OFFSETS
   	.align		4
           /*0044*/ 	.byte	0x04, 0x1d
-          /*0046*/ 	.short	(.L_168 - .L_167)
+          /*0046*/ 	.short	(.L_150 - .L_149)
   
   
   	//   ....[0]....
-  .L_167:
+  .L_149:
           /*0048*/ 	.word	0x00000028
   
   
   	//----- nvinfo : EIATTR_EXIT_INSTR_OFFSETS
   	.align		4
-  .L_168:
+  .L_150:
           /*004c*/ 	.byte	0x04, 0x1c
-          /*004e*/ 	.short	(.L_170 - .L_169)
+          /*004e*/ 	.short	(.L_152 - .L_151)
   
   
   	//   ....[0]....
-  .L_169:
+  .L_151:
           /*0050*/ 	.word	0x00000208
-  .L_170:
+  .L_152:
   
   
 // --------------------- .nv.info._Z11shared_testfPf      --------------------------
@@ -2067,14 +2067,14 @@
   	//----- nvinfo : EIATTR_CUDA_API_VERSION
   	.align		4
           /*0000*/ 	.byte	0x04, 0x37
-          /*0002*/ 	.short	(.L_172 - .L_171)
-  .L_171:
+          /*0002*/ 	.short	(.L_154 - .L_153)
+  .L_153:
           /*0004*/ 	.word	0x0000006f
   
   
   	//----- nvinfo : EIATTR_SW2393858_WAR
   	.align		4
-  .L_172:
+  .L_154:
           /*0008*/ 	.byte	0x01, 0x30
   	.zero		2
   
@@ -2088,9 +2088,9 @@
   	//----- nvinfo : EIATTR_PARAM_CBANK
   	.align		4
           /*0010*/ 	.byte	0x04, 0x0a
-          /*0012*/ 	.short	(.L_174 - .L_173)
+          /*0012*/ 	.short	(.L_156 - .L_155)
   	.align		4
-  .L_173:
+  .L_155:
           /*0014*/ 	.word	index@(.nv.constant0._Z11shared_testfPf)
           /*0018*/ 	.short	0x0140
           /*001a*/ 	.short	0x0010
@@ -2098,7 +2098,7 @@
   
   	//----- nvinfo : EIATTR_CBANK_PARAM_SIZE
   	.align		4
-  .L_174:
+  .L_156:
           /*001c*/ 	.byte	0x03, 0x19
           /*001e*/ 	.short	0x0010
   
@@ -2106,8 +2106,8 @@
   	//----- nvinfo : EIATTR_KPARAM_INFO
   	.align		4
           /*0020*/ 	.byte	0x04, 0x17
-          /*0022*/ 	.short	(.L_176 - .L_175)
-  .L_175:
+          /*0022*/ 	.short	(.L_158 - .L_157)
+  .L_157:
           /*0024*/ 	.word	0x00000000
           /*0028*/ 	.short	0x0001
           /*002a*/ 	.short	0x0008
@@ -2116,10 +2116,10 @@
   
   	//----- nvinfo : EIATTR_KPARAM_INFO
   	.align		4
-  .L_176:
+  .L_158:
           /*0030*/ 	.byte	0x04, 0x17
-          /*0032*/ 	.short	(.L_178 - .L_177)
-  .L_177:
+          /*0032*/ 	.short	(.L_160 - .L_159)
+  .L_159:
           /*0034*/ 	.word	0x00000000
           /*0038*/ 	.short	0x0000
           /*003a*/ 	.short	0x0000
@@ -2128,7 +2128,7 @@
   
   	//----- nvinfo : EIATTR_MAXREG_COUNT
   	.align		4
-  .L_178:
+  .L_160:
           /*0040*/ 	.byte	0x03, 0x1b
           /*0042*/ 	.short	0x00ff
   
@@ -2136,25 +2136,25 @@
   	//----- nvinfo : EIATTR_S2RCTAID_INSTR_OFFSETS
   	.align		4
           /*0044*/ 	.byte	0x04, 0x1d
-          /*0046*/ 	.short	(.L_180 - .L_179)
+          /*0046*/ 	.short	(.L_162 - .L_161)
   
   
   	//   ....[0]....
-  .L_179:
+  .L_161:
           /*0048*/ 	.word	0x00000018
   
   
   	//----- nvinfo : EIATTR_EXIT_INSTR_OFFSETS
   	.align		4
-  .L_180:
+  .L_162:
           /*004c*/ 	.byte	0x04, 0x1c
-          /*004e*/ 	.short	(.L_182 - .L_181)
+          /*004e*/ 	.short	(.L_164 - .L_163)
   
   
   	//   ....[0]....
-  .L_181:
+  .L_163:
           /*0050*/ 	.word	0x00000168
-  .L_182:
+  .L_164:
   
   
 // --------------------- .nv.info._Z4test6float4PS_       --------------------------
@@ -2175,14 +2175,14 @@
   	//----- nvinfo : EIATTR_CUDA_API_VERSION
   	.align		4
           /*0000*/ 	.byte	0x04, 0x37
-          /*0002*/ 	.short	(.L_184 - .L_183)
-  .L_183:
+          /*0002*/ 	.short	(.L_166 - .L_165)
+  .L_165:
           /*0004*/ 	.word	0x0000006f
   
   
   	//----- nvinfo : EIATTR_SW2393858_WAR
   	.align		4
-  .L_184:
+  .L_166:
           /*0008*/ 	.byte	0x01, 0x30
   	.zero		2
   
@@ -2196,9 +2196,9 @@
   	//----- nvinfo : EIATTR_PARAM_CBANK
   	.align		4
           /*0010*/ 	.byte	0x04, 0x0a
-          /*0012*/ 	.short	(.L_186 - .L_185)
+          /*0012*/ 	.short	(.L_168 - .L_167)
   	.align		4
-  .L_185:
+  .L_167:
           /*0014*/ 	.word	index@(.nv.constant0._Z4test6float4PS_)
           /*0018*/ 	.short	0x0140
           /*001a*/ 	.short	0x0018
@@ -2206,7 +2206,7 @@
   
   	//----- nvinfo : EIATTR_CBANK_PARAM_SIZE
   	.align		4
-  .L_186:
+  .L_168:
           /*001c*/ 	.byte	0x03, 0x19
           /*001e*/ 	.short	0x0018
   
@@ -2214,8 +2214,8 @@
   	//----- nvinfo : EIATTR_KPARAM_INFO
   	.align		4
           /*0020*/ 	.byte	0x04, 0x17
-          /*0022*/ 	.short	(.L_188 - .L_187)
-  .L_187:
+          /*0022*/ 	.short	(.L_170 - .L_169)
+  .L_169:
           /*0024*/ 	.word	0x00000000
           /*0028*/ 	.short	0x0001
           /*002a*/ 	.short	0x0010
@@ -2224,10 +2224,10 @@
   
   	//----- nvinfo : EIATTR_KPARAM_INFO
   	.align		4
-  .L_188:
+  .L_170:
           /*0030*/ 	.byte	0x04, 0x17
-          /*0032*/ 	.short	(.L_190 - .L_189)
-  .L_189:
+          /*0032*/ 	.short	(.L_172 - .L_171)
+  .L_171:
           /*0034*/ 	.word	0x00000000
           /*0038*/ 	.short	0x0000
           /*003a*/ 	.short	0x0000
@@ -2236,7 +2236,7 @@
   
   	//----- nvinfo : EIATTR_MAXREG_COUNT
   	.align		4
-  .L_190:
+  .L_172:
           /*0040*/ 	.byte	0x03, 0x1b
           /*0042*/ 	.short	0x00ff
   
@@ -2244,13 +2244,13 @@
   	//----- nvinfo : EIATTR_EXIT_INSTR_OFFSETS
   	.align		4
           /*0044*/ 	.byte	0x04, 0x1c
-          /*0046*/ 	.short	(.L_192 - .L_191)
+          /*0046*/ 	.short	(.L_174 - .L_173)
   
   
   	//   ....[0]....
-  .L_191:
+  .L_173:
           /*0048*/ 	.word	0x00000318
-  .L_192:
+  .L_174:
   
   
 // --------------------- .nv.info._Z11nvinfo_testiiPi     --------------------------
@@ -2271,14 +2271,14 @@
   	//----- nvinfo : EIATTR_CUDA_API_VERSION
   	.align		4
           /*0000*/ 	.byte	0x04, 0x37
-          /*0002*/ 	.short	(.L_194 - .L_193)
-  .L_193:
+          /*0002*/ 	.short	(.L_176 - .L_175)
+  .L_175:
           /*0004*/ 	.word	0x0000006f
   
   
   	//----- nvinfo : EIATTR_SW2393858_WAR
   	.align		4
-  .L_194:
+  .L_176:
           /*0008*/ 	.byte	0x01, 0x30
   	.zero		2
   
@@ -2292,9 +2292,9 @@
   	//----- nvinfo : EIATTR_PARAM_CBANK
   	.align		4
           /*0010*/ 	.byte	0x04, 0x0a
-          /*0012*/ 	.short	(.L_196 - .L_195)
+          /*0012*/ 	.short	(.L_178 - .L_177)
   	.align		4
-  .L_195:
+  .L_177:
           /*0014*/ 	.word	index@(.nv.constant0._Z11nvinfo_testiiPi)
           /*0018*/ 	.short	0x0140
           /*001a*/ 	.short	0x0010
@@ -2302,7 +2302,7 @@
   
   	//----- nvinfo : EIATTR_CBANK_PARAM_SIZE
   	.align		4
-  .L_196:
+  .L_178:
           /*001c*/ 	.byte	0x03, 0x19
           /*001e*/ 	.short	0x0010
   
@@ -2310,8 +2310,8 @@
   	//----- nvinfo : EIATTR_KPARAM_INFO
   	.align		4
           /*0020*/ 	.byte	0x04, 0x17
-          /*0022*/ 	.short	(.L_198 - .L_197)
-  .L_197:
+          /*0022*/ 	.short	(.L_180 - .L_179)
+  .L_179:
           /*0024*/ 	.word	0x00000000
           /*0028*/ 	.short	0x0002
           /*002a*/ 	.short	0x0008
@@ -2320,10 +2320,10 @@
   
   	//----- nvinfo : EIATTR_KPARAM_INFO
   	.align		4
-  .L_198:
+  .L_180:
           /*0030*/ 	.byte	0x04, 0x17
-          /*0032*/ 	.short	(.L_200 - .L_199)
-  .L_199:
+          /*0032*/ 	.short	(.L_182 - .L_181)
+  .L_181:
           /*0034*/ 	.word	0x00000000
           /*0038*/ 	.short	0x0001
           /*003a*/ 	.short	0x0004
@@ -2332,10 +2332,10 @@
   
   	//----- nvinfo : EIATTR_KPARAM_INFO
   	.align		4
-  .L_200:
+  .L_182:
           /*0040*/ 	.byte	0x04, 0x17
-          /*0042*/ 	.short	(.L_202 - .L_201)
-  .L_201:
+          /*0042*/ 	.short	(.L_184 - .L_183)
+  .L_183:
           /*0044*/ 	.word	0x00000000
           /*0048*/ 	.short	0x0000
           /*004a*/ 	.short	0x0000
@@ -2344,7 +2344,7 @@
   
   	//----- nvinfo : EIATTR_MAXREG_COUNT
   	.align		4
-  .L_202:
+  .L_184:
           /*0050*/ 	.byte	0x03, 0x1b
           /*0052*/ 	.short	0x00ff
   
@@ -2352,11 +2352,11 @@
   	//----- nvinfo : EIATTR_S2RCTAID_INSTR_OFFSETS
   	.align		4
           /*0054*/ 	.byte	0x04, 0x1d
-          /*0056*/ 	.short	(.L_204 - .L_203)
+          /*0056*/ 	.short	(.L_186 - .L_185)
   
   
   	//   ....[0]....
-  .L_203:
+  .L_185:
           /*0058*/ 	.word	0x00000018
   
   
@@ -2370,19 +2370,19 @@
   
   	//----- nvinfo : EIATTR_EXIT_INSTR_OFFSETS
   	.align		4
-  .L_204:
+  .L_186:
           /*0064*/ 	.byte	0x04, 0x1c
-          /*0066*/ 	.short	(.L_206 - .L_205)
+          /*0066*/ 	.short	(.L_188 - .L_187)
   
   
   	//   ....[0]....
-  .L_205:
+  .L_187:
           /*0068*/ 	.word	0x000000a8
   
   
   	//----- nvinfo : EIATTR_CTAIDZ_USED
   	.align		4
-  .L_206:
+  .L_188:
           /*006c*/ 	.byte	0x01, 0x04
   	.zero		2
   
@@ -2405,14 +2405,14 @@
   	//----- nvinfo : EIATTR_CUDA_API_VERSION
   	.align		4
           /*0000*/ 	.byte	0x04, 0x37
-          /*0002*/ 	.short	(.L_208 - .L_207)
-  .L_207:
+          /*0002*/ 	.short	(.L_190 - .L_189)
+  .L_189:
           /*0004*/ 	.word	0x0000006f
   
   
   	//----- nvinfo : EIATTR_SW2393858_WAR
   	.align		4
-  .L_208:
+  .L_190:
           /*0008*/ 	.byte	0x01, 0x30
   	.zero		2
   
@@ -2426,9 +2426,9 @@
   	//----- nvinfo : EIATTR_PARAM_CBANK
   	.align		4
           /*0010*/ 	.byte	0x04, 0x0a
-          /*0012*/ 	.short	(.L_210 - .L_209)
+          /*0012*/ 	.short	(.L_192 - .L_191)
   	.align		4
-  .L_209:
+  .L_191:
           /*0014*/ 	.word	index@(.nv.constant0._Z10simpletest4int4Pi)
           /*0018*/ 	.short	0x0140
           /*001a*/ 	.short	0x0018
@@ -2436,7 +2436,7 @@
   
   	//----- nvinfo : EIATTR_CBANK_PARAM_SIZE
   	.align		4
-  .L_210:
+  .L_192:
           /*001c*/ 	.byte	0x03, 0x19
           /*001e*/ 	.short	0x0018
   
@@ -2444,8 +2444,8 @@
   	//----- nvinfo : EIATTR_KPARAM_INFO
   	.align		4
           /*0020*/ 	.byte	0x04, 0x17
-          /*0022*/ 	.short	(.L_212 - .L_211)
-  .L_211:
+          /*0022*/ 	.short	(.L_194 - .L_193)
+  .L_193:
           /*0024*/ 	.word	0x00000000
           /*0028*/ 	.short	0x0001
           /*002a*/ 	.short	0x0010
@@ -2454,10 +2454,10 @@
   
   	//----- nvinfo : EIATTR_KPARAM_INFO
   	.align		4
-  .L_212:
+  .L_194:
           /*0030*/ 	.byte	0x04, 0x17
-          /*0032*/ 	.short	(.L_214 - .L_213)
-  .L_213:
+          /*0032*/ 	.short	(.L_196 - .L_195)
+  .L_195:
           /*0034*/ 	.word	0x00000000
           /*0038*/ 	.short	0x0000
           /*003a*/ 	.short	0x0000
@@ -2466,7 +2466,7 @@
   
   	//----- nvinfo : EIATTR_MAXREG_COUNT
   	.align		4
-  .L_214:
+  .L_196:
           /*0040*/ 	.byte	0x03, 0x1b
           /*0042*/ 	.short	0x00ff
   
@@ -2474,37 +2474,37 @@
   	//----- nvinfo : EIATTR_COOP_GROUP_INSTR_OFFSETS
   	.align		4
           /*0044*/ 	.byte	0x04, 0x28
-          /*0046*/ 	.short	(.L_216 - .L_215)
+          /*0046*/ 	.short	(.L_198 - .L_197)
   
   
   	//   ....[0]....
-  .L_215:
+  .L_197:
           /*0048*/ 	.word	0x00000130
   
   
   	//----- nvinfo : EIATTR_S2RCTAID_INSTR_OFFSETS
   	.align		4
-  .L_216:
+  .L_198:
           /*004c*/ 	.byte	0x04, 0x1d
-          /*004e*/ 	.short	(.L_218 - .L_217)
+          /*004e*/ 	.short	(.L_200 - .L_199)
   
   
   	//   ....[0]....
-  .L_217:
+  .L_199:
           /*0050*/ 	.word	0x00000018
   
   
   	//----- nvinfo : EIATTR_EXIT_INSTR_OFFSETS
   	.align		4
-  .L_218:
+  .L_200:
           /*0054*/ 	.byte	0x04, 0x1c
-          /*0056*/ 	.short	(.L_220 - .L_219)
+          /*0056*/ 	.short	(.L_202 - .L_201)
   
   
   	//   ....[0]....
-  .L_219:
+  .L_201:
           /*0058*/ 	.word	0x00000150
-  .L_220:
+  .L_202:
   
   
 // --------------------- .nv.rel.action                   --------------------------
@@ -2808,277 +2808,281 @@
   	.align	32
           .global         _Z7argtestPiS_S_
           .type           _Z7argtestPiS_S_,@function
-          .size           _Z7argtestPiS_S_,(.L_227 - _Z7argtestPiS_S_)
+          .size           _Z7argtestPiS_S_,(.L_x_24 - _Z7argtestPiS_S_)
           .other          _Z7argtestPiS_S_,@"STO_CUDA_ENTRY STV_DEFAULT"
   _Z7argtestPiS_S_:
   .text._Z7argtestPiS_S_:
-      [----:B------:R-:W-:-:S06]         /*0008*/                   MOV R1, c[0x0][0x20] ;
-      [----:B------:R-:W-:-:S00]         /*0010*/         {         MOV R20, c[0x0][0x140] ;
-      [----:B------:R-:W0:-:S01]         /*0018*/                   S2R R2, SR_TID.X         }
-      [----:B------:R-:W-:-:S00]         /*0028*/         {         MOV R21, c[0x0][0x144] ;
-      [----:B------:R-:W0:-:S02]         /*0030*/                   S2R R17, SR_CTAID.X         }
-      [----:B------:R-:W-:-:S00]         /*0038*/         {         MOV32I R6, 32@lo(flist) ;
-      [----:B------:R-:W5:-:S01]         /*0048*/                   LDG.E R0, [R20]         }
-      [----:B------:R-:W-:-:S15]         /*0050*/                   MOV32I R3, 32@hi(flist) ;
-      [----:B0-----:R-:W-:-:S01]         /*0058*/                   XMAD R2, R17, c[0x0] [0x8], R2 ;
-      [----:B-----5:R-:W-:-:S01]         /*0068*/                   ISCADD R6.CC, R0.reuse, R6, 0x3 ;
-      [----:B------:R-:W-:Y:S06]         /*0070*/                   SHR R0, R0, 0x1d ;
-      [----:B------:R-:W-:Y:S02]         /*0078*/                   IADD.X R7, R3, R0 ;
-      [----:B------:R-:W5:-:S01]         /*0088*/                   LDG.E R0, [R6] ;
-      [----:B------:R-:W-:Y:S06]         /*0090*/                   XMAD.MRG R3, R17, c[0x0] [0x8].H1, RZ ;
-      [----:B------:R-:W-:-:S06]         /*0098*/                   XMAD.PSL.CBCC R17, R17.H1, R3.H1, R2 ;
-      [----:B------:R-:W-:-:S01]         /*00a8*/                   SHR R2, R17.reuse, 0x1e ;
-      [----:B------:R-:W-:Y:S06]         /*00b0*/                   ISCADD R18.CC, R17, c[0x0][0x148], 0x2 ;
-      [----:B------:R-:W-:Y:S02]         /*00b8*/                   IADD.X R19, R2, c[0x0][0x14c] ;
-      [----:B------:R0:W5:-:S01]         /*00c8*/                   LDG.E R5, [R18] ;
-      [----:B------:R-:W-:Y:S01]         /*00d0*/                   IADD32I R1, R1, -0x28 ;
-      [----:B------:R-:W-:Y:S03]         /*00d8*/                   MOV R4, R17 ;
-      [----:B------:R-:W-:-:S03]         /*00e8*/                   DEPBAR.LE SB5, 0x1 ;
-      [----:B------:R0:W1:-:S02]         /*00f0*/                   LDC R2, c[0x2][R0] ;
-      [----:B------:R-:W-:-:S01]         /*00f8*/                   PRET `(.L_9) ;
-  .L_136:
-      [----:B01---5:R-:W-:-:S13]         /*0108*/                   BRX R2 -0x110                                  (*"INDIRECT_CALL"*);
-  .L_9:
-      [----:B------:R-:W0:-:S01]         /*0110*/                   I2F.F32.S32 R9, R4 ;
-      [----:B------:R-:W-:-:S13]         /*0118*/                   PBK `(.L_10) ;
-      [----:B0-----:R-:W-:-:S06]         /*0128*/                   FMUL32I R0, R9, 0.34999999403953552246 ;
-      [----:B------:R-:W-:-:S02]         /*0130*/                   FMUL32I R2, R0.reuse, 0.63661974668502807617 ;
-      [----:B------:R-:W-:-:S00]         /*0138*/         {         FSETP.GT.AND P0, PT, |R0|, c[0x2][0x4c], PT ;
-      [----:B------:R-:W0:-:S02]         /*0148*/                   F2I.S32.F32 R2, R2         }
-      [----:B0-----:R-:W0:-:S13]         /*0150*/                   I2F.F32.S32 R3, R2 ;
-      [----:B0-----:R-:W-:-:S06]         /*0158*/                   FFMA R5, R3.reuse, c[0x2][0x40], R0 ;
-      [----:B------:R-:W-:Y:S06]         /*0168*/                   FFMA R5, R3, c[0x2][0x44], R5 ;
-  .L_137:
-      [----:B------:R-:W-:-:S00]         /*0170*/         {         FFMA R3, R3, c[0x2][0x48], R5 ;
-      [----:B------:R-:W-:-:S13]         /*0178*/              @!P0 BRK                                            (*"BRANCH_TARGETS .L_10"*)        }
-      [----:B------:R-:W-:Y:S13]         /*0188*/                   FSETP.NEU.AND P0, PT, |R0|, +INF , PT ;
-      [----:B------:R-:W-:-:S13]         /*0190*/              @!P0 BRA `(.L_11) ;
-      [----:B------:R-:W-:-:S01]         /*0198*/                   BFE.U32 R2, R0.reuse, 0x817 ;
-      [----:B------:R-:W-:Y:S05]         /*01a8*/                   SHL R4, R0, 0x8 ;
-      [----:B------:R-:W-:Y:S01]         /*01b0*/                   IADD32I R3, R2, -0x80 ;
-      [----:B------:R-:W-:Y:S01]         /*01b8*/                   MOV32I R11, 32@lo(__cudart_i2opi_f) ;
-      [----:B------:R-:W-:Y:S01]         /*01c8*/                   MOV32I R5, 32@hi(__cudart_i2opi_f) ;
-      [----:B------:R-:W-:Y:S01]         /*01d0*/                   MOV R8, RZ ;
-      [----:B------:R-:W-:Y:S01]         /*01d8*/                   MOV R16, RZ ;
-      [----:B------:R-:W-:Y:S01]         /*01e8*/                   MOV32I R6, 0xfffffffa ;
-      [----:B------:R-:W-:Y:S01]         /*01f0*/                   MOV R2, R1 ;
-      [----:B------:R-:W-:-:S01]         /*01f8*/                   LOP32I.OR R24, R4, 0x80000000 ;
-      [----:B------:R-:W-:Y:S06]         /*0208*/                   SHR.U32 R15, R3, 0x5 ;
-  .L_12:
-      [----:B------:R-:W-:-:S02]         /*0210*/                   MOV R4, R11 ;
-      [----:B------:R0:W5:-:S01]         /*0218*/                   LDG.E R3, [R4] ;
-      [----:B------:R-:W-:-:S01]         /*0228*/                   IADD32I R6, R6, 0x1 ;
-      [----:B------:R-:W-:-:S05]         /*0230*/                   IADD32I R11.CC, R11, 0x4 ;
-      [----:B------:R-:W-:-:S01]         /*0238*/                   ISETP.NE.AND P0, PT, R6, RZ, PT ;
-      [----:B0-----:R-:W-:Y:S07]         /*0248*/                   IADD.X R5, RZ, R5 ;
-      [----:B-----5:R-:W-:-:S01]         /*0250*/                   XMAD R10, R3.reuse, R24.reuse, RZ ;
-      [----:B------:R-:W-:-:S01]         /*0258*/                   XMAD.MRG R12, R3.reuse, R24.H1.reuse, RZ ;
-      [----:B------:R-:W-:-:S01]         /*0268*/                   XMAD R7, R3.reuse, R24.H1.reuse, RZ ;
-      [----:B------:R-:W-:-:S03]         /*0270*/                   XMAD R13, R3.H1.reuse, R24.H1.reuse, RZ ;
-      [----:B------:R-:W-:-:S01]         /*0278*/                   XMAD.CHI R14, R3.H1.reuse, R24, R10.reuse ;
-      [----:B------:R-:W-:Y:S05]         /*0288*/                   XMAD.PSL.CBCC R3, R3.H1, R12.H1, R10 ;
-      [----:B------:R-:W-:-:S01]         /*0290*/                   IADD3.RS R7, R14, R7, R13 ;
-      [----:B------:R-:W-:-:S06]         /*0298*/                   IADD R3.CC, R3, R8 ;
-      [----:B------:R0:W-:-:S01]         /*02a8*/                   STL [R2], R3 ;
-      [----:B------:R-:W-:-:S01]         /*02b0*/                   IADD.X R8, R7, R16 ;
-      [----:B0-----:R-:W-:-:S00]         /*02b8*/         {         IADD32I R2, R2, 0x4 ;
-      [----:B------:R-:W-:-:S13]         /*02c8*/               @P0 BRA `(.L_12)         }
-      [----:B------:R-:W-:-:S00]         /*02d0*/         {         BFE.U32 R12, R0, 0x517 ;
-      [----:B------:R-:W-:-:S01]         /*02d8*/                   STL [R1+0x18], R8         }
-      [----:B------:R-:W-:-:S05]         /*02e8*/                   IADD32I R2, -R15, 0x6 ;
-      [----:B------:R-:W-:-:S01]         /*02f0*/                   ISETP.NE.AND P0, PT, R12, RZ, PT ;
-      [----:B------:R-:W-:Y:S02]         /*02f8*/                   LEA R10, R2, R1, 0x2 ;
-      [----:B------:R-:W5:-:S01]         /*0308*/                   LDL R2, [R10] ;
-      [----:B------:R-:W5:-:S09]         /*0310*/                   LDL R3, [R10+-0x4] ;
-      [----:B------:R-:W5:-:S01]         /*0318*/               @P0 LDL R6, [R10+-0x8] ;
-      [----:B------:R-:W-:Y:S01]         /*0328*/               @P0 IADD32I R4, -R12, 0x20 ;
-      [----:B------:R-:W-:-:S06]         /*0330*/                   LOP32I.AND R0, R0, 0x80000000 ;
-      [----:B------:R-:W-:Y:S13]         /*0338*/                   ISETP.EQ.AND P2, PT, R0, RZ, PT ;
-      [----:B-----5:R-:W-:-:S01]         /*0348*/               @P0 SHL R5, R2, R12.reuse ;
-      [----:B------:R-:W-:-:S01]         /*0350*/               @P0 SHL R7, R3.reuse, R12 ;
-      [----:B------:R-:W-:-:S01]         /*0358*/               @P0 SHR.U32 R6, R6, R4.reuse ;
-      [----:B------:R-:W-:Y:S05]         /*0368*/               @P0 SHR.U32 R4, R3, R4 ;
-      [----:B------:R-:W-:Y:S01]         /*0370*/               @P0 IADD R3, R6, R7 ;
-      [----:B------:R-:W-:-:S06]         /*0378*/               @P0 IADD R2, R4, R5 ;
-      [----:B------:R-:W-:-:S06]         /*0388*/                   SHF.L R5, R3.reuse, 0x2, R2 ;
-      [----:B------:R-:W-:-:S06]         /*0390*/                   SHR.U32 R7, R5, 0x1f ;
-      [----:B------:R-:W-:-:S01]         /*0398*/                   ISETP.NE.AND P1, PT, R7, RZ, PT ;
-      [----:B------:R-:W-:Y:S12]         /*03a8*/                   SHL R8, R3, 0x2 ;
-      [----:B------:R-:W-:-:S01]         /*03b0*/               @P1 LOP.PASS_B R3, RZ, ~R5 ;
-      [----:B------:R-:W-:Y:S01]         /*03b8*/               @P1 ICMP.NE R4, RZ, 0x1, R8 ;
-      [----:B------:R-:W-:Y:S01]         /*03c8*/               @P1 IADD R6, -R8, RZ ;
-      [----:B------:R-:W-:Y:S04]         /*03d0*/              @!P1 MOV R6, R8 ;
-      [----:B------:R-:W-:Y:S02]         /*03d8*/               @P1 IADD R5, R3, R4 ;
-      [----:B------:R-:W-:-:S13]         /*03e8*/                   MOV R4, R6 ;
-      [----:B------:R-:W0:-:S01]         /*03f0*/                   I2F.F64.S64 R4, R4 ;
-      [----:B------:R-:W-:-:S01]         /*03f8*/               @P1 LOP.XOR.NZ P0, RZ, R0.reuse, c[0x2][0x50] ;
-      [----:B------:R-:W-:-:S06]         /*0408*/              @!P1 ISETP.NE.AND P0, PT, R0, RZ, PT ;
-      [----:B0-----:R-:W0:-:S01]         /*0410*/                   DMUL R4, R4, c[0x2][0x58] ;
-      [----:B------:R-:W-:-:S07]         /*0418*/                   LEA.HI R2, R2, R7, RZ, 0x2 ;
-      [----:B0-----:R-:W0:Y:S01]         /*0428*/                   F2F.F32.F64 R3, R4 ;
-      [----:B------:R-:W-:Y:S07]         /*0430*/              @!P2 IADD R2, -R2, RZ ;
-  .L_139:
-      [----:B0-----:R-:W-:-:S00]         /*0438*/         {     @P0 FADD R3, -R3, -RZ ;
-      [----:B------:R-:W-:-:S13]         /*0448*/                   BRK                                            (*"BRANCH_TARGETS .L_10"*)        }
-  .L_11:
-      [----:B------:R-:W-:-:S00]         /*0450*/         {         FMUL R3, RZ, R0 ;
-      [----:B------:R-:W-:-:S13]         /*0458*/                   BRK                                            (*"BRANCH_TARGETS .L_10"*)        }
-  .L_10:
-      [----:B------:R-:W-:-:S01]         /*0468*/                   FADD R9, R9, 0.5 ;
-      [----:B------:R-:W-:-:S05]         /*0470*/                   MOV R8, RZ ;
-      [----:B------:R-:W-:-:S02]         /*0478*/                   FADD R4, R9, -1 ;
-      [----:B------:R-:W5:-:S01]         /*0488*/                   TEXS.T RZ, R7, R9, R4, 0x56, 2D, R ;
-      [----:B------:R-:W5:-:S15]         /*0490*/                   TEXS.P RZ, R8, R9, R8, 0x57, 2D, R ;
-      [----:B------:R-:W-:Y:S01]         /*0498*/                   LOP32I.AND R12, R2, 0x1 ;
-      [----:B------:R-:W-:-:S01]         /*04a8*/                   FMUL R11, R3.reuse, R3 ;
-      [----:B------:R-:W-:-:S01]         /*04b0*/                   MOV32I R6, 0x3d2aaabb ;
-      [----:B------:R-:W-:-:S01]         /*04b8*/                   MOV32I R0, 0xb94d4153 ;
-      [----:B------:R-:W-:-:S02]         /*04c8*/                   MOV32I R10, 0xbeffffff ;
-      [----:B------:R-:W-:-:S01]         /*04d0*/                   ISETP.NE.AND P0, PT, R12, RZ, PT ;
-      [----:B------:R-:W-:Y:S12]         /*04d8*/                   ICMP.EQ R3, R3, c[0x2][0x54], R12 ;
-      [----:B------:R-:W-:-:S13]         /*04e8*/               @P0 MOV32I R5, 0x3ab607ed ;
-      [----:B------:R-:W-:Y:S01]         /*04f0*/               @P0 FFMA R0, R11, c[0x2][0x60], -R5 ;
-      [----:B------:R-:W-:-:S01]         /*04f8*/                   ICMP.NE R5, R6, c[0x2][0x64], R12.reuse ;
-      [----:B------:R-:W-:-:S01]         /*0508*/                   LOP.AND.NZ P0, RZ, R2, 0x2 ;
-      [----:B------:R-:W-:-:S04]         /*0510*/                   ICMP.NE R6, R10, c[0x2][0x68], R12 ;
-      [----:B------:R-:W-:-:S01]         /*0518*/                   FFMA R0, R11.reuse, R0, R5 ;
-      [----:B------:R-:W-:-:S05]         /*0528*/                   FFMA R5, R3, R11, RZ ;
-      [----:B------:R-:W-:Y:S06]         /*0530*/                   FFMA R0, R11, R0, R6 ;
-      [----:B------:R-:W-:-:S06]         /*0538*/                   FFMA R0, R5, R0, R3 ;
-      [----:B------:R-:W-:-:S01]         /*0548*/               @P0 FFMA R0, R0, -1, RZ ;
-      [----:B------:R-:W-:-:S02]         /*0550*/                   SHL R16, R17, 0x2 ;
-      [----:B------:R-:W5:-:S01]         /*0558*/                   SULD.D.BA.2D.TRAP R2, [R16], 0x58 ;
-      [----:B------:R-:W-:-:S03]         /*0568*/                   DEPBAR.LE SB5, 0x1 ;
-      [----:B------:R-:W-:Y:S06]         /*0570*/                   FADD R7, R7, R0 ;
-      [----:B------:R-:W-:-:S02]         /*0578*/                   FADD R7, R7, R8 ;
-      [----:B------:R-:W0:-:S13]         /*0588*/                   F2I.S32.F32.TRUNC R7, R7 ;
-      [----:B0-----:R-:W-:-:S01]         /*0590*/                   STG.E [R18], R7 ;
-      [----:B------:R-:W5:-:S01]         /*0598*/                   LDG.E R20, [R20+0x4] ;
-      [----:B------:R-:W-:-:S03]         /*05a8*/                   DEPBAR.LE SB5, 0x1 ;
-      [----:B------:R0:W-:-:S01]         /*05b0*/                   SUST.D.BA.2D.TRAP [R16], R2, 0x59 ;
-      [----:B-----5:R-:W-:Y:S13]         /*05b8*/                   ISETP.NE.AND P0, PT, R20, R17, PT ;
-      [----:B------:R-:W-:-:S13]         /*05c8*/               @P0 EXIT ;
-      [----:B0-----:R-:W-:-:S00]         /*05d0*/         {         MOV R6, c[0x0][0x4] ;
-      [----:B------:R-:W5:-:S01]         /*05d8*/                   LDG.E R3, [R18]         }
-      [----:B------:R-:W-:-:S05]         /*05e8*/                   MOV R2, R17 ;
-      [----:B------:R-:W-:Y:S01]         /*05f0*/                   IADD3 R6.CC, R1, 0x20, R6 ;
-      [----:B------:R-:W-:Y:S01]         /*05f8*/                   MOV32I R4, 32@lo($str) ;
-      [----:B------:R-:W-:-:S04]         /*0608*/                   MOV32I R5, 32@hi($str) ;
-      [----:B------:R-:W-:Y:S07]         /*0610*/                   IADD3.X R7, RZ, c[0x0][0x104], RZ ;
-      [----:B-----5:R0:W-:-:S02]         /*0618*/                   STL.64 [R1+0x20], R2 ;
-      [----:B0-----:R-:W-:-:S13]         /*0628*/                   JCAL `(vprintf) ;
-      [----:B------:R-:W-:Y:S15]         /*0630*/                   NOP ;
-      [----:B------:R-:W-:Y:S07]         /*0638*/                   NOP ;
-      [----:B------:R-:W-:-:S15]         /*0648*/                   EXIT ;
+      [B------:R-:W-:-:S06]         /*0008*/                   MOV R1, c[0x0][0x20] ;
+      [B------:R-:W-:-:S00]         /*0010*/         {         MOV R20, c[0x0][0x140] ;
+      [B------:R-:W0:-:S01]         /*0018*/                   S2R R2, SR_TID.X         }
+      [B------:R-:W-:-:S00]         /*0028*/         {         MOV R21, c[0x0][0x144] ;
+      [B------:R-:W0:-:S02]         /*0030*/                   S2R R17, SR_CTAID.X         }
+      [B------:R-:W-:-:S00]         /*0038*/         {         MOV32I R6, 32@lo(flist) ;
+      [B------:R-:W5:-:S01]         /*0048*/                   LDG.E R0, [R20]         }
+      [B------:R-:W-:-:S15]         /*0050*/                   MOV32I R3, 32@hi(flist) ;
+      [B0-----:R-:W-:-:S01]         /*0058*/                   XMAD R2, R17, c[0x0] [0x8], R2 ;
+      [B-----5:R-:W-:-:S01]         /*0068*/                   ISCADD R6.CC, R0.reuse, R6, 0x3 ;
+      [B------:R-:W-:Y:S06]         /*0070*/                   SHR R0, R0, 0x1d ;
+      [B------:R-:W-:Y:S02]         /*0078*/                   IADD.X R7, R3, R0 ;
+      [B------:R-:W5:-:S01]         /*0088*/                   LDG.E R0, [R6] ;
+      [B------:R-:W-:Y:S06]         /*0090*/                   XMAD.MRG R3, R17, c[0x0] [0x8].H1, RZ ;
+      [B------:R-:W-:-:S06]         /*0098*/                   XMAD.PSL.CBCC R17, R17.H1, R3.H1, R2 ;
+      [B------:R-:W-:-:S01]         /*00a8*/                   SHR R2, R17.reuse, 0x1e ;
+      [B------:R-:W-:Y:S06]         /*00b0*/                   ISCADD R18.CC, R17, c[0x0][0x148], 0x2 ;
+      [B------:R-:W-:Y:S02]         /*00b8*/                   IADD.X R19, R2, c[0x0][0x14c] ;
+      [B------:R0:W5:-:S01]         /*00c8*/                   LDG.E R5, [R18] ;
+      [B------:R-:W-:Y:S01]         /*00d0*/                   IADD32I R1, R1, -0x28 ;
+      [B------:R-:W-:Y:S03]         /*00d8*/                   MOV R4, R17 ;
+      [B------:R-:W-:-:S03]         /*00e8*/                   DEPBAR.LE SB5, 0x1 ;
+      [B------:R0:W1:-:S02]         /*00f0*/                   LDC R2, c[0x2][R0] ;
+      [B------:R-:W-:-:S01]         /*00f8*/                   PRET `(.L_x_0) ;
+  .L_x_11:
+      [B01---5:R-:W-:-:S13]         /*0108*/                   BRX R2 -0x110                                  (*"INDIRECT_CALL"*);
+  .L_x_0:
+      [B------:R-:W0:-:S01]         /*0110*/                   I2F.F32.S32 R9, R4 ;
+      [B------:R-:W-:-:S13]         /*0118*/                   PBK `(.L_x_1) ;
+      [B0-----:R-:W-:-:S06]         /*0128*/                   FMUL32I R0, R9, 0.34999999403953552246 ;
+      [B------:R-:W-:-:S02]         /*0130*/                   FMUL32I R2, R0.reuse, 0.63661974668502807617 ;
+      [B------:R-:W-:-:S00]         /*0138*/         {         FSETP.GT.AND P0, PT, |R0|, c[0x2][0x4c], PT ;
+      [B------:R-:W0:-:S02]         /*0148*/                   F2I.S32.F32 R2, R2         }
+      [B0-----:R-:W0:-:S13]         /*0150*/                   I2F.F32.S32 R3, R2 ;
+      [B0-----:R-:W-:-:S06]         /*0158*/                   FFMA R5, R3.reuse, c[0x2][0x40], R0 ;
+      [B------:R-:W-:Y:S06]         /*0168*/                   FFMA R5, R3, c[0x2][0x44], R5 ;
+  .L_x_12:
+      [B------:R-:W-:-:S00]         /*0170*/         {         FFMA R3, R3, c[0x2][0x48], R5 ;
+      [B------:R-:W-:-:S13]         /*0178*/              @!P0 BRK                                            (*"BRANCH_TARGETS .L_x_1"*)        }
+      [B------:R-:W-:Y:S13]         /*0188*/                   FSETP.NEU.AND P0, PT, |R0|, +INF , PT ;
+      [B------:R-:W-:-:S13]         /*0190*/              @!P0 BRA `(.L_x_2) ;
+      [B------:R-:W-:-:S01]         /*0198*/                   BFE.U32 R2, R0.reuse, 0x817 ;
+      [B------:R-:W-:Y:S05]         /*01a8*/                   SHL R4, R0, 0x8 ;
+      [B------:R-:W-:Y:S01]         /*01b0*/                   IADD32I R3, R2, -0x80 ;
+      [B------:R-:W-:Y:S01]         /*01b8*/                   MOV32I R11, 32@lo(__cudart_i2opi_f) ;
+      [B------:R-:W-:Y:S01]         /*01c8*/                   MOV32I R5, 32@hi(__cudart_i2opi_f) ;
+      [B------:R-:W-:Y:S01]         /*01d0*/                   MOV R8, RZ ;
+      [B------:R-:W-:Y:S01]         /*01d8*/                   MOV R16, RZ ;
+      [B------:R-:W-:Y:S01]         /*01e8*/                   MOV32I R6, 0xfffffffa ;
+      [B------:R-:W-:Y:S01]         /*01f0*/                   MOV R2, R1 ;
+      [B------:R-:W-:-:S01]         /*01f8*/                   LOP32I.OR R24, R4, 0x80000000 ;
+      [B------:R-:W-:Y:S06]         /*0208*/                   SHR.U32 R15, R3, 0x5 ;
+  .L_x_3:
+      [B------:R-:W-:-:S02]         /*0210*/                   MOV R4, R11 ;
+      [B------:R0:W5:-:S01]         /*0218*/                   LDG.E R3, [R4] ;
+      [B------:R-:W-:-:S01]         /*0228*/                   IADD32I R6, R6, 0x1 ;
+      [B------:R-:W-:-:S05]         /*0230*/                   IADD32I R11.CC, R11, 0x4 ;
+      [B------:R-:W-:-:S01]         /*0238*/                   ISETP.NE.AND P0, PT, R6, RZ, PT ;
+      [B0-----:R-:W-:Y:S07]         /*0248*/                   IADD.X R5, RZ, R5 ;
+      [B-----5:R-:W-:-:S01]         /*0250*/                   XMAD R10, R3.reuse, R24.reuse, RZ ;
+      [B------:R-:W-:-:S01]         /*0258*/                   XMAD.MRG R12, R3.reuse, R24.H1.reuse, RZ ;
+      [B------:R-:W-:-:S01]         /*0268*/                   XMAD R7, R3.reuse, R24.H1.reuse, RZ ;
+      [B------:R-:W-:-:S03]         /*0270*/                   XMAD R13, R3.H1.reuse, R24.H1.reuse, RZ ;
+      [B------:R-:W-:-:S01]         /*0278*/                   XMAD.CHI R14, R3.H1.reuse, R24, R10.reuse ;
+      [B------:R-:W-:Y:S05]         /*0288*/                   XMAD.PSL.CBCC R3, R3.H1, R12.H1, R10 ;
+      [B------:R-:W-:-:S01]         /*0290*/                   IADD3.RS R7, R14, R7, R13 ;
+      [B------:R-:W-:-:S06]         /*0298*/                   IADD R3.CC, R3, R8 ;
+      [B------:R0:W-:-:S01]         /*02a8*/                   STL [R2], R3 ;
+      [B------:R-:W-:-:S01]         /*02b0*/                   IADD.X R8, R7, R16 ;
+      [B0-----:R-:W-:-:S00]         /*02b8*/         {         IADD32I R2, R2, 0x4 ;
+      [B------:R-:W-:-:S13]         /*02c8*/               @P0 BRA `(.L_x_3)         }
+      [B------:R-:W-:-:S00]         /*02d0*/         {         BFE.U32 R12, R0, 0x517 ;
+      [B------:R-:W-:-:S01]         /*02d8*/                   STL [R1+0x18], R8         }
+      [B------:R-:W-:-:S05]         /*02e8*/                   IADD32I R2, -R15, 0x6 ;
+      [B------:R-:W-:-:S01]         /*02f0*/                   ISETP.NE.AND P0, PT, R12, RZ, PT ;
+      [B------:R-:W-:Y:S02]         /*02f8*/                   LEA R10, R2, R1, 0x2 ;
+      [B------:R-:W5:-:S01]         /*0308*/                   LDL R2, [R10] ;
+      [B------:R-:W5:-:S09]         /*0310*/                   LDL R3, [R10+-0x4] ;
+      [B------:R-:W5:-:S01]         /*0318*/               @P0 LDL R6, [R10+-0x8] ;
+      [B------:R-:W-:Y:S01]         /*0328*/               @P0 IADD32I R4, -R12, 0x20 ;
+      [B------:R-:W-:-:S06]         /*0330*/                   LOP32I.AND R0, R0, 0x80000000 ;
+      [B------:R-:W-:Y:S13]         /*0338*/                   ISETP.EQ.AND P2, PT, R0, RZ, PT ;
+      [B-----5:R-:W-:-:S01]         /*0348*/               @P0 SHL R5, R2, R12.reuse ;
+      [B------:R-:W-:-:S01]         /*0350*/               @P0 SHL R7, R3.reuse, R12 ;
+      [B------:R-:W-:-:S01]         /*0358*/               @P0 SHR.U32 R6, R6, R4.reuse ;
+      [B------:R-:W-:Y:S05]         /*0368*/               @P0 SHR.U32 R4, R3, R4 ;
+      [B------:R-:W-:Y:S01]         /*0370*/               @P0 IADD R3, R6, R7 ;
+      [B------:R-:W-:-:S06]         /*0378*/               @P0 IADD R2, R4, R5 ;
+      [B------:R-:W-:-:S06]         /*0388*/                   SHF.L R5, R3.reuse, 0x2, R2 ;
+      [B------:R-:W-:-:S06]         /*0390*/                   SHR.U32 R7, R5, 0x1f ;
+      [B------:R-:W-:-:S01]         /*0398*/                   ISETP.NE.AND P1, PT, R7, RZ, PT ;
+      [B------:R-:W-:Y:S12]         /*03a8*/                   SHL R8, R3, 0x2 ;
+      [B------:R-:W-:-:S01]         /*03b0*/               @P1 LOP.PASS_B R3, RZ, ~R5 ;
+      [B------:R-:W-:Y:S01]         /*03b8*/               @P1 ICMP.NE R4, RZ, 0x1, R8 ;
+      [B------:R-:W-:Y:S01]         /*03c8*/               @P1 IADD R6, -R8, RZ ;
+      [B------:R-:W-:Y:S04]         /*03d0*/              @!P1 MOV R6, R8 ;
+      [B------:R-:W-:Y:S02]         /*03d8*/               @P1 IADD R5, R3, R4 ;
+      [B------:R-:W-:-:S13]         /*03e8*/                   MOV R4, R6 ;
+      [B------:R-:W0:-:S01]         /*03f0*/                   I2F.F64.S64 R4, R4 ;
+      [B------:R-:W-:-:S01]         /*03f8*/               @P1 LOP.XOR.NZ P0, RZ, R0.reuse, c[0x2][0x50] ;
+      [B------:R-:W-:-:S06]         /*0408*/              @!P1 ISETP.NE.AND P0, PT, R0, RZ, PT ;
+      [B0-----:R-:W0:-:S01]         /*0410*/                   DMUL R4, R4, c[0x2][0x58] ;
+      [B------:R-:W-:-:S07]         /*0418*/                   LEA.HI R2, R2, R7, RZ, 0x2 ;
+      [B0-----:R-:W0:Y:S01]         /*0428*/                   F2F.F32.F64 R3, R4 ;
+      [B------:R-:W-:Y:S07]         /*0430*/              @!P2 IADD R2, -R2, RZ ;
+  .L_x_14:
+      [B0-----:R-:W-:-:S00]         /*0438*/         {     @P0 FADD R3, -R3, -RZ ;
+      [B------:R-:W-:-:S13]         /*0448*/                   BRK                                            (*"BRANCH_TARGETS .L_x_1"*)        }
+  .L_x_2:
+      [B------:R-:W-:-:S00]         /*0450*/         {         FMUL R3, RZ, R0 ;
+      [B------:R-:W-:-:S13]         /*0458*/                   BRK                                            (*"BRANCH_TARGETS .L_x_1"*)        }
+  .L_x_1:
+      [B------:R-:W-:-:S01]         /*0468*/                   FADD R9, R9, 0.5 ;
+      [B------:R-:W-:-:S05]         /*0470*/                   MOV R8, RZ ;
+      [B------:R-:W-:-:S02]         /*0478*/                   FADD R4, R9, -1 ;
+      [B------:R-:W5:-:S01]         /*0488*/                   TEXS.T RZ, R7, R9, R4, 0x56, 2D, R ;
+      [B------:R-:W5:-:S15]         /*0490*/                   TEXS.P RZ, R8, R9, R8, 0x57, 2D, R ;
+      [B------:R-:W-:Y:S01]         /*0498*/                   LOP32I.AND R12, R2, 0x1 ;
+      [B------:R-:W-:-:S01]         /*04a8*/                   FMUL R11, R3.reuse, R3 ;
+      [B------:R-:W-:-:S01]         /*04b0*/                   MOV32I R6, 0x3d2aaabb ;
+      [B------:R-:W-:-:S01]         /*04b8*/                   MOV32I R0, 0xb94d4153 ;
+      [B------:R-:W-:-:S02]         /*04c8*/                   MOV32I R10, 0xbeffffff ;
+      [B------:R-:W-:-:S01]         /*04d0*/                   ISETP.NE.AND P0, PT, R12, RZ, PT ;
+      [B------:R-:W-:Y:S12]         /*04d8*/                   ICMP.EQ R3, R3, c[0x2][0x54], R12 ;
+      [B------:R-:W-:-:S13]         /*04e8*/               @P0 MOV32I R5, 0x3ab607ed ;
+      [B------:R-:W-:Y:S01]         /*04f0*/               @P0 FFMA R0, R11, c[0x2][0x60], -R5 ;
+      [B------:R-:W-:-:S01]         /*04f8*/                   ICMP.NE R5, R6, c[0x2][0x64], R12.reuse ;
+      [B------:R-:W-:-:S01]         /*0508*/                   LOP.AND.NZ P0, RZ, R2, 0x2 ;
+      [B------:R-:W-:-:S04]         /*0510*/                   ICMP.NE R6, R10, c[0x2][0x68], R12 ;
+      [B------:R-:W-:-:S01]         /*0518*/                   FFMA R0, R11.reuse, R0, R5 ;
+      [B------:R-:W-:-:S05]         /*0528*/                   FFMA R5, R3, R11, RZ ;
+      [B------:R-:W-:Y:S06]         /*0530*/                   FFMA R0, R11, R0, R6 ;
+      [B------:R-:W-:-:S06]         /*0538*/                   FFMA R0, R5, R0, R3 ;
+      [B------:R-:W-:-:S01]         /*0548*/               @P0 FFMA R0, R0, -1, RZ ;
+      [B------:R-:W-:-:S02]         /*0550*/                   SHL R16, R17, 0x2 ;
+      [B------:R-:W5:-:S01]         /*0558*/                   SULD.D.BA.2D.TRAP R2, [R16], 0x58 ;
+      [B------:R-:W-:-:S03]         /*0568*/                   DEPBAR.LE SB5, 0x1 ;
+      [B------:R-:W-:Y:S06]         /*0570*/                   FADD R7, R7, R0 ;
+      [B------:R-:W-:-:S02]         /*0578*/                   FADD R7, R7, R8 ;
+      [B------:R-:W0:-:S13]         /*0588*/                   F2I.S32.F32.TRUNC R7, R7 ;
+      [B0-----:R-:W-:-:S01]         /*0590*/                   STG.E [R18], R7 ;
+      [B------:R-:W5:-:S01]         /*0598*/                   LDG.E R20, [R20+0x4] ;
+      [B------:R-:W-:-:S03]         /*05a8*/                   DEPBAR.LE SB5, 0x1 ;
+      [B------:R0:W-:-:S01]         /*05b0*/                   SUST.D.BA.2D.TRAP [R16], R2, 0x59 ;
+      [B-----5:R-:W-:Y:S13]         /*05b8*/                   ISETP.NE.AND P0, PT, R20, R17, PT ;
+      [B------:R-:W-:-:S13]         /*05c8*/               @P0 EXIT ;
+      [B0-----:R-:W-:-:S00]         /*05d0*/         {         MOV R6, c[0x0][0x4] ;
+      [B------:R-:W5:-:S01]         /*05d8*/                   LDG.E R3, [R18]         }
+      [B------:R-:W-:-:S05]         /*05e8*/                   MOV R2, R17 ;
+      [B------:R-:W-:Y:S01]         /*05f0*/                   IADD3 R6.CC, R1, 0x20, R6 ;
+      [B------:R-:W-:Y:S01]         /*05f8*/                   MOV32I R4, 32@lo($str) ;
+      [B------:R-:W-:-:S04]         /*0608*/                   MOV32I R5, 32@hi($str) ;
+      [B------:R-:W-:Y:S07]         /*0610*/                   IADD3.X R7, RZ, c[0x0][0x104], RZ ;
+      [B-----5:R0:W-:-:S02]         /*0618*/                   STL.64 [R1+0x20], R2 ;
+      [B0-----:R-:W-:-:S13]         /*0628*/                   JCAL `(vprintf) ;
+      [B------:R-:W-:Y:S15]         /*0630*/                   NOP ;
+      [B------:R-:W-:Y:S07]         /*0638*/                   NOP ;
+      [B------:R-:W-:-:S15]         /*0648*/                   EXIT ;
           .type           $_Z7argtestPiS_S_$_Z2f1ii,@function
           .size           $_Z7argtestPiS_S_$_Z2f1ii,($_Z7argtestPiS_S_$_Z2f2ii - $_Z7argtestPiS_S_$_Z2f1ii)
   $_Z7argtestPiS_S_$_Z2f1ii:
-      [----:B------:R-:W-:-:S15]         /*0650*/                   RET ;
+      [B------:R-:W-:-:S15]         /*0650*/                   RET ;
           .type           $_Z7argtestPiS_S_$_Z2f2ii,@function
-          .size           $_Z7argtestPiS_S_$_Z2f2ii,(.L_222 - $_Z7argtestPiS_S_$_Z2f2ii)
+          .size           $_Z7argtestPiS_S_$_Z2f2ii,(.L_x_19 - $_Z7argtestPiS_S_$_Z2f2ii)
   $_Z7argtestPiS_S_$_Z2f2ii:
-      [----:B------:R-:W-:-:S15]         /*0658*/                   RET ;
-  .L_222:
+      [B------:R-:W-:-:S15]         /*0658*/                   RET ;
+  .L_x_19:
           .type           $_Z7argtestPiS_S_$_Z2f3ii,@function
           .size           $_Z7argtestPiS_S_$_Z2f3ii,($_Z7argtestPiS_S_$_Z2f4ii - $_Z7argtestPiS_S_$_Z2f3ii)
   $_Z7argtestPiS_S_$_Z2f3ii:
-      [----:B------:R-:W-:-:S15]         /*0668*/                   RET ;
+      [B------:R-:W-:-:S15]         /*0668*/                   RET ;
           .type           $_Z7argtestPiS_S_$_Z2f4ii,@function
           .size           $_Z7argtestPiS_S_$_Z2f4ii,($_Z7argtestPiS_S_$_Z2f5ii - $_Z7argtestPiS_S_$_Z2f4ii)
   $_Z7argtestPiS_S_$_Z2f4ii:
-      [----:B------:R-:W-:-:S15]         /*0670*/                   RET ;
+      [B------:R-:W-:-:S15]         /*0670*/                   RET ;
           .type           $_Z7argtestPiS_S_$_Z2f5ii,@function
           .size           $_Z7argtestPiS_S_$_Z2f5ii,($_Z7argtestPiS_S_$_Z2f6ii - $_Z7argtestPiS_S_$_Z2f5ii)
   $_Z7argtestPiS_S_$_Z2f5ii:
-      [----:B------:R-:W-:-:S00]         /*0678*/         {         IADD R4, R4, R5 ;
-      [----:B------:R-:W-:-:S15]         /*0688*/                   RET         }
+      [B------:R-:W-:-:S00]         /*0678*/         {         IADD R4, R4, R5 ;
+      [B------:R-:W-:-:S15]         /*0688*/                   RET         }
           .type           $_Z7argtestPiS_S_$_Z2f6ii,@function
           .size           $_Z7argtestPiS_S_$_Z2f6ii,($_Z7argtestPiS_S_$_Z2f7ii - $_Z7argtestPiS_S_$_Z2f6ii)
   $_Z7argtestPiS_S_$_Z2f6ii:
-      [----:B------:R-:W-:-:S02]         /*0690*/                   IADD32I R1, R1, -0x8 ;
-      [----:B------:R0:W-:-:S04]         /*0698*/                   STL [R1], R2 ;
-      [----:B------:R-:W1:-:S01]         /*06a8*/                   I2F.F32.S32.RP R0, |R5| ;
-      [----:B------:R-:W-:-:S01]         /*06b0*/                   I2I.S32.S32 R9, |R5| ;
-      [----:B------:R2:W-:-:S13]         /*06b8*/                   I2I.S32.S32 R7, |R4| ;
-      [----:B--2---:R-:W-:-:S00]         /*06c8*/         {         LOP.XOR R4, R4, R5 ;
-      [----:B-1----:R-:W1:-:S13]         /*06d0*/                   MUFU.RCP R0, R0         }
-      [----:B01----:R-:W-:-:S02]         /*06d8*/                   IADD32I R2, R0, 0xffffffe ;
-      [----:B------:R-:W0:-:S13]         /*06e8*/                   F2I.FTZ.U32.F32.TRUNC R2, R2 ;
-      [----:B0-----:R-:W-:-:S01]         /*06f0*/                   XMAD R3, R9.reuse, R2.reuse, RZ ;
-      [----:B------:R-:W-:-:S06]         /*06f8*/                   XMAD.MRG R6, R9.reuse, R2.H1, RZ ;
-      [----:B------:R-:W-:Y:S06]         /*0708*/                   XMAD.PSL.CBCC R3, R9.H1, R6.H1, R3 ;
-      [----:B------:R-:W-:-:S06]         /*0710*/                   IADD R8, -R3, RZ ;
-      [----:B------:R-:W-:-:S01]         /*0718*/                   XMAD R3, R2.reuse, R8.reuse, RZ ;
-      [----:B------:R-:W-:-:S01]         /*0728*/                   XMAD R6, R2.reuse, R8.H1.reuse, RZ ;
-      [----:B------:R-:W-:-:S04]         /*0730*/                   XMAD R0, R2.H1.reuse, R8.H1.reuse, R2 ;
-      [----:B------:R-:W-:-:S06]         /*0738*/                   XMAD.CHI R3, R2.H1, R8, R3 ;
-      [----:B------:R-:W-:-:S00]         /*0748*/         {         IADD3.RS R0, R3, R6, R0   SLOT 0;
-      [----:B------:R-:W0:-:S06]         /*0750*/                   I2I.S32.S32 R6, -|R5|   SLOT 1        }
-      [----:B------:R-:W-:Y:S01]         /*0758*/                   XMAD R2, R0, R7, RZ ;
-      [----:B------:R-:W-:-:S05]         /*0768*/                   XMAD R3, R0.reuse, R7.H1.reuse, RZ ;
-      [----:B------:R-:W-:-:S01]         /*0770*/                   XMAD.CHI R2, R0.H1.reuse, R7.reuse, R2 ;
-      [----:B------:R-:W-:-:S13]         /*0778*/                   XMAD R0, R0.H1, R7.H1, RZ ;
-      [----:B------:R-:W-:-:S06]         /*0788*/                   IADD3.RS R0, R2, R3, R0 ;
-      [----:B0-----:R-:W-:-:S01]         /*0790*/                   XMAD R3, R6.reuse, R0.reuse, R7 ;
-      [----:B------:R-:W-:-:S06]         /*0798*/                   XMAD.MRG R8, R6.reuse, R0.H1, RZ ;
-      [----:B------:R-:W-:Y:S06]         /*07a8*/                   XMAD.PSL.CBCC R2, R6.H1, R8.H1, R3 ;
-      [----:B------:R-:W-:Y:S13]         /*07b0*/                   ISETP.GT.U32.AND P1, PT, R9, R2, PT ;
-      [----:B------:R-:W-:-:S01]         /*07b8*/              @!P1 IADD R2, R2, -R9.reuse ;
-      [----:B------:R-:W-:-:S01]         /*07c8*/              @!P1 IADD32I R0, R0, 0x1 ;
-      [----:B------:R-:W-:-:S04]         /*07d0*/                   ISETP.GE.AND P1, PT, R4, RZ, PT ;
-      [----:B------:R-:W-:-:S00]         /*07d8*/         {         ISETP.GE.U32.AND P0, PT, R2, R9, PT   SLOT 0;
-      [----:B------:R0:W5:Y:S13]         /*07e8*/                   LDL R2, [R1]   SLOT 1        }
-      [----:B------:R-:W-:-:S01]         /*07f0*/               @P0 IADD32I R0, R0, 0x1 ;
-      [----:B------:R-:W-:-:S05]         /*07f8*/                   ISETP.EQ.AND P0, PT, R5, RZ, PT ;
-      [----:B------:R-:W-:Y:S01]         /*0808*/                   MOV R4, R0 ;
-      [----:B0-----:R-:W-:-:S07]         /*0810*/                   IADD32I R1, R1, 0x8 ;
-      [----:B------:R-:W-:-:S15]         /*0818*/              @!P1 IADD R4, -R4, RZ ;
-      [----:B------:R-:W-:-:S00]         /*0828*/         {     @P0 LOP.PASS_B R4, RZ, ~R5 ;
-      [----:B-----5:R-:W-:-:S15]         /*0830*/                   RET         }
+      [B------:R-:W-:-:S02]         /*0690*/                   IADD32I R1, R1, -0x8 ;
+      [B------:R0:W-:-:S04]         /*0698*/                   STL [R1], R2 ;
+      [B------:R-:W1:-:S01]         /*06a8*/                   I2F.F32.S32.RP R0, |R5| ;
+      [B------:R-:W-:-:S01]         /*06b0*/                   I2I.S32.S32 R9, |R5| ;
+      [B------:R2:W-:-:S13]         /*06b8*/                   I2I.S32.S32 R7, |R4| ;
+      [B--2---:R-:W-:-:S00]         /*06c8*/         {         LOP.XOR R4, R4, R5 ;
+      [B-1----:R-:W1:-:S13]         /*06d0*/                   MUFU.RCP R0, R0         }
+      [B01----:R-:W-:-:S02]         /*06d8*/                   IADD32I R2, R0, 0xffffffe ;
+      [B------:R-:W0:-:S13]         /*06e8*/                   F2I.FTZ.U32.F32.TRUNC R2, R2 ;
+      [B0-----:R-:W-:-:S01]         /*06f0*/                   XMAD R3, R9.reuse, R2.reuse, RZ ;
+      [B------:R-:W-:-:S06]         /*06f8*/                   XMAD.MRG R6, R9.reuse, R2.H1, RZ ;
+      [B------:R-:W-:Y:S06]         /*0708*/                   XMAD.PSL.CBCC R3, R9.H1, R6.H1, R3 ;
+      [B------:R-:W-:-:S06]         /*0710*/                   IADD R8, -R3, RZ ;
+      [B------:R-:W-:-:S01]         /*0718*/                   XMAD R3, R2.reuse, R8.reuse, RZ ;
+      [B------:R-:W-:-:S01]         /*0728*/                   XMAD R6, R2.reuse, R8.H1.reuse, RZ ;
+      [B------:R-:W-:-:S04]         /*0730*/                   XMAD R0, R2.H1.reuse, R8.H1.reuse, R2 ;
+      [B------:R-:W-:-:S06]         /*0738*/                   XMAD.CHI R3, R2.H1, R8, R3 ;
+      [B------:R-:W-:-:S00]         /*0748*/         {         IADD3.RS R0, R3, R6, R0 ;
+      [B------:R-:W0:-:S06]         /*0750*/                   I2I.S32.S32 R6, -|R5|         }
+      [B------:R-:W-:Y:S01]         /*0758*/                   XMAD R2, R0, R7, RZ ;
+      [B------:R-:W-:-:S05]         /*0768*/                   XMAD R3, R0.reuse, R7.H1.reuse, RZ ;
+      [B------:R-:W-:-:S01]         /*0770*/                   XMAD.CHI R2, R0.H1.reuse, R7.reuse, R2 ;
+      [B------:R-:W-:-:S13]         /*0778*/                   XMAD R0, R0.H1, R7.H1, RZ ;
+      [B------:R-:W-:-:S06]         /*0788*/                   IADD3.RS R0, R2, R3, R0 ;
+      [B0-----:R-:W-:-:S01]         /*0790*/                   XMAD R3, R6.reuse, R0.reuse, R7 ;
+      [B------:R-:W-:-:S06]         /*0798*/                   XMAD.MRG R8, R6.reuse, R0.H1, RZ ;
+      [B------:R-:W-:Y:S06]         /*07a8*/                   XMAD.PSL.CBCC R2, R6.H1, R8.H1, R3 ;
+      [B------:R-:W-:Y:S13]         /*07b0*/                   ISETP.GT.U32.AND P1, PT, R9, R2, PT ;
+      [B------:R-:W-:-:S01]         /*07b8*/              @!P1 IADD R2, R2, -R9.reuse ;
+      [B------:R-:W-:-:S01]         /*07c8*/              @!P1 IADD32I R0, R0, 0x1 ;
+      [B------:R-:W-:-:S04]         /*07d0*/                   ISETP.GE.AND P1, PT, R4, RZ, PT ;
+      [B------:R-:W-:-:S00]         /*07d8*/         {         ISETP.GE.U32.AND P0, PT, R2, R9, PT ;
+      [B------:R0:W5:Y:S13]         /*07e8*/                   LDL R2, [R1]         }
+      [B------:R-:W-:-:S01]         /*07f0*/               @P0 IADD32I R0, R0, 0x1 ;
+      [B------:R-:W-:-:S05]         /*07f8*/                   ISETP.EQ.AND P0, PT, R5, RZ, PT ;
+      [B------:R-:W-:Y:S01]         /*0808*/                   MOV R4, R0 ;
+      [B0-----:R-:W-:-:S07]         /*0810*/                   IADD32I R1, R1, 0x8 ;
+      [B------:R-:W-:-:S15]         /*0818*/              @!P1 IADD R4, -R4, RZ ;
+      [B------:R-:W-:-:S00]         /*0828*/         {     @P0 LOP.PASS_B R4, RZ, ~R5 ;
+      [B-----5:R-:W-:-:S15]         /*0830*/                   RET         }
           .type           $_Z7argtestPiS_S_$_Z2f7ii,@function
-          .size           $_Z7argtestPiS_S_$_Z2f7ii,(.L_227 - $_Z7argtestPiS_S_$_Z2f7ii)
+          .size           $_Z7argtestPiS_S_$_Z2f7ii,(.L_x_24 - $_Z7argtestPiS_S_$_Z2f7ii)
   $_Z7argtestPiS_S_$_Z2f7ii:
-      [----:B------:R-:W-:-:S02]         /*0838*/                   IADD32I R1, R1, -0x8 ;
-      [----:B------:R0:W-:-:S04]         /*0848*/                   STL [R1], R2 ;
-      [----:B------:R-:W-:-:S00]         /*0850*/         {         ISETP.GE.AND P1, PT, R4, RZ, PT ;
-      [----:B------:R-:W1:-:S01]         /*0858*/                   I2F.F32.S32.RP R0, |R5|         }
-      [----:B------:R-:W-:-:S01]         /*0868*/                   I2I.S32.S32 R9, |R5| ;
-      [----:B------:R-:W-:-:S01]         /*0870*/                   I2I.S32.S32 R7, |R4| ;
-      [----:B-1----:R-:W1:-:S13]         /*0878*/                   MUFU.RCP R0, R0 ;
-      [----:B01----:R-:W-:-:S02]         /*0888*/                   IADD32I R2, R0, 0xffffffe ;
-      [----:B------:R-:W0:-:S13]         /*0890*/                   F2I.FTZ.U32.F32.TRUNC R2, R2 ;
-      [----:B0-----:R-:W-:-:S01]         /*0898*/                   XMAD R3, R9.reuse, R2.reuse, RZ ;
-      [----:B------:R-:W-:Y:S06]         /*08a8*/                   XMAD.MRG R6, R9, R2.H1, RZ ;
-      [----:B------:R-:W-:-:S06]         /*08b0*/                   XMAD.PSL.CBCC R3, R9.H1, R6.H1, R3 ;
-      [----:B------:R-:W-:-:S06]         /*08b8*/                   IADD R8, -R3, RZ ;
-      [----:B------:R-:W-:-:S01]         /*08c8*/                   XMAD R3, R2.reuse, R8.reuse, RZ ;
-      [----:B------:R-:W-:-:S01]         /*08d0*/                   XMAD R6, R2.reuse, R8.H1.reuse, RZ ;
-      [----:B------:R-:W-:-:S04]         /*08d8*/                   XMAD R0, R2.H1.reuse, R8.H1.reuse, R2 ;
-      [----:B------:R-:W-:Y:S06]         /*08e8*/                   XMAD.CHI R3, R2.H1, R8, R3 ;
-      [----:B------:R-:W-:-:S00]         /*08f0*/         {         IADD3.RS R0, R3, R6, R0   SLOT 0;
-      [----:B------:R-:W0:-:S06]         /*08f8*/                   I2I.S32.S32 R6, -|R5|   SLOT 1        }
-      [----:B------:R-:W-:-:S01]         /*0908*/                   XMAD R2, R0.reuse, R7.reuse, RZ ;
-      [----:B------:R-:W-:-:S05]         /*0910*/                   XMAD R3, R0.reuse, R7.H1.reuse, RZ ;
-      [----:B------:R-:W-:-:S01]         /*0918*/                   XMAD.CHI R2, R0.H1.reuse, R7.reuse, R2 ;
-      [----:B------:R-:W-:-:S13]         /*0928*/                   XMAD R0, R0.H1, R7.H1, RZ ;
-      [----:B------:R-:W-:-:S00]         /*0930*/         {         IADD3.RS R0, R2, R3, R0   SLOT 0;
-      [----:B------:R1:W5:-:S06]         /*0938*/                   LDL R2, [R1]   SLOT 1        }
-      [----:B0-----:R-:W-:Y:S01]         /*0948*/                   XMAD R3, R6, R0, R7 ;
-      [----:B------:R-:W-:-:S06]         /*0950*/                   XMAD.MRG R0, R6.reuse, R0.H1, RZ ;
-      [----:B------:R-:W-:-:S06]         /*0958*/                   XMAD.PSL.CBCC R0, R6.H1, R0.H1, R3 ;
-      [----:B------:R-:W-:Y:S13]         /*0968*/                   ISETP.GT.U32.AND P0, PT, R9, R0, PT ;
-      [----:B------:R-:W-:-:S06]         /*0970*/              @!P0 IADD R0, R0, -R9 ;
-      [----:B------:R-:W-:Y:S13]         /*0978*/                   ISETP.GT.U32.AND P0, PT, R9, R0, PT ;
-      [----:B------:R-:W-:-:S01]         /*0988*/              @!P0 IADD R0, R0, -R9 ;
-      [----:B------:R-:W-:-:S05]         /*0990*/                   ISETP.EQ.AND P0, PT, R5, RZ, PT ;
-      [----:B------:R-:W-:Y:S01]         /*0998*/                   MOV R4, R0 ;
-      [----:B-1----:R-:W-:-:S07]         /*09a8*/                   IADD32I R1, R1, 0x8 ;
-      [----:B------:R-:W-:-:S15]         /*09b0*/              @!P1 IADD R4, -R4, RZ ;
-      [----:B------:R-:W-:-:S00]         /*09b8*/         {     @P0 LOP.PASS_B R4, RZ, ~R5 ;
-      [----:B-----5:R-:W-:-:S15]         /*09c8*/                   RET         }
-  .L_13:
-      [----:B------:R-:W-:-:S15]         /*09d0*/                   BRA `(.L_13) ;
-  .L_227:
+      [B------:R-:W-:-:S02]         /*0838*/                   IADD32I R1, R1, -0x8 ;
+      [B------:R0:W-:-:S04]         /*0848*/                   STL [R1], R2 ;
+      [B------:R-:W-:-:S00]         /*0850*/         {         ISETP.GE.AND P1, PT, R4, RZ, PT ;
+      [B------:R-:W1:-:S01]         /*0858*/                   I2F.F32.S32.RP R0, |R5|         }
+      [B------:R-:W-:-:S01]         /*0868*/                   I2I.S32.S32 R9, |R5| ;
+      [B------:R-:W-:-:S01]         /*0870*/                   I2I.S32.S32 R7, |R4| ;
+      [B-1----:R-:W1:-:S13]         /*0878*/                   MUFU.RCP R0, R0 ;
+      [B01----:R-:W-:-:S02]         /*0888*/                   IADD32I R2, R0, 0xffffffe ;
+      [B------:R-:W0:-:S13]         /*0890*/                   F2I.FTZ.U32.F32.TRUNC R2, R2 ;
+      [B0-----:R-:W-:-:S01]         /*0898*/                   XMAD R3, R9.reuse, R2.reuse, RZ ;
+      [B------:R-:W-:Y:S06]         /*08a8*/                   XMAD.MRG R6, R9, R2.H1, RZ ;
+      [B------:R-:W-:-:S06]         /*08b0*/                   XMAD.PSL.CBCC R3, R9.H1, R6.H1, R3 ;
+      [B------:R-:W-:-:S06]         /*08b8*/                   IADD R8, -R3, RZ ;
+      [B------:R-:W-:-:S01]         /*08c8*/                   XMAD R3, R2.reuse, R8.reuse, RZ ;
+      [B------:R-:W-:-:S01]         /*08d0*/                   XMAD R6, R2.reuse, R8.H1.reuse, RZ ;
+      [B------:R-:W-:-:S04]         /*08d8*/                   XMAD R0, R2.H1.reuse, R8.H1.reuse, R2 ;
+      [B------:R-:W-:Y:S06]         /*08e8*/                   XMAD.CHI R3, R2.H1, R8, R3 ;
+      [B------:R-:W-:-:S00]         /*08f0*/         {         IADD3.RS R0, R3, R6, R0 ;
+      [B------:R-:W0:-:S06]         /*08f8*/                   I2I.S32.S32 R6, -|R5|         }
+      [B------:R-:W-:-:S01]         /*0908*/                   XMAD R2, R0.reuse, R7.reuse, RZ ;
+      [B------:R-:W-:-:S05]         /*0910*/                   XMAD R3, R0.reuse, R7.H1.reuse, RZ ;
+      [B------:R-:W-:-:S01]         /*0918*/                   XMAD.CHI R2, R0.H1.reuse, R7.reuse, R2 ;
+      [B------:R-:W-:-:S13]         /*0928*/                   XMAD R0, R0.H1, R7.H1, RZ ;
+      [B------:R-:W-:-:S00]         /*0930*/         {         IADD3.RS R0, R2, R3, R0 ;
+      [B------:R1:W5:-:S06]         /*0938*/                   LDL R2, [R1]         }
+      [B0-----:R-:W-:Y:S01]         /*0948*/                   XMAD R3, R6, R0, R7 ;
+      [B------:R-:W-:-:S06]         /*0950*/                   XMAD.MRG R0, R6.reuse, R0.H1, RZ ;
+      [B------:R-:W-:-:S06]         /*0958*/                   XMAD.PSL.CBCC R0, R6.H1, R0.H1, R3 ;
+      [B------:R-:W-:Y:S13]         /*0968*/                   ISETP.GT.U32.AND P0, PT, R9, R0, PT ;
+      [B------:R-:W-:-:S06]         /*0970*/              @!P0 IADD R0, R0, -R9 ;
+      [B------:R-:W-:Y:S13]         /*0978*/                   ISETP.GT.U32.AND P0, PT, R9, R0, PT ;
+      [B------:R-:W-:-:S01]         /*0988*/              @!P0 IADD R0, R0, -R9 ;
+      [B------:R-:W-:-:S05]         /*0990*/                   ISETP.EQ.AND P0, PT, R5, RZ, PT ;
+      [B------:R-:W-:Y:S01]         /*0998*/                   MOV R4, R0 ;
+      [B-1----:R-:W-:-:S07]         /*09a8*/                   IADD32I R1, R1, 0x8 ;
+      [B------:R-:W-:-:S15]         /*09b0*/              @!P1 IADD R4, -R4, RZ ;
+      [B------:R-:W-:-:S00]         /*09b8*/         {     @P0 LOP.PASS_B R4, RZ, ~R5 ;
+      [B-----5:R-:W-:-:S15]         /*09c8*/                   RET         }
+  .L_x_4:
+      [B------:R-:W-:-:S15]         /*09d0*/                   BRA `(.L_x_4) ;
+      [B------:R-:W-:Y:S00]         /*09d8*/                   NOP;
+      [B------:R-:W-:Y:S00]         /*09e8*/                   NOP;
+      [B------:R-:W-:Y:S00]         /*09f0*/                   NOP;
+      [B------:R-:W-:Y:S00]         /*09f8*/                   NOP;
+  .L_x_24:
   
   
 
@@ -3098,39 +3102,42 @@
   	.align	32
           .global         _Z10local_testiiPi
           .type           _Z10local_testiiPi,@function
-          .size           _Z10local_testiiPi,(.L_229 - _Z10local_testiiPi)
+          .size           _Z10local_testiiPi,(.L_x_26 - _Z10local_testiiPi)
           .other          _Z10local_testiiPi,@"STO_CUDA_ENTRY STV_DEFAULT"
   _Z10local_testiiPi:
   .text._Z10local_testiiPi:
-      [----:B------:R-:W-:-:S06]         /*0008*/                   MOV R1, c[0x0][0x20] ;
-      [----:B------:R-:W-:-:S00]         /*0010*/         {         MOV R2, c[0x0][0x140] ;
-      [----:B------:R-:W0:-:S01]         /*0018*/                   S2R R0, SR_TID.X         }
-      [----:B------:R-:W-:-:S00]         /*0028*/         {         IADD32I R1, R1, -0x48 ;
-      [----:B------:R-:W0:-:S06]         /*0030*/                   S2R R3, SR_CTAID.X         }
-      [----:B------:R-:W-:-:S15]         /*0038*/                   LEA R9, R2, R1, 0x2 ;
-      [----:B0-----:R-:W-:Y:S01]         /*0048*/                   XMAD R4, R3, c[0x0] [0x8], R0 ;
-      [----:B------:R-:W-:-:S01]         /*0050*/                   XMAD.MRG R5, R3, c[0x0] [0x8].H1, RZ ;
-      [----:B------:R-:W-:Y:S05]         /*0058*/                   SHL R0, R2, 0x1 ;
-      [----:B------:R-:W-:Y:S02]         /*0068*/                   XMAD.PSL.CBCC R4, R3.H1, R5.H1, R4 ;
-      [----:B------:R-:W-:-:S00]         /*0070*/         {         MOV R3, c[0x0][0x144] ;
-      [----:B------:R-:W-:-:S01]         /*0078*/                   STL [R9], R4         }
-      [----:B------:R-:W-:Y:S03]         /*0088*/                   LEA R10, R0, R1, 0x2 ;
-      [----:B------:R-:W-:-:S02]         /*0090*/                   IADD32I R0, R4.reuse, 0x1 ;
-      [----:B------:R-:W-:-:S00]         /*0098*/         {         SHL R5, R4.reuse, 0x1 ;
-      [----:B------:R-:W-:-:S02]         /*00a8*/                   STL [R9+0x4], R0         }
-      [----:B------:R-:W-:-:S00]         /*00b0*/         {         LEA R8, R3, R1, 0x2 ;
-      [----:B------:R-:W-:-:S02]         /*00b8*/                   STL [R10], R5         }
-      [----:B------:R-:W-:-:S00]         /*00c8*/         {         SHR R3, R4.reuse, 0x1e ;
-      [----:B------:R-:W-:-:S01]         /*00d0*/                   LDL R6, [R8]         }
-      [----:B------:R-:W-:-:S00]         /*00d8*/         {         ISCADD R2.CC, R4, c[0x0][0x148], 0x2 ;
-      [----:B------:R-:W5:-:S06]         /*00e8*/                   LDL R7, [R8+0x4]         }
-      [----:B------:R-:W-:Y:S07]         /*00f0*/                   IADD.X R3, R3, c[0x0][0x14c] ;
-      [----:B-----5:R-:W-:Y:S02]         /*00f8*/                   IADD R7, R6, R7 ;
-      [----:B------:R-:W-:-:S01]         /*0108*/                   STG.E [R2], R7 ;
-      [----:B------:R-:W-:-:S15]         /*0110*/                   EXIT ;
-  .L_14:
-      [----:B------:R-:W-:-:S15]         /*0118*/                   BRA `(.L_14) ;
-  .L_229:
+      [B------:R-:W-:-:S06]         /*0008*/                   MOV R1, c[0x0][0x20] ;
+      [B------:R-:W-:-:S00]         /*0010*/         {         MOV R2, c[0x0][0x140] ;
+      [B------:R-:W0:-:S01]         /*0018*/                   S2R R0, SR_TID.X         }
+      [B------:R-:W-:-:S00]         /*0028*/         {         IADD32I R1, R1, -0x48 ;
+      [B------:R-:W0:-:S06]         /*0030*/                   S2R R3, SR_CTAID.X         }
+      [B------:R-:W-:-:S15]         /*0038*/                   LEA R9, R2, R1, 0x2 ;
+      [B0-----:R-:W-:Y:S01]         /*0048*/                   XMAD R4, R3, c[0x0] [0x8], R0 ;
+      [B------:R-:W-:-:S01]         /*0050*/                   XMAD.MRG R5, R3, c[0x0] [0x8].H1, RZ ;
+      [B------:R-:W-:Y:S05]         /*0058*/                   SHL R0, R2, 0x1 ;
+      [B------:R-:W-:Y:S02]         /*0068*/                   XMAD.PSL.CBCC R4, R3.H1, R5.H1, R4 ;
+      [B------:R-:W-:-:S00]         /*0070*/         {         MOV R3, c[0x0][0x144] ;
+      [B------:R-:W-:-:S01]         /*0078*/                   STL [R9], R4         }
+      [B------:R-:W-:Y:S03]         /*0088*/                   LEA R10, R0, R1, 0x2 ;
+      [B------:R-:W-:-:S02]         /*0090*/                   IADD32I R0, R4.reuse, 0x1 ;
+      [B------:R-:W-:-:S00]         /*0098*/         {         SHL R5, R4.reuse, 0x1 ;
+      [B------:R-:W-:-:S02]         /*00a8*/                   STL [R9+0x4], R0         }
+      [B------:R-:W-:-:S00]         /*00b0*/         {         LEA R8, R3, R1, 0x2 ;
+      [B------:R-:W-:-:S02]         /*00b8*/                   STL [R10], R5         }
+      [B------:R-:W-:-:S00]         /*00c8*/         {         SHR R3, R4.reuse, 0x1e ;
+      [B------:R-:W-:-:S01]         /*00d0*/                   LDL R6, [R8]         }
+      [B------:R-:W-:-:S00]         /*00d8*/         {         ISCADD R2.CC, R4, c[0x0][0x148], 0x2 ;
+      [B------:R-:W5:-:S06]         /*00e8*/                   LDL R7, [R8+0x4]         }
+      [B------:R-:W-:Y:S07]         /*00f0*/                   IADD.X R3, R3, c[0x0][0x14c] ;
+      [B-----5:R-:W-:Y:S02]         /*00f8*/                   IADD R7, R6, R7 ;
+      [B------:R-:W-:-:S01]         /*0108*/                   STG.E [R2], R7 ;
+      [B------:R-:W-:-:S15]         /*0110*/                   EXIT ;
+  .L_x_5:
+      [B------:R-:W-:-:S15]         /*0118*/                   BRA `(.L_x_5) ;
+      [B------:R-:W-:Y:S00]         /*0128*/                   NOP;
+      [B------:R-:W-:Y:S00]         /*0130*/                   NOP;
+      [B------:R-:W-:Y:S00]         /*0138*/                   NOP;
+  .L_x_26:
   
   
 
@@ -3150,62 +3157,66 @@
   	.align	32
           .global         _Z5childPii
           .type           _Z5childPii,@function
-          .size           _Z5childPii,(.L_230 - _Z5childPii)
+          .size           _Z5childPii,(.L_x_27 - _Z5childPii)
           .other          _Z5childPii,@"STO_CUDA_ENTRY STV_DEFAULT"
   _Z5childPii:
   .text._Z5childPii:
-      [----:B------:R-:W-:-:S06]         /*0008*/                   MOV R1, c[0x0][0x20] ;
-      [----:B------:R-:W-:-:S00]         /*0010*/         {         MOV32I R7, 0x92492493 ;
-      [----:B------:R-:W0:-:S01]         /*0018*/                   S2R R0, SR_TID.X         }
-      [----:B------:R-:W0:-:S15]         /*0028*/                   S2R R2, SR_CTAID.X ;
-      [----:B0-----:R-:W-:Y:S01]         /*0030*/                   XMAD R0, R2, c[0x0] [0x8], R0 ;
-      [----:B------:R-:W-:Y:S06]         /*0038*/                   XMAD.MRG R3, R2, c[0x0] [0x8].H1, RZ ;
-      [----:B------:R-:W-:Y:S06]         /*0048*/                   XMAD.PSL.CBCC R2, R2.H1, R3.H1, R0 ;
-      [----:B------:R-:W-:Y:S01]         /*0050*/                   XMAD R0, R2, R7, RZ ;
-      [----:B------:R-:W-:Y:S01]         /*0058*/                   XMAD.U16.S16 R4, R2, R7.H1, RZ ;
-      [----:B------:R-:W-:Y:S04]         /*0068*/                   XMAD.S16.S16.CSFU R5, R2.H1, R7.H1, R2 ;
-      [----:B------:R-:W-:-:S01]         /*0070*/                   XMAD.S16.U16.CHI R6, R2.H1.reuse, R7, R0 ;
-      [----:B------:R-:W-:-:S05]         /*0078*/                   SHR R3, R2, 0x1f ;
-      [----:B------:R-:W-:-:S01]         /*0088*/                   IADD3.RS R0, R6, R4, R5 ;
-      [----:B------:R-:W-:-:S05]         /*0090*/                   LEA.HI R4, R3, R2, RZ, 0x4 ;
-      [----:B------:R-:W-:Y:S01]         /*0098*/                   SHR R3, R0, 0x2 ;
-      [----:B------:R-:W-:Y:S01]         /*00a8*/                   MOV32I R5, 0xfffffff9 ;
-      [----:B------:R-:W-:-:S04]         /*00b0*/                   LOP32I.AND R4, R4, 0xfffffff0 ;
-      [----:B------:R-:W-:Y:S01]         /*00b8*/                   LEA.HI R3, R0, R3, RZ, 0x1 ;
-      [----:B------:R-:W-:Y:S01]         /*00c8*/                   MOV32I R6, 32@lo(GlobalC2) ;
-      [----:B------:R-:W-:Y:S04]         /*00d0*/                   IADD R4, R2, -R4 ;
-      [----:B------:R-:W-:Y:S01]         /*00d8*/                   XMAD R0, R3, R5, R2 ;
-      [----:B------:R-:W-:-:S01]         /*00e8*/                   XMAD.MRG R5, R3, R5.H1, RZ ;
-      [----:B------:R-:W-:Y:S01]         /*00f0*/                   ISCADD R6.CC, R4, R6, 0x2 ;
-      [----:B------:R-:W-:-:S01]         /*00f8*/                   MOV32I R7, 32@hi(GlobalC2) ;
-      [----:B------:R-:W-:Y:S03]         /*0108*/                   SHR R4, R4, 0x1e ;
-      [----:B------:R-:W-:Y:S01]         /*0110*/                   XMAD.PSL.CBCC R3, R3.H1, R5.H1, R0 ;
-      [----:B------:R-:W-:Y:S02]         /*0118*/                   MOV32I R5, 32@lo(GlobalC1) ;
-      [----:B------:R-:W-:Y:S02]         /*0128*/                   IADD.X R7, R7, R4 ;
-      [----:B------:R-:W-:-:S00]         /*0130*/         {         MOV32I R0, 32@hi(GlobalC1) ;
-      [----:B------:R-:W-:-:S02]         /*0138*/                   LDG.E R6, [R6]         }
-      [----:B------:R-:W-:-:S01]         /*0148*/                   ISCADD R4.CC, R3.reuse, R5, 0x2 ;
-      [----:B------:R-:W-:-:S01]         /*0150*/                   SHR R3, R3, 0x1e ;
-      [----:B------:R-:W-:Y:S05]         /*0158*/                   SHR R8, R2, 0x1e ;
-      [----:B------:R-:W-:-:S02]         /*0168*/                   IADD.X R5, R0, R3 ;
-      [----:B------:R-:W-:-:S00]         /*0170*/         {         ISCADD R2.CC, R2, c[0x0][0x140], 0x2 ;
-      [----:B------:R-:W5:-:S06]         /*0178*/                   LDG.E R4, [R4]         }
-      [----:B------:R-:W-:Y:S02]         /*0188*/                   IADD.X R3, R8, c[0x0][0x144] ;
-      [----:B------:R-:W5:-:S01]         /*0190*/                   LDG.E R9, [R2] ;
-      [----:B------:R-:W-:-:S06]         /*0198*/                   MOV R8, c[0x0][0x148] ;
-      [----:B------:R-:W-:Y:S06]         /*01a8*/                   SHL R8, R8, 0x2 ;
-      [----:B------:R-:W0:-:S01]         /*01b0*/                   LDC R0, c[0x3][R8] ;
-      [----:B------:R-:W0:-:S15]         /*01b8*/                   LDC R10, c[0x3][R8+0x2c] ;
-      [----:B0-----:R-:W-:-:S01]         /*01c8*/                   IADD R10, R0, R10 ;
-      [----:B-----5:R-:W-:Y:S06]         /*01d0*/                   IADD3 R0, R6, c[0x0][0x148], R4 ;
-      [----:B------:R-:W-:Y:S01]         /*01d8*/                   XMAD R10, R9, R0, R10 ;
-      [----:B------:R-:W-:Y:S06]         /*01e8*/                   XMAD.MRG R0, R9, R0.H1, RZ ;
-      [----:B------:R-:W-:Y:S02]         /*01f0*/                   XMAD.PSL.CBCC R9, R9.H1, R0.H1, R10 ;
-      [----:B------:R-:W-:-:S01]         /*01f8*/                   STG.E [R2], R9 ;
-      [----:B------:R-:W-:-:S15]         /*0208*/                   EXIT ;
-  .L_15:
-      [----:B------:R-:W-:-:S15]         /*0210*/                   BRA `(.L_15) ;
-  .L_230:
+      [B------:R-:W-:-:S06]         /*0008*/                   MOV R1, c[0x0][0x20] ;
+      [B------:R-:W-:-:S00]         /*0010*/         {         MOV32I R7, 0x92492493 ;
+      [B------:R-:W0:-:S01]         /*0018*/                   S2R R0, SR_TID.X         }
+      [B------:R-:W0:-:S15]         /*0028*/                   S2R R2, SR_CTAID.X ;
+      [B0-----:R-:W-:Y:S01]         /*0030*/                   XMAD R0, R2, c[0x0] [0x8], R0 ;
+      [B------:R-:W-:Y:S06]         /*0038*/                   XMAD.MRG R3, R2, c[0x0] [0x8].H1, RZ ;
+      [B------:R-:W-:Y:S06]         /*0048*/                   XMAD.PSL.CBCC R2, R2.H1, R3.H1, R0 ;
+      [B------:R-:W-:Y:S01]         /*0050*/                   XMAD R0, R2, R7, RZ ;
+      [B------:R-:W-:Y:S01]         /*0058*/                   XMAD.U16.S16 R4, R2, R7.H1, RZ ;
+      [B------:R-:W-:Y:S04]         /*0068*/                   XMAD.S16.S16.CSFU R5, R2.H1, R7.H1, R2 ;
+      [B------:R-:W-:-:S01]         /*0070*/                   XMAD.S16.U16.CHI R6, R2.H1.reuse, R7, R0 ;
+      [B------:R-:W-:-:S05]         /*0078*/                   SHR R3, R2, 0x1f ;
+      [B------:R-:W-:-:S01]         /*0088*/                   IADD3.RS R0, R6, R4, R5 ;
+      [B------:R-:W-:-:S05]         /*0090*/                   LEA.HI R4, R3, R2, RZ, 0x4 ;
+      [B------:R-:W-:Y:S01]         /*0098*/                   SHR R3, R0, 0x2 ;
+      [B------:R-:W-:Y:S01]         /*00a8*/                   MOV32I R5, 0xfffffff9 ;
+      [B------:R-:W-:-:S04]         /*00b0*/                   LOP32I.AND R4, R4, 0xfffffff0 ;
+      [B------:R-:W-:Y:S01]         /*00b8*/                   LEA.HI R3, R0, R3, RZ, 0x1 ;
+      [B------:R-:W-:Y:S01]         /*00c8*/                   MOV32I R6, 32@lo(GlobalC2) ;
+      [B------:R-:W-:Y:S04]         /*00d0*/                   IADD R4, R2, -R4 ;
+      [B------:R-:W-:Y:S01]         /*00d8*/                   XMAD R0, R3, R5, R2 ;
+      [B------:R-:W-:-:S01]         /*00e8*/                   XMAD.MRG R5, R3, R5.H1, RZ ;
+      [B------:R-:W-:Y:S01]         /*00f0*/                   ISCADD R6.CC, R4, R6, 0x2 ;
+      [B------:R-:W-:-:S01]         /*00f8*/                   MOV32I R7, 32@hi(GlobalC2) ;
+      [B------:R-:W-:Y:S03]         /*0108*/                   SHR R4, R4, 0x1e ;
+      [B------:R-:W-:Y:S01]         /*0110*/                   XMAD.PSL.CBCC R3, R3.H1, R5.H1, R0 ;
+      [B------:R-:W-:Y:S02]         /*0118*/                   MOV32I R5, 32@lo(GlobalC1) ;
+      [B------:R-:W-:Y:S02]         /*0128*/                   IADD.X R7, R7, R4 ;
+      [B------:R-:W-:-:S00]         /*0130*/         {         MOV32I R0, 32@hi(GlobalC1) ;
+      [B------:R-:W-:-:S02]         /*0138*/                   LDG.E R6, [R6]         }
+      [B------:R-:W-:-:S01]         /*0148*/                   ISCADD R4.CC, R3.reuse, R5, 0x2 ;
+      [B------:R-:W-:-:S01]         /*0150*/                   SHR R3, R3, 0x1e ;
+      [B------:R-:W-:Y:S05]         /*0158*/                   SHR R8, R2, 0x1e ;
+      [B------:R-:W-:-:S02]         /*0168*/                   IADD.X R5, R0, R3 ;
+      [B------:R-:W-:-:S00]         /*0170*/         {         ISCADD R2.CC, R2, c[0x0][0x140], 0x2 ;
+      [B------:R-:W5:-:S06]         /*0178*/                   LDG.E R4, [R4]         }
+      [B------:R-:W-:Y:S02]         /*0188*/                   IADD.X R3, R8, c[0x0][0x144] ;
+      [B------:R-:W5:-:S01]         /*0190*/                   LDG.E R9, [R2] ;
+      [B------:R-:W-:-:S06]         /*0198*/                   MOV R8, c[0x0][0x148] ;
+      [B------:R-:W-:Y:S06]         /*01a8*/                   SHL R8, R8, 0x2 ;
+      [B------:R-:W0:-:S01]         /*01b0*/                   LDC R0, c[0x3][R8] ;
+      [B------:R-:W0:-:S15]         /*01b8*/                   LDC R10, c[0x3][R8+0x2c] ;
+      [B0-----:R-:W-:-:S01]         /*01c8*/                   IADD R10, R0, R10 ;
+      [B-----5:R-:W-:Y:S06]         /*01d0*/                   IADD3 R0, R6, c[0x0][0x148], R4 ;
+      [B------:R-:W-:Y:S01]         /*01d8*/                   XMAD R10, R9, R0, R10 ;
+      [B------:R-:W-:Y:S06]         /*01e8*/                   XMAD.MRG R0, R9, R0.H1, RZ ;
+      [B------:R-:W-:Y:S02]         /*01f0*/                   XMAD.PSL.CBCC R9, R9.H1, R0.H1, R10 ;
+      [B------:R-:W-:-:S01]         /*01f8*/                   STG.E [R2], R9 ;
+      [B------:R-:W-:-:S15]         /*0208*/                   EXIT ;
+  .L_x_6:
+      [B------:R-:W-:-:S15]         /*0210*/                   BRA `(.L_x_6) ;
+      [B------:R-:W-:Y:S00]         /*0218*/                   NOP;
+      [B------:R-:W-:Y:S00]         /*0228*/                   NOP;
+      [B------:R-:W-:Y:S00]         /*0230*/                   NOP;
+      [B------:R-:W-:Y:S00]         /*0238*/                   NOP;
+  .L_x_27:
   
   
 
@@ -3226,47 +3237,48 @@
   	.align	32
           .global         _Z11shared_testfPf
           .type           _Z11shared_testfPf,@function
-          .size           _Z11shared_testfPf,(.L_231 - _Z11shared_testfPf)
+          .size           _Z11shared_testfPf,(.L_x_28 - _Z11shared_testfPf)
           .other          _Z11shared_testfPf,@"STO_CUDA_ENTRY STV_DEFAULT"
   _Z11shared_testfPf:
   .text._Z11shared_testfPf:
-      [----:B------:R-:W-:-:S06]         /*0008*/                   MOV R1, c[0x0][0x20] ;
-      [----:B------:R-:W0:-:S01]         /*0010*/                   S2R R8, SR_TID.X ;
-      [----:B------:R-:W0:-:S15]         /*0018*/                   S2R R2, SR_CTAID.X ;
-      [----:B0-----:R-:W-:Y:S01]         /*0028*/                   XMAD R0, R2, c[0x0] [0x8], R8 ;
-      [----:B------:R-:W-:Y:S06]         /*0030*/                   XMAD.MRG R3, R2, c[0x0] [0x8].H1, RZ ;
-      [----:B------:R-:W-:-:S06]         /*0038*/                   XMAD.PSL.CBCC R0, R2.H1, R3.H1, R0 ;
-      [----:B------:R-:W-:-:S01]         /*0048*/                   SHR R3, R0.reuse, 0x1e ;
-      [----:B------:R-:W-:Y:S06]         /*0050*/                   ISCADD R2.CC, R0, c[0x0][0x148], 0x2 ;
-      [----:B------:R-:W-:Y:S02]         /*0058*/                   IADD.X R3, R3, c[0x0][0x14c] ;
-      [----:B------:R-:W5:-:S01]         /*0068*/                   LDG.E R4, [R2] ;
-      [----:B------:R-:W-:-:S06]         /*0070*/                   SHR R5, R0, 0x1f ;
-      [----:B------:R-:W-:Y:S06]         /*0078*/                   LEA.HI R5, R5, R0, RZ, 0xb ;
-      [----:B------:R-:W-:-:S01]         /*0088*/                   LOP32I.AND R5, R5, 0x3ffff800 ;
-      [----:B------:R-:W-:Y:S01]         /*0090*/                   SHL R6, R8, 0x2 ;
-      [----:B------:R-:W-:Y:S04]         /*0098*/                   IADD32I R8, -R8, 0x400 ;
-      [----:B------:R-:W-:Y:S01]         /*00a8*/                   IADD R7, R0, -R5 ;
-      [----:B------:R-:W-:-:S01]         /*00b0*/                   IADD32I R0, -R0, 0x800 ;
-      [----:B------:R-:W-:-:S04]         /*00b8*/                   SHL R8, R8, 0x2 ;
-      [----:B------:R-:W-:-:S01]         /*00c8*/                   SHL R9, R7, 0x2 ;
-      [----:B------:R-:W-:-:S01]         /*00d0*/                   SHL R0, R0, 0x2 ;
-      [----:B-----5:R-:W-:Y:S13]         /*00d8*/                   FSETP.GT.AND P0, PT, R4, c[0x0][0x140], PT ;
-      [----:B------:R-:W-:Y:S04]         /*00e8*/                   SEL R5, R4, c[0x0][0x140], P0 ;
-      [----:B------:R-:W-:-:S00]         /*00f0*/         {         FMUL R4, R4, c[0x0][0x140] ;
-      [----:B------:R-:W-:-:S04]         /*00f8*/                   STS [R6], R5         }
-      [----:B------:R-:W-:-:S01]         /*0108*/                   STS [R9+0x1010], R4 ;
-      [----:B------:R-:W-:-:S15]         /*0110*/                   BAR.SYNC 0x0 ;
-      [----:B------:R-:W-:-:S05]         /*0118*/                   MEMBAR.CTA ;
-      [----:B------:R-:W-:-:S01]         /*0128*/                   LDS.U.32 R8, [R8] ;
-      [----:B------:R-:W0:-:S15]         /*0130*/                   LDS.U.32 R7, [R0+0x1010] ;
-      [----:B0-----:R-:W-:Y:S02]         /*0138*/                   FADD R7, R8, R7 ;
-      [----:B------:R-:W-:-:S01]         /*0148*/                   STG.E [R2], R7 ;
-      [----:B------:R-:W-:Y:S15]         /*0150*/                   NOP ;
-      [----:B------:R-:W-:Y:S10]         /*0158*/                   NOP ;
-      [----:B------:R-:W-:-:S15]         /*0168*/                   EXIT ;
-  .L_16:
-      [----:B------:R-:W-:-:S15]         /*0170*/                   BRA `(.L_16) ;
-  .L_231:
+      [B------:R-:W-:-:S06]         /*0008*/                   MOV R1, c[0x0][0x20] ;
+      [B------:R-:W0:-:S01]         /*0010*/                   S2R R8, SR_TID.X ;
+      [B------:R-:W0:-:S15]         /*0018*/                   S2R R2, SR_CTAID.X ;
+      [B0-----:R-:W-:Y:S01]         /*0028*/                   XMAD R0, R2, c[0x0] [0x8], R8 ;
+      [B------:R-:W-:Y:S06]         /*0030*/                   XMAD.MRG R3, R2, c[0x0] [0x8].H1, RZ ;
+      [B------:R-:W-:-:S06]         /*0038*/                   XMAD.PSL.CBCC R0, R2.H1, R3.H1, R0 ;
+      [B------:R-:W-:-:S01]         /*0048*/                   SHR R3, R0.reuse, 0x1e ;
+      [B------:R-:W-:Y:S06]         /*0050*/                   ISCADD R2.CC, R0, c[0x0][0x148], 0x2 ;
+      [B------:R-:W-:Y:S02]         /*0058*/                   IADD.X R3, R3, c[0x0][0x14c] ;
+      [B------:R-:W5:-:S01]         /*0068*/                   LDG.E R4, [R2] ;
+      [B------:R-:W-:-:S06]         /*0070*/                   SHR R5, R0, 0x1f ;
+      [B------:R-:W-:Y:S06]         /*0078*/                   LEA.HI R5, R5, R0, RZ, 0xb ;
+      [B------:R-:W-:-:S01]         /*0088*/                   LOP32I.AND R5, R5, 0x3ffff800 ;
+      [B------:R-:W-:Y:S01]         /*0090*/                   SHL R6, R8, 0x2 ;
+      [B------:R-:W-:Y:S04]         /*0098*/                   IADD32I R8, -R8, 0x400 ;
+      [B------:R-:W-:Y:S01]         /*00a8*/                   IADD R7, R0, -R5 ;
+      [B------:R-:W-:-:S01]         /*00b0*/                   IADD32I R0, -R0, 0x800 ;
+      [B------:R-:W-:-:S04]         /*00b8*/                   SHL R8, R8, 0x2 ;
+      [B------:R-:W-:-:S01]         /*00c8*/                   SHL R9, R7, 0x2 ;
+      [B------:R-:W-:-:S01]         /*00d0*/                   SHL R0, R0, 0x2 ;
+      [B-----5:R-:W-:Y:S13]         /*00d8*/                   FSETP.GT.AND P0, PT, R4, c[0x0][0x140], PT ;
+      [B------:R-:W-:Y:S04]         /*00e8*/                   SEL R5, R4, c[0x0][0x140], P0 ;
+      [B------:R-:W-:-:S00]         /*00f0*/         {         FMUL R4, R4, c[0x0][0x140] ;
+      [B------:R-:W-:-:S04]         /*00f8*/                   STS [R6], R5         }
+      [B------:R-:W-:-:S01]         /*0108*/                   STS [R9+0x1010], R4 ;
+      [B------:R-:W-:-:S15]         /*0110*/                   BAR.SYNC 0x0 ;
+      [B------:R-:W-:-:S05]         /*0118*/                   MEMBAR.CTA ;
+      [B------:R-:W-:-:S01]         /*0128*/                   LDS.U.32 R8, [R8] ;
+      [B------:R-:W0:-:S15]         /*0130*/                   LDS.U.32 R7, [R0+0x1010] ;
+      [B0-----:R-:W-:Y:S02]         /*0138*/                   FADD R7, R8, R7 ;
+      [B------:R-:W-:-:S01]         /*0148*/                   STG.E [R2], R7 ;
+      [B------:R-:W-:Y:S15]         /*0150*/                   NOP ;
+      [B------:R-:W-:Y:S10]         /*0158*/                   NOP ;
+      [B------:R-:W-:-:S15]         /*0168*/                   EXIT ;
+  .L_x_7:
+      [B------:R-:W-:-:S15]         /*0170*/                   BRA `(.L_x_7) ;
+      [B------:R-:W-:Y:S00]         /*0178*/                   NOP;
+  .L_x_28:
   
   
 
@@ -3286,88 +3298,90 @@
   	.align	32
           .global         _Z4test6float4PS_
           .type           _Z4test6float4PS_,@function
-          .size           _Z4test6float4PS_,(.L_232 - _Z4test6float4PS_)
+          .size           _Z4test6float4PS_,(.L_x_29 - _Z4test6float4PS_)
           .other          _Z4test6float4PS_,@"STO_CUDA_ENTRY STV_DEFAULT"
   _Z4test6float4PS_:
   .text._Z4test6float4PS_:
-      [----:B------:R-:W-:-:S06]         /*0008*/                   MOV R1, c[0x0][0x20] ;
-      [----:B------:R-:W0:-:S15]         /*0010*/                   S2R R2, SR_TID.X ;
-      [----:B0-----:R-:W-:-:S01]         /*0018*/                   SHR R0, R2.reuse, 0x1c ;
-      [----:B------:R-:W-:-:S06]         /*0028*/                   ISCADD R2.CC, R2, c[0x0][0x150], 0x4 ;
-      [----:B------:R-:W-:-:S02]         /*0030*/                   IADD.X R3, R0, c[0x0][0x154] ;
-      [----:B------:R-:W5:-:S05]         /*0038*/                   LDG.E.128 R4, [R2] ;
-      [----:B-----5:R-:W-:-:S01]         /*0048*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
-      [----:B------:R-:W-:Y:S01]         /*0050*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
-      [----:B------:R-:W-:-:S01]         /*0058*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
-      [----:B------:R-:W-:-:S03]         /*0068*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
-      [----:B------:R-:W-:-:S01]         /*0070*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
-      [----:B------:R-:W-:-:S01]         /*0078*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
-      [----:B------:R-:W-:-:S01]         /*0088*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
-      [----:B------:R-:W-:Y:S03]         /*0090*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
-      [----:B------:R-:W-:-:S01]         /*0098*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
-      [----:B------:R-:W-:-:S01]         /*00a8*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
-      [----:B------:R-:W-:-:S01]         /*00b0*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
-      [----:B------:R-:W-:-:S03]         /*00b8*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
-      [----:B------:R-:W-:-:S01]         /*00c8*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
-      [----:B------:R-:W-:Y:S01]         /*00d0*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
-      [----:B------:R-:W-:-:S01]         /*00d8*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
-      [----:B------:R-:W-:-:S03]         /*00e8*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
-      [----:B------:R-:W-:-:S01]         /*00f0*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
-      [----:B------:R-:W-:-:S01]         /*00f8*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
-      [----:B------:R-:W-:-:S01]         /*0108*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
-      [----:B------:R-:W-:Y:S03]         /*0110*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
-      [----:B------:R-:W-:-:S01]         /*0118*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
-      [----:B------:R-:W-:-:S01]         /*0128*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
-      [----:B------:R-:W-:-:S01]         /*0130*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
-      [----:B------:R-:W-:-:S03]         /*0138*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
-      [----:B------:R-:W-:-:S01]         /*0148*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
-      [----:B------:R-:W-:Y:S01]         /*0150*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
-      [----:B------:R-:W-:-:S01]         /*0158*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
-      [----:B------:R-:W-:-:S03]         /*0168*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
-      [----:B------:R-:W-:-:S01]         /*0170*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
-      [----:B------:R-:W-:-:S01]         /*0178*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
-      [----:B------:R-:W-:-:S01]         /*0188*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
-      [----:B------:R-:W-:Y:S03]         /*0190*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
-      [----:B------:R-:W-:-:S01]         /*0198*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
-      [----:B------:R-:W-:-:S01]         /*01a8*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
-      [----:B------:R-:W-:-:S01]         /*01b0*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
-      [----:B------:R-:W-:-:S03]         /*01b8*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
-      [----:B------:R-:W-:-:S01]         /*01c8*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
-      [----:B------:R-:W-:Y:S01]         /*01d0*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
-      [----:B------:R-:W-:-:S01]         /*01d8*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
-      [----:B------:R-:W-:-:S03]         /*01e8*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
-      [----:B------:R-:W-:-:S01]         /*01f0*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
-      [----:B------:R-:W-:-:S01]         /*01f8*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
-      [----:B------:R-:W-:-:S01]         /*0208*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
-      [----:B------:R-:W-:Y:S03]         /*0210*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
-      [----:B------:R-:W-:-:S01]         /*0218*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
-      [----:B------:R-:W-:-:S01]         /*0228*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
-      [----:B------:R-:W-:-:S01]         /*0230*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
-      [----:B------:R-:W-:-:S03]         /*0238*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
-      [----:B------:R-:W-:-:S01]         /*0248*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
-      [----:B------:R-:W-:Y:S01]         /*0250*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
-      [----:B------:R-:W-:-:S01]         /*0258*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
-      [----:B------:R-:W-:-:S03]         /*0268*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
-      [----:B------:R-:W-:-:S01]         /*0270*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
-      [----:B------:R-:W-:-:S01]         /*0278*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
-      [----:B------:R-:W-:-:S01]         /*0288*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
-      [----:B------:R-:W-:Y:S03]         /*0290*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
-      [----:B------:R-:W-:-:S01]         /*0298*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
-      [----:B------:R-:W-:-:S01]         /*02a8*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
-      [----:B------:R-:W-:-:S01]         /*02b0*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
-      [----:B------:R-:W-:-:S03]         /*02b8*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
-      [----:B------:R-:W-:-:S01]         /*02c8*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
-      [----:B------:R-:W-:Y:S01]         /*02d0*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
-      [----:B------:R-:W-:-:S01]         /*02d8*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
-      [----:B------:R-:W-:-:S13]         /*02e8*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
-      [----:B------:R-:W-:-:S01]         /*02f0*/                   FADD R9, R6, R4 ;
-      [----:B------:R-:W-:-:S06]         /*02f8*/                   FFMA R0, R4, R5, R6 ;
-      [----:B------:R-:W-:-:S02]         /*0308*/                   FFMA R7, R0, R9, R7 ;
-      [----:B------:R-:W-:-:S01]         /*0310*/                   STG.E.128 [R2], R4 ;
-      [----:B------:R-:W-:-:S15]         /*0318*/                   EXIT ;
-  .L_17:
-      [----:B------:R-:W-:-:S15]         /*0328*/                   BRA `(.L_17) ;
-  .L_232:
+      [B------:R-:W-:-:S06]         /*0008*/                   MOV R1, c[0x0][0x20] ;
+      [B------:R-:W0:-:S15]         /*0010*/                   S2R R2, SR_TID.X ;
+      [B0-----:R-:W-:-:S01]         /*0018*/                   SHR R0, R2.reuse, 0x1c ;
+      [B------:R-:W-:-:S06]         /*0028*/                   ISCADD R2.CC, R2, c[0x0][0x150], 0x4 ;
+      [B------:R-:W-:-:S02]         /*0030*/                   IADD.X R3, R0, c[0x0][0x154] ;
+      [B------:R-:W5:-:S05]         /*0038*/                   LDG.E.128 R4, [R2] ;
+      [B-----5:R-:W-:-:S01]         /*0048*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
+      [B------:R-:W-:Y:S01]         /*0050*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
+      [B------:R-:W-:-:S01]         /*0058*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
+      [B------:R-:W-:-:S03]         /*0068*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
+      [B------:R-:W-:-:S01]         /*0070*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
+      [B------:R-:W-:-:S01]         /*0078*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
+      [B------:R-:W-:-:S01]         /*0088*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
+      [B------:R-:W-:Y:S03]         /*0090*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
+      [B------:R-:W-:-:S01]         /*0098*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
+      [B------:R-:W-:-:S01]         /*00a8*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
+      [B------:R-:W-:-:S01]         /*00b0*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
+      [B------:R-:W-:-:S03]         /*00b8*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
+      [B------:R-:W-:-:S01]         /*00c8*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
+      [B------:R-:W-:Y:S01]         /*00d0*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
+      [B------:R-:W-:-:S01]         /*00d8*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
+      [B------:R-:W-:-:S03]         /*00e8*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
+      [B------:R-:W-:-:S01]         /*00f0*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
+      [B------:R-:W-:-:S01]         /*00f8*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
+      [B------:R-:W-:-:S01]         /*0108*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
+      [B------:R-:W-:Y:S03]         /*0110*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
+      [B------:R-:W-:-:S01]         /*0118*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
+      [B------:R-:W-:-:S01]         /*0128*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
+      [B------:R-:W-:-:S01]         /*0130*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
+      [B------:R-:W-:-:S03]         /*0138*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
+      [B------:R-:W-:-:S01]         /*0148*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
+      [B------:R-:W-:Y:S01]         /*0150*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
+      [B------:R-:W-:-:S01]         /*0158*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
+      [B------:R-:W-:-:S03]         /*0168*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
+      [B------:R-:W-:-:S01]         /*0170*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
+      [B------:R-:W-:-:S01]         /*0178*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
+      [B------:R-:W-:-:S01]         /*0188*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
+      [B------:R-:W-:Y:S03]         /*0190*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
+      [B------:R-:W-:-:S01]         /*0198*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
+      [B------:R-:W-:-:S01]         /*01a8*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
+      [B------:R-:W-:-:S01]         /*01b0*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
+      [B------:R-:W-:-:S03]         /*01b8*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
+      [B------:R-:W-:-:S01]         /*01c8*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
+      [B------:R-:W-:Y:S01]         /*01d0*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
+      [B------:R-:W-:-:S01]         /*01d8*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
+      [B------:R-:W-:-:S03]         /*01e8*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
+      [B------:R-:W-:-:S01]         /*01f0*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
+      [B------:R-:W-:-:S01]         /*01f8*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
+      [B------:R-:W-:-:S01]         /*0208*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
+      [B------:R-:W-:Y:S03]         /*0210*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
+      [B------:R-:W-:-:S01]         /*0218*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
+      [B------:R-:W-:-:S01]         /*0228*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
+      [B------:R-:W-:-:S01]         /*0230*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
+      [B------:R-:W-:-:S03]         /*0238*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
+      [B------:R-:W-:-:S01]         /*0248*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
+      [B------:R-:W-:Y:S01]         /*0250*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
+      [B------:R-:W-:-:S01]         /*0258*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
+      [B------:R-:W-:-:S03]         /*0268*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
+      [B------:R-:W-:-:S01]         /*0270*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
+      [B------:R-:W-:-:S01]         /*0278*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
+      [B------:R-:W-:-:S01]         /*0288*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
+      [B------:R-:W-:Y:S03]         /*0290*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
+      [B------:R-:W-:-:S01]         /*0298*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
+      [B------:R-:W-:-:S01]         /*02a8*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
+      [B------:R-:W-:-:S01]         /*02b0*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
+      [B------:R-:W-:-:S03]         /*02b8*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
+      [B------:R-:W-:-:S01]         /*02c8*/                   FFMA R6, R6, c[0x0][0x148], R6 ;
+      [B------:R-:W-:Y:S01]         /*02d0*/                   FFMA R4, R4, c[0x0][0x140], R4 ;
+      [B------:R-:W-:-:S01]         /*02d8*/                   FFMA R5, R5, c[0x0][0x144], R5 ;
+      [B------:R-:W-:-:S13]         /*02e8*/                   FFMA R7, R7, c[0x0][0x14c], R7 ;
+      [B------:R-:W-:-:S01]         /*02f0*/                   FADD R9, R6, R4 ;
+      [B------:R-:W-:-:S06]         /*02f8*/                   FFMA R0, R4, R5, R6 ;
+      [B------:R-:W-:-:S02]         /*0308*/                   FFMA R7, R0, R9, R7 ;
+      [B------:R-:W-:-:S01]         /*0310*/                   STG.E.128 [R2], R4 ;
+      [B------:R-:W-:-:S15]         /*0318*/                   EXIT ;
+  .L_x_8:
+      [B------:R-:W-:-:S15]         /*0328*/                   BRA `(.L_x_8) ;
+      [B------:R-:W-:Y:S00]         /*0330*/                   NOP;
+      [B------:R-:W-:Y:S00]         /*0338*/                   NOP;
+  .L_x_29:
   
   
 
@@ -3387,29 +3401,30 @@
   	.align	32
           .global         _Z11nvinfo_testiiPi
           .type           _Z11nvinfo_testiiPi,@function
-          .size           _Z11nvinfo_testiiPi,(.L_233 - _Z11nvinfo_testiiPi)
+          .size           _Z11nvinfo_testiiPi,(.L_x_30 - _Z11nvinfo_testiiPi)
           .other          _Z11nvinfo_testiiPi,@"STO_CUDA_ENTRY STV_DEFAULT"
   _Z11nvinfo_testiiPi:
   .text._Z11nvinfo_testiiPi:
-      [----:B------:R-:W-:-:S06]         /*0008*/                   MOV R1, c[0x0][0x20] ;
-      [----:B------:R-:W0:-:S01]         /*0010*/                   S2R R0, SR_TID.X ;
-      [----:B------:R-:W0:-:S15]         /*0018*/                   S2R R6, SR_CTAID.X ;
-      [----:B0-----:R-:W-:-:S00]         /*0028*/         {         XMAD R0, R6.reuse, c[0x0] [0x8], R0 ;
-      [----:B------:R-:W0:-:S01]         /*0030*/                   S2R R7, SR_CTAID.Z         }
-      [----:B------:R-:W-:Y:S06]         /*0038*/                   XMAD.MRG R3, R6, c[0x0] [0x8].H1, RZ ;
-      [----:B------:R-:W-:-:S06]         /*0048*/                   XMAD.PSL.CBCC R2, R6.H1, R3.H1, R0 ;
-      [----:B------:R-:W-:-:S01]         /*0050*/                   SHR R0, R2.reuse, 0x1e ;
-      [----:B------:R-:W-:Y:S06]         /*0058*/                   ISCADD R2.CC, R2, c[0x0][0x148], 0x2 ;
-      [----:B------:R-:W-:-:S00]         /*0068*/         {         IADD.X R3, R0, c[0x0][0x14c]   SLOT 0;
-      [----:B------:R-:W0:-:S07]         /*0070*/                   S2R R0, SR_CTAID.Y   SLOT 1        }
-      [----:B------:R-:W5:-:S15]         /*0078*/                   LDG.E R5, [R2] ;
-      [----:B0-----:R-:W-:Y:S06]         /*0088*/                   IADD3 R0, R7, R0, R6 ;
-      [----:B-----5:R-:W-:Y:S02]         /*0090*/                   IADD R0, R0, R5 ;
-      [----:B------:R-:W-:-:S01]         /*0098*/                   STG.E [R2], R0 ;
-      [----:B------:R-:W-:-:S15]         /*00a8*/                   EXIT ;
-  .L_18:
-      [----:B------:R-:W-:-:S15]         /*00b0*/                   BRA `(.L_18) ;
-  .L_233:
+      [B------:R-:W-:-:S06]         /*0008*/                   MOV R1, c[0x0][0x20] ;
+      [B------:R-:W0:-:S01]         /*0010*/                   S2R R0, SR_TID.X ;
+      [B------:R-:W0:-:S15]         /*0018*/                   S2R R6, SR_CTAID.X ;
+      [B0-----:R-:W-:-:S00]         /*0028*/         {         XMAD R0, R6.reuse, c[0x0] [0x8], R0 ;
+      [B------:R-:W0:-:S01]         /*0030*/                   S2R R7, SR_CTAID.Z         }
+      [B------:R-:W-:Y:S06]         /*0038*/                   XMAD.MRG R3, R6, c[0x0] [0x8].H1, RZ ;
+      [B------:R-:W-:-:S06]         /*0048*/                   XMAD.PSL.CBCC R2, R6.H1, R3.H1, R0 ;
+      [B------:R-:W-:-:S01]         /*0050*/                   SHR R0, R2.reuse, 0x1e ;
+      [B------:R-:W-:Y:S06]         /*0058*/                   ISCADD R2.CC, R2, c[0x0][0x148], 0x2 ;
+      [B------:R-:W-:-:S00]         /*0068*/         {         IADD.X R3, R0, c[0x0][0x14c] ;
+      [B------:R-:W0:-:S07]         /*0070*/                   S2R R0, SR_CTAID.Y         }
+      [B------:R-:W5:-:S15]         /*0078*/                   LDG.E R5, [R2] ;
+      [B0-----:R-:W-:Y:S06]         /*0088*/                   IADD3 R0, R7, R0, R6 ;
+      [B-----5:R-:W-:Y:S02]         /*0090*/                   IADD R0, R0, R5 ;
+      [B------:R-:W-:-:S01]         /*0098*/                   STG.E [R2], R0 ;
+      [B------:R-:W-:-:S15]         /*00a8*/                   EXIT ;
+  .L_x_9:
+      [B------:R-:W-:-:S15]         /*00b0*/                   BRA `(.L_x_9) ;
+      [B------:R-:W-:Y:S00]         /*00b8*/                   NOP;
+  .L_x_30:
   
   
 
@@ -3429,46 +3444,49 @@
   	.align	32
           .global         _Z10simpletest4int4Pi
           .type           _Z10simpletest4int4Pi,@function
-          .size           _Z10simpletest4int4Pi,(.L_234 - _Z10simpletest4int4Pi)
+          .size           _Z10simpletest4int4Pi,(.L_x_31 - _Z10simpletest4int4Pi)
           .other          _Z10simpletest4int4Pi,@"STO_CUDA_ENTRY STV_DEFAULT"
   _Z10simpletest4int4Pi:
   .text._Z10simpletest4int4Pi:
-      [----:B------:R-:W-:-:S06]         /*0008*/                   MOV R1, c[0x0][0x20] ;
-      [----:B------:R-:W-:-:S00]         /*0010*/         {         MOV32I R5, 32@lo(GlobalC1) ;
-      [----:B------:R-:W0:-:S01]         /*0018*/                   S2R R0, SR_CTAID.X         }
-      [----:B------:R-:W-:-:S00]         /*0028*/         {         MOV R6, c[0x0][0x148] ;
-      [----:B------:R-:W1:-:S15]         /*0030*/                   S2R R2, SR_TID.X         }
-      [----:B0-----:R-:W-:Y:S01]         /*0038*/                   XMAD.MRG R3, R0, c[0x0] [0x8].H1, RZ ;
-      [----:B-1----:R-:W-:Y:S06]         /*0048*/                   XMAD R2, R0, c[0x0] [0x8], R2 ;
-      [----:B------:R-:W-:-:S06]         /*0050*/                   XMAD.PSL.CBCC R0, R0.H1, R3.H1, R2 ;
-      [----:B------:R-:W-:-:S06]         /*0058*/                   SHR R2, R0, 0x1f ;
-      [----:B------:R-:W-:Y:S06]         /*0068*/                   LEA.HI R2, R2, R0, RZ, 0x4 ;
-      [----:B------:R-:W-:-:S01]         /*0070*/                   LOP32I.AND R3, R2, 0xfffffff0 ;
-      [----:B------:R-:W-:-:S01]         /*0078*/                   SHR R4, R0.reuse, 0x1e ;
-      [----:B------:R-:W-:Y:S04]         /*0088*/                   ISCADD R2.CC, R0, c[0x0][0x150], 0x2 ;
-      [----:B------:R-:W-:Y:S02]         /*0090*/                   IADD R0, R0, -R3 ;
-      [----:B------:R-:W-:-:S04]         /*0098*/                   IADD.X R3, R4, c[0x0][0x154] ;
-      [----:B------:R-:W-:Y:S01]         /*00a8*/                   ISCADD R4.CC, R0, R5, 0x2 ;
-      [----:B------:R-:W-:-:S01]         /*00b0*/                   MOV32I R5, 32@hi(GlobalC1) ;
-      [----:B------:R-:W-:Y:S06]         /*00b8*/                   SHR R0, R0, 0x1e ;
-      [----:B------:R-:W-:-:S00]         /*00c8*/         {         IADD.X R5, R5, R0   SLOT 0;
-      [----:B------:R-:W5:-:S02]         /*00d0*/                   LDG.E R0, [R2]   SLOT 1        }
-      [----:B------:R-:W-:-:S00]         /*00d8*/         {         ISETP.GE.AND P0, PT, R6, 0x1, PT ;
-      [----:B------:R-:W5:Y:S13]         /*00e8*/                   LDG.E R5, [R4]         }
-      [----:B------:R-:W-:-:S13]         /*00f0*/               @P0 MOV R8, c[0x0][0x144] ;
-      [----:B------:R-:W-:Y:S01]         /*00f8*/               @P0 SHL R8, R8, 0x2 ;
-      [----:B-----5:R-:W-:Y:S01]         /*0108*/                   XMAD.MRG R7, R0, c[0x0] [0x140].H1, RZ ;
-      [----:B------:R-:W-:Y:S06]         /*0110*/                   XMAD R6, R0, c[0x0] [0x140], R5 ;
-      [----:B------:R-:W-:-:S00]         /*0118*/         {         XMAD.PSL.CBCC R0, R0.H1, R7.H1, R6   SLOT 0;
-      [----:B------:R-:W0:-:S04]         /*0128*/               @P0 LDC R6, c[0x3][R8]   SLOT 1        }
+      [B------:R-:W-:-:S06]         /*0008*/                   MOV R1, c[0x0][0x20] ;
+      [B------:R-:W-:-:S00]         /*0010*/         {         MOV32I R5, 32@lo(GlobalC1) ;
+      [B------:R-:W0:-:S01]         /*0018*/                   S2R R0, SR_CTAID.X         }
+      [B------:R-:W-:-:S00]         /*0028*/         {         MOV R6, c[0x0][0x148] ;
+      [B------:R-:W1:-:S15]         /*0030*/                   S2R R2, SR_TID.X         }
+      [B0-----:R-:W-:Y:S01]         /*0038*/                   XMAD.MRG R3, R0, c[0x0] [0x8].H1, RZ ;
+      [B-1----:R-:W-:Y:S06]         /*0048*/                   XMAD R2, R0, c[0x0] [0x8], R2 ;
+      [B------:R-:W-:-:S06]         /*0050*/                   XMAD.PSL.CBCC R0, R0.H1, R3.H1, R2 ;
+      [B------:R-:W-:-:S06]         /*0058*/                   SHR R2, R0, 0x1f ;
+      [B------:R-:W-:Y:S06]         /*0068*/                   LEA.HI R2, R2, R0, RZ, 0x4 ;
+      [B------:R-:W-:-:S01]         /*0070*/                   LOP32I.AND R3, R2, 0xfffffff0 ;
+      [B------:R-:W-:-:S01]         /*0078*/                   SHR R4, R0.reuse, 0x1e ;
+      [B------:R-:W-:Y:S04]         /*0088*/                   ISCADD R2.CC, R0, c[0x0][0x150], 0x2 ;
+      [B------:R-:W-:Y:S02]         /*0090*/                   IADD R0, R0, -R3 ;
+      [B------:R-:W-:-:S04]         /*0098*/                   IADD.X R3, R4, c[0x0][0x154] ;
+      [B------:R-:W-:Y:S01]         /*00a8*/                   ISCADD R4.CC, R0, R5, 0x2 ;
+      [B------:R-:W-:-:S01]         /*00b0*/                   MOV32I R5, 32@hi(GlobalC1) ;
+      [B------:R-:W-:Y:S06]         /*00b8*/                   SHR R0, R0, 0x1e ;
+      [B------:R-:W-:-:S00]         /*00c8*/         {         IADD.X R5, R5, R0 ;
+      [B------:R-:W5:-:S02]         /*00d0*/                   LDG.E R0, [R2]         }
+      [B------:R-:W-:-:S00]         /*00d8*/         {         ISETP.GE.AND P0, PT, R6, 0x1, PT ;
+      [B------:R-:W5:Y:S13]         /*00e8*/                   LDG.E R5, [R4]         }
+      [B------:R-:W-:-:S13]         /*00f0*/               @P0 MOV R8, c[0x0][0x144] ;
+      [B------:R-:W-:Y:S01]         /*00f8*/               @P0 SHL R8, R8, 0x2 ;
+      [B-----5:R-:W-:Y:S01]         /*0108*/                   XMAD.MRG R7, R0, c[0x0] [0x140].H1, RZ ;
+      [B------:R-:W-:Y:S06]         /*0110*/                   XMAD R6, R0, c[0x0] [0x140], R5 ;
+      [B------:R-:W-:-:S00]         /*0118*/         {         XMAD.PSL.CBCC R0, R0.H1, R7.H1, R6 ;
+      [B------:R-:W0:-:S04]         /*0128*/               @P0 LDC R6, c[0x3][R8]         }
   .CUASM_OFFSET_LABEL._Z10simpletest4int4Pi.EIATTR_COOP_GROUP_INSTR_OFFSETS.#:
-      [----:B------:R-:W0:-:S02]         /*0130*/                   SHFL.UP PT, R7, R0, 0x1, RZ ;
-      [----:B0-----:R-:W-:Y:S02]         /*0138*/               @P0 IADD R7, R7, R6 ;
-      [----:B------:R-:W-:-:S01]         /*0148*/                   STG.E [R2], R7 ;
-      [----:B------:R-:W-:-:S15]         /*0150*/                   EXIT ;
-  .L_19:
-      [----:B------:R-:W-:-:S15]         /*0158*/                   BRA `(.L_19) ;
-  .L_234:
+      [B------:R-:W0:-:S02]         /*0130*/                   SHFL.UP PT, R7, R0, 0x1, RZ ;
+      [B0-----:R-:W-:Y:S02]         /*0138*/               @P0 IADD R7, R7, R6 ;
+      [B------:R-:W-:-:S01]         /*0148*/                   STG.E [R2], R7 ;
+      [B------:R-:W-:-:S15]         /*0150*/                   EXIT ;
+  .L_x_10:
+      [B------:R-:W-:-:S15]         /*0158*/                   BRA `(.L_x_10) ;
+      [B------:R-:W-:Y:S00]         /*0168*/                   NOP;
+      [B------:R-:W-:Y:S00]         /*0170*/                   NOP;
+      [B------:R-:W-:Y:S00]         /*0178*/                   NOP;
+  .L_x_31:
   
   
 

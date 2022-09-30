@@ -1,24 +1,44 @@
+BASENAME=cudatest
+BINNAME=${BASENAME}
 
-INCLUDE="C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt"
-LINK=-L "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\ucrt\x64" -L "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.18362.0\um\x64"
+INCLUDE=
+LINK=
 
-ARCH50=-gencode=arch=compute_50,code=\"sm_50,compute_50\"
+ARCH60=-gencode=arch=compute_60,code=\"sm_60,compute_60\"
 ARCH61=-gencode=arch=compute_61,code=\"sm_61,compute_61\"
+ARCH70=-gencode=arch=compute_70,code=\"sm_70,compute_70\"
 ARCH75=-gencode=arch=compute_75,code=\"sm_75,compute_75\"
+ARCH80=-gencode=arch=compute_80,code=\"sm_80,compute_80\"
 ARCH86=-gencode=arch=compute_86,code=\"sm_86,compute_86\"
 
-cudatest.exe:cudatest.cu 
-	nvcc cudatest.cu ${ARCH50} ${ARCH61} ${ARCH75} ${ARCH86} -o cudatest.exe -I ${INCLUDE} ${LINK} 
+ARCH=sm_75
 
-dsass:cudatest.exe
-	cuobjdump -sass -arch sm_86 cudatest.exe > cudatest.sm_86.sass
-	cuobjdump -sass -arch sm_75 cudatest.exe > cudatest.sm_75.sass
-	cuobjdump -sass -arch sm_61 cudatest.exe > cudatest.sm_61.sass
-	cuobjdump -sass -arch sm_52 cudatest.exe > cudatest.sm_52.sass
+BUILD_ARGS=${BASENAME}.cu -arch=${ARCH} -o ${BINNAME} ${INCLUDE} ${LINK}
 
-dcubin:cudatest.exe
-	cuobjdump -xelf all cudatest.exe
+${BINNAME}:${BASENAME}.cu 
+	nvcc ${BUILD_ARGS}
 
-dptx:cudatest.exe
-	cuobjdump -ptx cudatest.exe > cudatest.ptx
+dump:${BASENAME}.cu
+	HNVCC_OP=dump hnvcc ${BUILD_ARGS}
 
+d2h:dump
+	cuasm dump.${BASENAME}.${ARCH}.cubin
+	cp -b dump.${BASENAME}.${ARCH}.cuasm hack.${BASENAME}.${ARCH}.cuasm
+
+hack:${BASENAME}.cu
+	cuasm hack.${BASENAME}.${ARCH}.cuasm
+	HNVCC_OP=hack hnvcc ${BUILD_ARGS}
+
+dcubin:${BINNAME}
+	cuobjdump -xelf all ${BASENAME}
+
+dptx:${BINNAME}
+	cuobjdump -ptx ${BASENAME} > ${BASENAME}.ptx
+
+dsass:${BINNAME}
+	cuobjdump -sass ${BASENAME} > ${BASENAME}.sass
+
+.PHONY: clean
+
+clean:
+	-rm ${BINNAME}

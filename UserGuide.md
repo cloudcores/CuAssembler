@@ -1,12 +1,4 @@
 CuAssembler User Guide
-- [A simple tutorial for using CuAssembler with CUDA runtime API](#a-simple-tutorial-for-using-cuassembler-with-cuda-runtime-api)
-  - [Start from a CUDA C example](#start-from-a-cuda-c-example)
-  - [Build CUDA C into Cubin](#build-cuda-c-into-cubin)
-  - [Disassemble Cubin to Cuasm](#disassemble-cubin-to-cuasm)
-  - [Adjust the assembly code in cuasm](#adjust-the-assembly-code-in-cuasm)
-  - [Assemble cuasm into cubin](#assemble-cuasm-into-cubin)
-  - [Hack the original executable](#hack-the-original-executable)
-  - [Run or debug the executable](#run-or-debug-the-executable)
 - [A brief instruction on format of cubin and cuasm](#a-brief-instruction-on-format-of-cubin-and-cuasm)
   - [File Structure](#file-structure)
   - [Sections and Segments](#sections-and-segments)
@@ -17,129 +9,6 @@ CuAssembler User Guide
   - [Automatic Instruction Encoding](#automatic-instruction-encoding)
   - [Special Treatments of Encoding](#special-treatments-of-encoding)
   - [Instruction Assembler Repository](#instruction-assembler-repository)
-
-# A simple tutorial for using CuAssembler with CUDA runtime API
-
-We will show the basic usage of CuAssembler, by a simple `cudatest` case. CuAssembler is just an assembler, its main purpose is to generate the cubin file according to user input assembly. All device initialization, data preparation and kernel launch should be done by the user, possibly using CUDA driver API. However, it's usually more convenient to start from runtime API. Here we will demonstrate the general workflow for using CUDA runtime API with CuAssembler.
-
-This tutorial is far from complete, many basic knowledge of CUDA is needed for this trivial task. The code is not fully shown, and some common building steps are ignored, but I think you can get the idea... If not, you are probably too early to be here, please get familiar with basic CUDA usage first~
-
-Some useful references of prerequisite knowledge:
-* Basic knowledge of [CUDA](https://docs.nvidia.com/cuda/index.html), at least the CUDA C programming guide. 
-* [NVCC](https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html) and [CUDA binary utilities](https://docs.nvidia.com/cuda/cuda-binary-utilities/index.html): many users just utilize those tools via IDE, but here, you will have to play with them in command line from time to time.
-* ELF Format: There are many references on the format of ELF, both generic and architecture dependent, for example, [this one](http://downloads.openwatcom.org/ftp/devel/docs/elf-64-gen.pdf). Currently only **64bit** version of ELF (**little endian**) is supported by CuAssembler. 
-* Common assembly directives: `nvdisasm` seems to resemble many conventions of gnu assembler. Since no doc is provided on the grammar of `nvdisasm` disassemblies, get familiar with [Gnu Assembler directives](https://ftp.gnu.org/old-gnu/Manuals/gas-2.9.1/html_chapter/as_7.html) would be helpful. Actually only very few directives are used in cuasm, look it up in this manual if you need more information. **NOTE**: some directives may be architecture dependent, you may need to discriminate them by yourself.
-* CUDA PTX and SASS instructions: Before you can write any assemblies, you need to know the language first. Currently no official (at least no comprehensive) doc is provided on SASS, just [simple opcodes list](https://docs.nvidia.com/cuda/cuda-binary-utilities/index.html#instruction-set-ref). Get familiar with [PTX ISA](https://docs.nvidia.com/cuda/parallel-thread-execution/index.html) and its documentation will be greatly helpful to understand the semantics of SASS assemblies. 
-
-## Start from a CUDA C example
-
-First we need to create a `cudatest.cu` file with enough information of kernels. You may start from any other CUDA samples with explicit kernel definitions. Some CUDA programs do not have explicit kernels written by user, instead, they may invoke some kernels pre-compiled in libraries. In this case you cannot hack the cubin by runtime API, you need to hack the library! That would be totally a different story, currently we just focus on the *user kernels*, rather than *library kernels*. An example of kernel may look like this (other lines are ignored):
-
-```c++
-__global__ void vectorAdd(const float* a, const float* b, float* c)
-{
-    int idx = threadIdx.x + blockIdx.x * blockDim.x;
-    c[idx] = a[idx] + b[idx];
-}
-```
-
-Currently CuAssembler does not fully support modification of kernel args, globals (constants, texture/surface references), thus all these information(size, name, etc.) should be defined in CUDA C, and inherited from cubin into CuAssembler. Best practice here is to make a naive working version of the kernel, with all required resources prepared. Then in assembly, only the instructions need to be modified, that's the most robust way CuAssembler can be used. 
-
-**NOTE**: when you get into the stage of final assembly tuning, modifying the original CUDA C would be very unreliable, and usually rather error-prone, thus it's strongly recommended to keep all the staff unchanged in CUDA C. If you really need this, you probably have to make a big restructuring of the generated assembly. Making version control of the generated `cuasm` file may help you get through this more easily, and hopefully less painfully.
-
-## Build CUDA C into Cubin
-
-`nvcc` is the canonical way to build a `.cu` file into executable, such as `nvcc -o cudatest cudatest.cu`. However, we need the intermediate `cubin` file to start with. Thus we will use the `--keep` option of `nvcc`, which will keep all intermediate files (such as ptx, cubin, etc.). By default, only the lowest supported SM version of ptx and cubin will be generated, if you need a specific SM version of cubin, you need to specify the `-gencode` option, such as `-gencode=arch=compute_75,code=\"sm_75,compute_75\"` for turing (`sm_75`). The full command may look like:
-
-```
-    nvcc -o cudatest cudatest.cu -gencode=arch=compute_75,code=\"sm_75,compute_75\" --keep
-```
-
-Then you will get cubins such as `cudatest.1.sm_75.cubin` (probably different number), under the intermediate files directory (maybe just current directory). Then we get a cubin to start with.
-
-**NOTE**: Sometimes `nvcc` may generate several `cubin` of different versions, and possibly an extra empty cubin of every SM version. You can check the contents by `nvdisasm`, or just judging by the file size.
-
-Another important information from `nvcc` is that we need full building steps. Thus we use the `--dryrun` option to list all the steps invoked by `nvcc`.
-
-```
-    nvcc -o cudatest cudatest.cu -gencode=arch=compute_75,code=\"sm_75,compute_75\" --dryrun
-```
-
-You may get something like this (some lines are ignored, you may have different output):
-
-```bat
-    ...
-#$ cl.exe > "cudatest.cpp1.ii" -D__CUDA_ARCH__=750 -nologo -E -TP  -DCUDA_DOUBLE_MATH_FUNCTIONS -D__CUDACC__ -D__NVCC__  "-IC:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1\bin/../include"    -D__CUDACC_VER_MAJOR__=11 -D__CUDACC_VER_MINOR__=1 -D__CUDACC_VER_BUILD__=74 -D__CUDA_API_VER_MAJOR__=11 -D__CUDA_API_VER_MINOR__=1 -FI "cuda_runtime.h" -EHsc "cudatest.cu"
-#$ cicc --microsoft_version=1925 --msvc_target_version=1925 --compiler_bindir "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.25.28610/bin/Hostx64/x64/../../../../../../.." --orig_src_file_name "cudatest.cu" --allow_managed  -arch compute_75 -m64 -ftz=0 -prec_div=1 -prec_sqrt=1 -fmad=1 --include_file_name "cudatest.fatbin.c" -tused -nvvmir-library "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1\bin/../nvvm/libdevice/libdevice.10.bc" --gen_module_id_file --module_id_file_name "cudatest.module_id" --gen_c_file_name "cudatest.cudafe1.c" --stub_file_name "cudatest.cudafe1.stub.c" --gen_device_file_name "cudatest.cudafe1.gpu"  "cudatest.cpp1.ii" -o "cudatest.ptx"
-#$ ptxas -arch=sm_75 -m64 "cudatest.ptx"  -o "cudatest.sm_75.cubin"
-#$ fatbinary --create="cudatest.fatbin" -64 --cicc-cmdline="-ftz=0 -prec_div=1 -prec_sqrt=1 -fmad=1 " "--image3=kind=elf,sm=75,file=cudatest.sm_75.cubin" "--image3=kind=ptx,sm=75,file=cudatest.ptx" --embedded-fatbin="cudatest.fatbin.c"
-#$ cl.exe > "cudatest.cpp4.ii" -nologo -E -TP -D__CUDACC__ -D__NVCC__  "-IC:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1\bin/../include"    -D__CUDACC_VER_MAJOR__=11 -D__CUDACC_VER_MINOR__=1 -D__CUDACC_VER_BUILD__=74 -D__CUDA_API_VER_MAJOR__=11 -D__CUDA_API_VER_MINOR__=1 -FI "cuda_runtime.h" -EHsc "cudatest.cu"
-#$ cudafe++ --microsoft_version=1925 --msvc_target_version=1925 --compiler_bindir "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.25.28610/bin/Hostx64/x64/../../../../../../.." --orig_src_file_name "cudatest.cu" --allow_managed --m64 --parse_templates --gen_c_file_name "cudatest.cudafe1.cpp" --stub_file_name "cudatest.cudafe1.stub.c" --module_id_file_name "cudatest.module_id" "cudatest.cpp4.ii"
-#$ cl.exe -Fo"cudatest.obj" -D__CUDA_ARCH__=750 -nologo -c -TP  -DCUDA_DOUBLE_MATH_FUNCTIONS "-IC:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1\bin/../include"   -EHsc "cudatest.cudafe1.cpp"
-#$ nvlink -optf "cudatest_dlink.sm_75.cubin.optf"
-#$ fatbinary --create="cudatest_dlink.fatbin" -64 --cicc-cmdline="-ftz=0 -prec_div=1 -prec_sqrt=1 -fmad=1 " -link "--image3=kind=elf,sm=75,file=cudatest_dlink.sm_75.cubin" --embedded-fatbin="cudatest_dlink.fatbin.c"
-#$ cl.exe -Fo"cudatest_dlink.obj" -nologo -c -TP -DFATBINFILE="\"cudatest_dlink.fatbin.c\"" -DREGISTERLINKBINARYFILE="\"cudatest_dlink.reg.c\"" -I. -D__NV_EXTRA_INITIALIZATION= -D__NV_EXTRA_FINALIZATION= -D__CUDA_INCLUDE_COMPILER_INTERNAL_HEADERS__  "-IC:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1\bin/../include"    -D__CUDACC_VER_MAJOR__=11 -D__CUDACC_VER_MINOR__=1 -D__CUDACC_VER_BUILD__=74 -D__CUDA_API_VER_MAJOR__=11 -D__CUDA_API_VER_MINOR__=1 -EHsc "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1\bin\crt\link.stub"
-#$ cl.exe -Fe"cudatest.exe" -nologo "cudatest_dlink.obj" "cudatest.obj" -link -INCREMENTAL:NO   "/LIBPATH:C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1\bin/../lib/x64"  cudadevrt.lib  cudart_static.lib
-```
-
-Saving those commands to a script file(e.g., `*.bat` for windows, `*.sh` for linux, remember to **uncomment** it first). We will need them when we want to embed the hacked cubin back to the executable, and run it as if the hacking does not happen at all.
-
-## Disassemble Cubin to Cuasm
-
-Then we can create a python script of CuAssembler to disassemble the `cubin` into `cuasm`:
-
-```python
-from CuAsm.CubinFile import CubinFile
-
-binname = 'cudatest.2.sm_75.cubin'
-cf = CubinFile(binname)
-asmname = binname.replace('.cubin', '.cuasm')
-cf.saveAsCuAsm(asmname)
-```
-
-**NOTES**: CuAssembler is a python package, with default package name as directory name `CuAsm`. To make the package visible to python importing, you may need to append its parent dir to environment variable `PYTHONPATH`, or just copy the `CuAsm` dir to any current `PYTHONPATH`. If you just want to make it temporally importable, you can append it to `sys.path` in the python script.
-
-## Adjust the assembly code in cuasm
-
-Most contents of `cuasm` file is copied from `nvdisasm` result of the cubin, with some supplementary ELF information explicitly recorded in text format , such as file header attributes, section header attributes, implicit sections(such as `.strtab/.shstrtab/.symtab`) not shown in disassembly. All these information inherited directly from the cubin should not be modified (unless have to, such the offset and size of sections, which will be done by the assembler automatically). This does not mean these information cannot be automatically generated, but since NVIDIA provides no information about their conventions, probing them all would be rather pain-staking. Thus it's much safer and easier to keep them as is. Actually, most adjustment of those information (such as add a kernel, global, etc.) can be achieved by modifying the original CUDA C code, which is officially supported and much more reliable.
-
-See an [example cuasm](TestData/CuTest/cudatest.7.sm_75.cuasm) in `TestData` for more information. 
-
-## Assemble cuasm into cubin
-
-Assembling cuasm into cubin is also trivial:
-
-```python
-from CuAsm.CuAsmParser import CuAsmParser
-
-asmname = 'cudatest.7.sm_75.cuasm'
-binname = 'new_cudatest.7.sm_75.cubin'
-cap = CuAsmParser()
-cap.parse(asmname)
-cap.saveAsCubin(binname)
-```
-
-I prefer to rename the generated `cubin` to a different name with respect to the original cubin. Since we may need to check or compare some information of those two cubins simultaneously.
-
-## Hack the original executable 
-
-As soon as you get a hacked cubin, the easiest way to put it back to the executable is to mimic the behavior of the original building steps. Take a look at the output of `nvcc` with `--dryrun` option, there will be a step which looks like:
-
-```bat
-ptxas -arch=sm_75 -m64 "cudatest.ptx"  -o "cudatest.sm_75.cubin"
-```
-
-You can delete all the steps before this one (include this `ptxas` step), rename your hacked cubin to `cudatest.sm_75.cubin`, and run the rest of those building steps. That will give you an executable just like run `nvcc` directly.
-
-Sometimes you may not need to hack all of the cubins, you can freely hack one or more `ptxas` steps, since `ptxas` just accepts one file at a time. For more convenient usage, you may also copy those steps into a makefile, and run the rebuild steps if any dependent file is modified. You can even make a script or set an environment variable to switch between the hacked version and original version.
-
-## Run or debug the executable
-
-If everything goes right, the hacked cubin should work as good as the original one. However, if some mismatches exist with respect to the original CUDA C file(such as kernel names, kernel arg arrangements, global contants, and global texture/surface references), the executable may not work right. That's why we should always get those information ready before hacking the cubin. Another issue is, some symbol information will be used for proper debugging. Thus you should not modify them as well (symbol offsets and sizes will be automatically updated by assembler). 
-
-See next section for more info on the contents of cubin and cuasm.
-
-**NOTE**: debug version of cubin contains far too much information(DWARF for source line correlations...and many more), which is very difficult to process in assembler. Thus you should not use CuAssembler with debug version of cubin. That's another reason why it's recommended to work on a naive but correct version of CUDA C first. NVIDIA provides tools for final SASS level debugging (such as NSight VS version and `cuda-gdb`), there are no source code correlation in this level.
 
 # A brief instruction on format of cubin and cuasm
 
@@ -353,35 +222,35 @@ The corresponding `cuasm` region of codes will be as follows(generated by CUDA t
         .other          _Z10simpletest4int4Pi,@"STO_CUDA_ENTRY STV_DEFAULT"
 _Z10simpletest4int4Pi:
 .text._Z10simpletest4int4Pi:
-    [----:B------:R-:W-:Y:S08]         /*0000*/                   MOV R1, c[0x0][0x28] ;
-    [----:B------:R-:W0:-:S01]         /*0010*/                   S2R R2, SR_CTAID.X ;
-    [----:B------:R-:W-:-:S01]         /*0020*/                   UMOV UR4, 32@lo(GlobalC1) ;
-    [----:B------:R-:W-:-:S01]         /*0030*/                   MOV R9, 0x4 ;
-    [----:B------:R-:W-:-:S01]         /*0040*/                   UMOV UR5, 32@hi(GlobalC1) ;
-    [----:B------:R-:W0:-:S01]         /*0050*/                   S2R R3, SR_TID.X ;
-    [----:B------:R-:W-:-:S01]         /*0060*/                   MOV R4, UR4 ;
-    [----:B------:R-:W-:-:S02]         /*0070*/                   IMAD.U32 R5, RZ, RZ, UR5 ;
-    [----:B0-----:R-:W-:Y:S05]         /*0080*/                   IMAD R2, R2, c[0x0][0x0], R3 ;
-    [----:B------:R-:W-:Y:S04]         /*0090*/                   SHF.R.S32.HI R3, RZ, 0x1f, R2 ;
-    [----:B------:R-:W-:Y:S04]         /*00a0*/                   LEA.HI R3, R3, R2, RZ, 0x4 ;
-    [----:B------:R-:W-:Y:S05]         /*00b0*/                   LOP3.LUT R3, R3, 0xfffffff0, RZ, 0xc0, !PT ;
-    [R---:B------:R-:W-:-:S02]         /*00c0*/                   IMAD.IADD R7, R2.reuse, 0x1, -R3 ;
-    [----:B------:R-:W-:Y:S04]         /*00d0*/                   IMAD.WIDE R2, R2, R9, c[0x0][0x170] ;
-    [----:B------:R-:W-:Y:S04]         /*00e0*/                   IMAD.WIDE R4, R7, 0x4, R4 ;
-    [----:B------:R-:W2:-:S04]         /*00f0*/                   LDG.E.SYS R0, [R2] ;
-    [----:B------:R-:W2:-:S01]         /*0100*/                   LDG.E.SYS R5, [R4] ;
-    [----:B------:R-:W-:Y:S04]         /*0110*/                   MOV R6, c[0x0][0x168] ;
-    [----:B------:R-:W-:Y:S12]         /*0120*/                   ISETP.GE.AND P0, PT, R6, 0x1, PT ;
-    [----:B------:R-:W-:Y:S06]         /*0130*/               @P0 IMAD R6, R9, c[0x0][0x164], RZ ;
-    [----:B------:R-:W0:-:S01]         /*0140*/               @P0 LDC R6, c[0x3][R6] ;
-    [----:B--2---:R-:W-:Y:S08]         /*0150*/                   IMAD R0, R0, c[0x0][0x160], R5 ;
+    [B------:R-:W-:Y:S08]         /*0000*/                   MOV R1, c[0x0][0x28] ;
+    [B------:R-:W0:-:S01]         /*0010*/                   S2R R2, SR_CTAID.X ;
+    [B------:R-:W-:-:S01]         /*0020*/                   UMOV UR4, 32@lo(GlobalC1) ;
+    [B------:R-:W-:-:S01]         /*0030*/                   MOV R9, 0x4 ;
+    [B------:R-:W-:-:S01]         /*0040*/                   UMOV UR5, 32@hi(GlobalC1) ;
+    [B------:R-:W0:-:S01]         /*0050*/                   S2R R3, SR_TID.X ;
+    [B------:R-:W-:-:S01]         /*0060*/                   MOV R4, UR4 ;
+    [B------:R-:W-:-:S02]         /*0070*/                   IMAD.U32 R5, RZ, RZ, UR5 ;
+    [B0-----:R-:W-:Y:S05]         /*0080*/                   IMAD R2, R2, c[0x0][0x0], R3 ;
+    [B------:R-:W-:Y:S04]         /*0090*/                   SHF.R.S32.HI R3, RZ, 0x1f, R2 ;
+    [B------:R-:W-:Y:S04]         /*00a0*/                   LEA.HI R3, R3, R2, RZ, 0x4 ;
+    [B------:R-:W-:Y:S05]         /*00b0*/                   LOP3.LUT R3, R3, 0xfffffff0, RZ, 0xc0, !PT ;
+    [B------:R-:W-:-:S02]         /*00c0*/                   IMAD.IADD R7, R2.reuse, 0x1, -R3 ;
+    [B------:R-:W-:Y:S04]         /*00d0*/                   IMAD.WIDE R2, R2, R9, c[0x0][0x170] ;
+    [B------:R-:W-:Y:S04]         /*00e0*/                   IMAD.WIDE R4, R7, 0x4, R4 ;
+    [B------:R-:W2:-:S04]         /*00f0*/                   LDG.E.SYS R0, [R2] ;
+    [B------:R-:W2:-:S01]         /*0100*/                   LDG.E.SYS R5, [R4] ;
+    [B------:R-:W-:Y:S04]         /*0110*/                   MOV R6, c[0x0][0x168] ;
+    [B------:R-:W-:Y:S12]         /*0120*/                   ISETP.GE.AND P0, PT, R6, 0x1, PT ;
+    [B------:R-:W-:Y:S06]         /*0130*/               @P0 IMAD R6, R9, c[0x0][0x164], RZ ;
+    [B------:R-:W0:-:S01]         /*0140*/               @P0 LDC R6, c[0x3][R6] ;
+    [B--2---:R-:W-:Y:S08]         /*0150*/                   IMAD R0, R0, c[0x0][0x160], R5 ;
 .CUASM_OFFSET_LABEL._Z10simpletest4int4Pi.EIATTR_COOP_GROUP_INSTR_OFFSETS.#:
-    [----:B------:R-:W0:-:S02]         /*0160*/                   SHFL.UP PT, R7, R0, 0x1, RZ ;
-    [----:B0-----:R-:W-:Y:S08]         /*0170*/               @P0 IMAD.IADD R7, R7, 0x1, R6 ;
-    [----:B------:R-:W-:-:S01]         /*0180*/                   STG.E.SYS [R2], R7 ;
-    [----:B------:R-:W-:-:S05]         /*0190*/                   EXIT ;
+    [B------:R-:W0:-:S02]         /*0160*/                   SHFL.UP PT, R7, R0, 0x1, RZ ;
+    [B0-----:R-:W-:Y:S08]         /*0170*/               @P0 IMAD.IADD R7, R7, 0x1, R6 ;
+    [B------:R-:W-:-:S01]         /*0180*/                   STG.E.SYS [R2], R7 ;
+    [B------:R-:W-:-:S05]         /*0190*/                   EXIT ;
 .L_20:
-    [----:B------:R-:W-:Y:S00]         /*01a0*/                   BRA `(.L_20);
+    [B------:R-:W-:Y:S00]         /*01a0*/                   BRA `(.L_20);
 .L_228:
 ```
 
@@ -393,8 +262,8 @@ Here are some explanations:
 * `.sectioninfo	@"SHI_REGISTERS=12"`: set register numbers used in current kernel. **NOTE**: For Turing and Ampere, 2 extra GPRs are occupied for some unknown reasons. Thus if the largest GPR number you used in your kernel is `R20`, you need to set `@"SHI_REGISTERS=23"` (GPR numbers from 0, `R20` means 21 used, plus 2 extra, that's 23). The maximum GPR number is 255 (the encoding of `R255` is occupied by `RZ`), which means `R252` is the largest GPR number used in kernel text.
 * For kernels utilize block-wide barriers(such as `__syncthreads()`), there may be another attribute specifying number of barriers required, such as `.sectionflags @"SHF_BARRIERS=1"`. Currently a kernel can use up to 16 barriers.
 * `.global _Z10simpletest4int4Pi`: a symbol is defined for current kernel. It will be used for both function exporting (global symbol is visible externally, which means it's accessible via driver API `cuModuleGetFunction`), and possibly debugging (see `.debug_frame` section). As stated before, symbols are all kept as is. 
-* `[----:B------:R-:W-:Y:S08]         /*0000*/                   MOV R1, c[0x0][0x28] ;`: this is the canonical form of instruction line. A control code, a commented address in hex, and then the instruction assembly string. The text form of control codes is slightly different from the one used in [maxas by Scott Gray](https://github.com/NervanaSystems/maxas/wiki/Control-Codes). Here, the control codes are splitted into 6 fields seperated with colon `:`:
-    - **Reuse flags**: the 4bit reuse flags indicate the value of current slot of GPR will be re-read by later instructions. There are at least 3 slots (possibly 4? Never see the forth bit set...) of reuse caches, with each bit set to `R` for reuse, and `-` for none. It seems reuse caches only work for ALU instructions, with each slot corresponding to an operand position, which will be suffixed by `.reuse`(**NOTE**: CuAssembler will not care about the `.reuse` suffix in instruction string, only sequences in control codes part matter). But some inconsistency can also be found, such as:
+* `[B------:R-:W-:Y:S08]         /*0000*/                   MOV R1, c[0x0][0x28] ;`: this is the canonical form of instruction line. A control code, a commented address in hex, and then the instruction assembly string. The text form of control codes is slightly different from the one used in [maxas by Scott Gray](https://github.com/NervanaSystems/maxas/wiki/Control-Codes). Here, the control codes are splitted into 6 fields seperated with colon `:`:
+    - **Reuse flags**(Deprecated!!! reuse will be set according to `.reuse` modifier of the assembly text.): the 4bit reuse flags indicate the value of current slot of GPR will be re-read by later instructions. There are at least 3 slots (possibly 4? Never see the forth bit set...) of reuse caches, with each bit set to `R` for reuse, and `-` for none. It seems reuse caches only work for ALU instructions, with each slot corresponding to an operand position, which will be suffixed by `.reuse`(**NOTE**: CuAssembler will not care about the `.reuse` suffix in instruction string, only sequences in control codes part matter). But some inconsistency can also be found, such as:
   
       >  [-R--:B------:R-:W-:-:S02]         /*09c0*/                   IABS R7, R5.reuse ;
       
@@ -535,14 +404,14 @@ In CuAssembler, `CuInsFeeder` class can read this SASS file and iteratively yiel
 
 ```python
 fname = r'TestData\CuTest\cudatest.sm_75.sass'
-feeder = CuInsFeeder(fname, arch='sm_75')
+feeder = CuInsFeeder(fname)
 
 cip = CuInsParser(arch='sm_75')
 
-for  addr, code, s, ctrlcodes in feeder:
-    print('0x%04x :   0x%06x   0x%028x   %s'% (addr, ctrlcodes, code, s))
+for  addr, code, asm, ctrl in feeder:
+    print('0x%04x :   0x%06x   0x%028x   %s'% (addr, ctrl, code, asm))
 
-    ins_key, ins_vals, ins_modi = cip.parse(s, addr, code)
+    ins_key, ins_vals, ins_modi = cip.parse(asm, addr, code)
     print('    Ins_Key = %s'%ins_key)
     print('    Ins_Vals = %s'%str(ins_vals))
     print('    Ins_Modi = %s'%str(ins_modi))
