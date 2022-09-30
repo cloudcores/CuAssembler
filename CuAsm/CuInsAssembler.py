@@ -3,9 +3,9 @@
 import sympy
 from sympy import Matrix # Needed by repr
 from sympy.core.numbers import Rational
-from io import StringIO, BytesIO
-from .CuSMVersion import CuSMVersion
-from .common import reprList
+from io import StringIO
+from CuAsm.CuSMVersion import CuSMVersion
+from CuAsm.common import reprList, reprHexMat
 from CuAsm.CuAsmLogger import CuAsmLogger
 
 class CuInsAssembler():
@@ -30,8 +30,25 @@ class CuInsAssembler():
             self.m_ValNullMat = []
             self.m_Rhs = None
             self.m_InsRecords = []
+            self.m_ErrRecords = {}
+
             self.m_Arch = CuSMVersion(arch)
 
+    def iterRecords(self):
+        ''' Iterate over all records, including normal records and error records.'''
+        
+        # m_InsRecords is a list of ins_info => (addr, code, s)
+        for r in self.m_InsRecords:
+            yield r
+        
+        # m_ErrRecords is a dict of {code_diff : ins_info => (addr, code, s) }
+        for _, r in self.m_ErrRecords.items():
+            yield r
+    
+    def recordsFeeder(self):
+        for r in self.iterRecords():
+            yield r[0], r[1], r[2], 0
+            
     def initFromDict(self, d):
         self.m_InsKey     = d['InsKey']
         self.m_InsRepos   = d['InsRepos']
@@ -42,8 +59,14 @@ class CuInsAssembler():
         self.m_PSolFac    = d['PSolFac']
         self.m_ValNullMat = d['ValNullMat']
         self.m_Rhs        = d['Rhs']
+
         self.m_InsRecords = d['InsRecords']
+        self.m_ErrRecords = d['ErrRecords'] if 'ErrRecords' in d else {} 
+
         self.m_Arch       = d['Arch']
+
+    def initFromJsonDict(self, d):
+        pass
 
     def expandModiSet(self, modi):
         ''' Push in new modifiers.
@@ -58,6 +81,25 @@ class CuInsAssembler():
                 updated = True
 
         return updated
+
+    def buildInsValVec(self, vals, modi, outRawList=False):
+        ''' Convert instruction value vector from vals and modifiers.
+
+            NOTE: Due to performance reason of Matrix.nullspace(), vals are placed after modis.
+                  Usually vals are dense, but modifiers are sparse. 
+                  This arrangement will make the valMatrix more like upper trangular, 
+                  and this will usually make carrying out the nullspace much much faster.
+
+            TODO: currently opcode is also a modifer, maybe placed after modis? 
+        '''
+
+        insval = [1 if m in modi else 0 for m in self.m_InsModiSet]    # first comes modi
+        insval.extend(vals)                                            # then follows vals
+        if outRawList:
+            return insval
+        else:
+            insvec = sympy.Matrix(insval)
+            return insvec
 
     def canAssemble(self, vals, modi):
         """ Check whether the input code can be assembled with current info.
@@ -76,14 +118,12 @@ class CuInsAssembler():
             info = 'Unknown modifiers: (%s)' % (set(modi) - set(self.m_InsModiSet.keys()))
             return brief, info
         else:
-            insval = vals.copy()
-            insval.extend([1 if m in modi else 0 for m in self.m_InsModiSet])
-            insvec = sympy.Matrix(insval)
+            insvec = self.buildInsValVec(vals, modi)
 
             if self.m_ValNullMat is not None:
                 insrhs = self.m_ValNullMat * insvec
                 if not all([v==0 for v in insrhs]):
-                    return 'NewVals', 'Insufficient basis, try gathering more instructions!'
+                    return 'NewVals', 'Insufficient basis, try CuAsming more instructions!'
 
         return None, None
 
@@ -92,10 +132,13 @@ class CuInsAssembler():
 
             When its code can be assembled, verify the result,
             otherwise add new information to current assembler.
-            @return:
-                "NewInfo" for new information
-                "Verified" for no new information, but the results is consistent
-                False for inconsistent assembling result
+            @return (flag, info):
+                flag = True (Expected result)
+                    "NewModi" / "NewVals" for new information
+                    "Verified" for no new information, but the results is consistent
+                flag = False (Unexpected result)
+                    "NewConflict" for new conflict information
+                    "KnownConflict" for known inconsistent assembling result
         '''
 
         if not all([m in self.m_InsModiSet for m in modi]):
@@ -106,13 +149,11 @@ class CuInsAssembler():
             self.m_InsRepos.append((vals, modi, code))
             self.buildMatrix()
             self.m_InsRecords.append(ins_info)
-            return 'NewModi'
+            return True, 'NewModi'
         else:
             # If the vals of new instruction lies in the null space of
             # current ValMatrix, it does not contain new information.
-            insval = vals.copy()
-            insval.extend([1 if m in modi else 0 for m in self.m_InsModiSet])
-            insvec = sympy.Matrix(insval)
+            insvec = self.buildInsValVec(vals, modi)
 
             if self.m_ValNullMat is None:
                 doVerify = True
@@ -125,26 +166,43 @@ class CuInsAssembler():
                 inscode = self.m_PSol.dot(insvec) / self.m_PSolFac
 
                 if inscode != code:
-                    CuAsmLogger.logError("Error when verifying code!")
-                    CuAsmLogger.logError("    InputCode : %s" % self.m_Arch.formatCode(code))
-                    try:
-                        CuAsmLogger.logError("    AsmCode   : %s" % self.m_Arch.formatCode(inscode))
-                    except:
-                        CuAsmLogger.logError("    AsmCode   : (%s)!" % str(inscode))
+                    if inscode.is_integer:
+                        code_diff = inscode - code
+                        if code_diff not in self.m_ErrRecords:
+                            self.m_ErrRecords[code_diff] = ins_info
+                            CuAsmLogger.logError("Error when verifying for %s" % self.m_InsKey)
+                            CuAsmLogger.logError("    Asm : %s" % ins_info[-1])
+                            CuAsmLogger.logError("    InputCode : %s" % self.m_Arch.formatCode(code))
+                            CuAsmLogger.logError("    AsmCode   : %s" % self.m_Arch.formatCode(inscode))
+                            return False, 'NewConflict'
+                        else:
+                            CuAsmLogger.logDebug("Known code conflict for %s!" % self.m_InsKey)
+                            return False, 'KnownConflict'
+                    else:
+                        CuAsmLogger.logCritical("FATAL! Non-integral code assembled for %s" % self.m_InsKey)
+                        CuAsmLogger.logCritical("    Asm : %s" % ins_info[-1])
+                        CuAsmLogger.logCritical("    InputCode : %s" % self.m_Arch.formatCode(code))
+                        CuAsmLogger.logCritical("    AsmCode   : (%s)!" % str(inscode))
+                        
+                        # It's very unlikely the diff is just the code it self. (usually opcode will match) 
+                        code_diff = code
+                        self.m_ErrRecords[code_diff] = ins_info
+
+                        return False, 'NewConflict'
 
                     # print(self.__repr__())
                     # raise Exception("Inconsistent instruction code!")
-                    return False
+                    # return False
                 else:
                     # print("Verified: 0x%032x" % code)
-                    return 'Verified'
+                    return True, 'Verified'
 
             else:
                 CuAsmLogger.logProcedure('Pushing new vals (%s, %-20s): %s' % (self.m_Arch.formatCode(code), self.m_InsKey, ins_info))
                 self.m_InsRepos.append((vals, modi, code))
                 self.m_InsRecords.append(ins_info)
                 self.buildMatrix()
-                return 'NewVals'
+                return True, 'NewVals'
 
         # Never be here
         # return True
@@ -154,27 +212,27 @@ class CuInsAssembler():
 
         NOTE: This function didn't check the sufficiency of matrix.'''
 
-        insval = vals.copy()
-        insval.extend([1 if m in modi else 0 for m in self.m_InsModiSet])
-        insvec = sympy.Matrix(insval)
-        inscode = self.m_PSol.dot(insvec) / self.m_PSolFac
+        inscode = 0
+        for v0, vs in zip(self.m_PSol[-len(vals):], vals):
+            inscode += v0 * vs
+            
+        for m in modi:
+            inscode += self.m_PSol[self.m_InsModiSet[m]]
+        
+        if self.m_PSolFac == 1:
+            return int(inscode)
+        else:
+            return int(inscode//self.m_PSolFac)
 
-        return int(inscode)
-
-    def buildMatrix(self):
+    def buildMatrix(self, solve_method='LU'):
         if len(self.m_InsRepos) == 0:
             return None, None
 
         M = []
         b = []
-        zgen = range(len(self.m_InsModiSet))
         for vals, modis, code in self.m_InsRepos:
-            l = [0 for x in zgen]
-            for im in modis:
-                l[self.m_InsModiSet[im]] = 1
-            cval = vals.copy()
-            cval.extend(l)
-            M.append(cval)
+            l = self.buildInsValVec(vals, modis, outRawList=True)
+            M.append(l)
             b.append(code)
 
         self.m_ValMatrix = sympy.Matrix(M)
@@ -187,9 +245,9 @@ class CuInsAssembler():
             for nn in range(self.m_ValNullMat.rows):
                 M2 = M2.row_insert(0, self.m_ValNullMat.row(nn))
                 b2 = b2.row_insert(0, sympy.Matrix([0]))
-            self.m_PSol = M2.solve(b2)
+            self.m_PSol = M2.solve(b2, method=solve_method)
         else:
-            self.m_PSol = self.m_ValMatrix.solve(self.m_Rhs)
+            self.m_PSol = self.m_ValMatrix.solve(self.m_Rhs, method=solve_method)
 
         self.m_PSol, self.m_PSolFac = self.getMatrixDenomLCM(self.m_PSol)
         return self.m_ValMatrix, self.m_Rhs
@@ -209,7 +267,76 @@ class CuInsAssembler():
         else:
             print('Not solvable!')
             return None
+    
+    def printSolution(self):
+        print("InsKey = %s" % self.m_InsKey)
+        nvals = len(self.m_InsRepos[0][0])
+        nmodi = len(self.m_InsModiSet)
 
+        names = ['V%d'%v for v in range(nvals)]
+        names.extend([0] * nmodi)
+        for m, midx in self.m_InsModiSet.items():
+            names[midx+nvals] = m
+
+        # the order of solutions are altered for better display.
+        # vals are displayed before modis
+        
+        rev_sol = []
+        rev_sol.extend(self.m_PSol[nmodi:])
+        rev_sol.extend(self.m_PSol[:nmodi])
+         
+        for name, val in zip(names, rev_sol):
+            if val % self.m_PSolFac == 0:
+                print("  %24s :  %#32x" % (name, val // self.m_PSolFac))
+            else:
+                print("  %24s :  %#32x / %#x " % (name, val, self.m_PSolFac))
+
+    def reprPSol(self):
+        nvals = len(self.m_InsRepos[0][0])
+        nmodi = len(self.m_InsModiSet)
+
+        names = [0 for _ in range(nmodi)]
+        for m, midx in self.m_InsModiSet.items():
+            names[midx] = m
+        
+        names.append('Pred')
+        names.extend(['V%d'%v for v in range(1, nvals)])
+        
+        slist = []
+        vlist = []
+        maxvlen = 0
+        for ival in range(nvals+nmodi):
+            sval = '%#x' % self.m_PSol[ival, 0]
+            slist.append(sval)
+            vlist.append(self.m_PSol[ival, 0])
+            maxvlen = max(maxvlen, len(sval))
+        
+        maxnlen = 0
+        for name in names:
+            maxnlen = max(maxnlen, len(name))
+        
+        fac = int(self.m_PSolFac)
+
+        sio = StringIO()
+        sio.write('Matrix([\n')
+        if self.m_PSolFac == 1:
+            for vname, s in zip(names, slist):
+                ss = ' '*(maxvlen-len(s)) + s
+                sio.write(f'[ {ss}], # {vname}\n')
+        else:
+            for vname, s, v in zip(names, slist, vlist):
+                ss = ' '*(maxvlen-len(s)) + s
+                ns = ' '*(maxnlen-len(vname)) + vname
+                vv = int(v)
+                if vv % fac == 0:
+                    vt = vv // fac
+                    sio.write(f'[ {ss}], # {ns} : {vt:#32x}\n')
+                else:
+                    sio.write(f'[ {ss}], # {ns} : {vv:#32x} / {fac:#x}\n')
+        sio.write('])')
+        
+        return sio.getvalue()
+                
     def getNullMatrix(self, M):
         ''' Get the null space of current matrix M.
 
@@ -219,7 +346,7 @@ class CuInsAssembler():
             Fractional seems much slower than integers.
         '''
 
-        ns = M.nullspace()
+        ns = M.nullspace(simplify=True)
         if len(ns)==0:
             return None
         else:
@@ -261,7 +388,7 @@ class CuInsAssembler():
 
         sio.write('  "InsModiSet" : %s, \n' % repr(self.m_InsModiSet))
         sio.write('  "ValMatrix" : %s, \n' % repr(self.m_ValMatrix))
-        sio.write('  "PSol" : %s, \n' % repr(self.m_PSol))
+        sio.write('  "PSol" : %s, \n' % self.reprPSol())
         sio.write('  "PSolFac" : %s, \n' % repr(self.m_PSolFac))
         sio.write('  "ValNullMat" : %s, \n' % repr(self.m_ValNullMat))
         #sio.write('  "InsRecords" : %s, \n' % repr(self.m_InsRecords))
@@ -272,7 +399,12 @@ class CuInsAssembler():
             sio.write('(%#08x, %s, "%s"),\n'%(addr, self.m_Arch.formatCode(code), s))
         sio.write('], \n')
 
-        sio.write('  "Rhs" : %s, \n' % repr(self.m_Rhs))
+        sio.write('  "ErrRecords" : {')
+        for code_diff, (addr, code, s) in self.m_ErrRecords.items():
+            sio.write('%#x : (%#08x, %s, "%s"),\n'%(code_diff, addr, self.m_Arch.formatCode(code), s))
+        sio.write('}, ')
+
+        sio.write('  "Rhs" : %s, \n' % reprHexMat(self.m_Rhs))
         sio.write('  "Arch" : %s })' % repr(self.m_Arch))
 
         return sio.getvalue()

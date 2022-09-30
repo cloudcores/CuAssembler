@@ -5,18 +5,20 @@ from elftools.elf.structs import ELFStructs
 
 from subprocess import check_output
 
-from .CuSMVersion import CuSMVersion
-from .CuNVInfo import CuNVInfo
-from .CuAsmLogger import CuAsmLogger
-from .common import splitAsmSection, bytes2Asm, stringBytes2Asm, decodeCtrlCodes
-from .config import Config
+from CuAsm.CuSMVersion import CuSMVersion, p_QNAN
+from CuAsm.CuNVInfo import CuNVInfo
+from CuAsm.CuAsmLogger import CuAsmLogger
+from CuAsm.CuControlCode import CuControlCode
+from CuAsm.common import splitAsmSection, bytes2Asm, stringBytes2Asm, getTempFileName
+from CuAsm.config import Config
+from CuAsm.utils.CubinUtils import hackCubinDesc
 
 from io import StringIO, BytesIO
 from collections import OrderedDict
 
-import sys
 import re
-import time
+import struct
+import os
 
 class CubinFile():
     ''' CubinFile class for cubin files, mainly used for saving as cuasm.
@@ -37,7 +39,7 @@ class CubinFile():
         self.__mAsmSectionMarkers = {}
         self.__mCubinBytes = None       #
 
-        self.m_SMVersion = None
+        self.m_Arch = None
         self.m_VirtualSMVersion = None
         self.m_ToolKitVersion = None
 
@@ -60,11 +62,11 @@ class CubinFile():
 
             if ef.header['e_type'] != 'ET_EXEC':
                 msg = 'Currently only ET_EXEC type of elf is supported! %s given...' % ef.header['e_type']
-                CuAsmLogger.logError(msg)
-                raise Exception(msg)
+                CuAsmLogger.logWarning(msg)
+                #raise Exception(msg)
             elif ef.header['e_shoff'] == ef.header['e_ehsize']:
                 msg = 'Abnormal elf layout detected! Section headers directly follow elf header.'
-                CuAsmLogger.logError(msg)
+                CuAsmLogger.logWarning(msg)
                 raise Exception(msg)
             elif ef.header['e_phoff'] == 0 or ef.header['e_phnum'] == 0:
                 msg = 'Abnormal elf layout detected! No program header found!'
@@ -76,7 +78,7 @@ class CubinFile():
             # flags&0xff = 0x56 = 86, means sm_86
             vsm_version = (self.__mELFFileHeader['e_flags']>>16)&0xff
             sm_version = self.__mELFFileHeader['e_flags']&0xff
-            self.m_SMVersion = CuSMVersion(sm_version)
+            self.m_Arch = CuSMVersion(sm_version)
             self.m_VirtualSMVersion = vsm_version
             self.m_ToolKitVersion = self.__mELFFileHeader['e_version']
 
@@ -132,7 +134,14 @@ class CubinFile():
 
         # get disassembly from nvdisasm
         # TODO: check availablity of nvdisasm
-        asmtext = CubinFile.disassembleCuBin(binname)
+        if self.m_Arch.needsDescHack():
+            tmpname = getTempFileName(suffix='cubin')
+            CuAsmLogger.logWarning(f'This Cubin({self.m_Arch}) needs desc hack!')
+            hackCubinDesc(binname, tmpname)
+            asmtext = CubinFile.disassembleCubin(tmpname)
+            os.remove(tmpname)
+        else:
+            asmtext = CubinFile.disassembleCubin(binname)
 
         self.__mAsmLines = asmtext.splitlines()
 
@@ -270,14 +279,14 @@ class CubinFile():
             raise KeyError('Info section (%s) not found!'%nvinfo_secname)
 
         nvinfo_data = self.__mELFSections[nvinfo_secname][1]
-        nvinfo = CuNVInfo(nvinfo_data, self.m_SMVersion)
+        nvinfo = CuNVInfo(nvinfo_data, self.m_Arch)
         offset_labels = nvinfo.getOffsetLabelDict(kname)
 
         # get code bytes of current text section
         codeheader = self.__mELFSections[secname][0]
         codebytes = self.__mELFSections[secname][1]
 
-        ctrl_code_list, ins_code_list = self.m_SMVersion.splitControlCodes(codebytes)
+        ctrl_code_list, ins_code_list = self.m_Arch.splitCtrlCodeFromBytes(codebytes)
 
         # Example : "/*0300*/                   IMAD.U32 R5, RZ, RZ, UR6 ;"
         m_ins = re.compile(r'^\s*\/\*([0-9a-f]+)\*\/\s+.*')
@@ -298,13 +307,13 @@ class CubinFile():
                 # generate control code strings
                 # NOTE: the addr comments do not matter, it will be ignored by assembler.
                 # TODO (DONE!): check missing instructions, idx should be with stride 1
-                idx = self.m_SMVersion.getInsIndexFromOffset(addr)
+                idx = self.m_Arch.getInsIndexFromOffset(addr)
                 if idx-pidx != 1:
                     CuAsmLogger.logWarning("!!! Missing instruction before %s:0x%x"%(secname, addr))
 
                 for iIns in range(pidx+1, idx):
                     ccode = ctrl_code_list[iIns]
-                    cstr  = decodeCtrlCodes(ccode)
+                    cstr  = CuControlCode.decode(ccode)
 
                     icode = ins_code_list[iIns]
                     istr  = '    UNDEF 0x%x; // Missing instructions, not disassembled' % icode
@@ -314,9 +323,15 @@ class CubinFile():
                 pidx = idx
 
                 ccode = ctrl_code_list[idx]
-                cstr  = decodeCtrlCodes(ccode)
+                cstr  = CuControlCode.decode(ccode)
 
-                stream.write('      [%s] %s\n'%(cstr, line) )
+                # rewrite QNAN as float binary 0fxxxx
+                if p_QNAN.search(line):
+                    hline = self.m_Arch.hackDisassembly(ins_code_list[idx], line)
+                    CuAsmLogger.logWarning(f'QNAN rewritten in {secname} : {line}') # addr already in line
+                    stream.write('      [%s] %s // QNAN rewritten: %s\n'%(cstr, hline, line) )
+                else:
+                    stream.write('      [%s] %s\n'%(cstr, line) )
             else:
                 # 2 spaces for code folding
                 stream.write('  ' + line+'\n')
@@ -500,7 +515,7 @@ class CubinFile():
 
     @staticmethod
     @CuAsmLogger.logTimeIt
-    def disassembleCuBin(binname):
+    def disassembleCubin(binname):
         ''' Get disassembly of input file from nvdisasm.
 
             TODO: check availablity of nvdisasm?
@@ -511,6 +526,8 @@ class CubinFile():
         asmtext = check_output([Config.NVDISASM_PATH, binname]).decode()
 
         return asmtext
+
+
 
 if __name__ == '__main__':
     pass

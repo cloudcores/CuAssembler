@@ -1,12 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import re
 from io import StringIO
+import re
+import time
+import os
+import tempfile
+import random
 
-# TODO: A class for control codes?
-# Pattern for control codes string
-c_ControlCodesPattern = re.compile(r'(R|-){4}:B(0|-)(1|-)(2|-)(3|-)(4|-)(5|-):R[0-5\-]:W[0-5\-]:(Y|-):S\d{2}')
-
+# Patterns for assembly comments
+p_cppcomment = re.compile(r'//.*$')      # cpp style line comments
+p_ccomment = re.compile(r'\/\*.*?\*\/')  # c   style line
+p_bracomment = re.compile(r'\(\*.*\*\)') # notes for bra targets
+                                         # such as (*"INDIRECT_CALL"*)
+                                         # or (*"BRANCH_TARGETS .L_10"*)
+                                         # or (*\"BRANCH_TARGETS .L_x_3722,.L_x_3723,.L_x_782\"*)
 
 def alignTo(pos, align):
     ''' Padding current position to given alignment.
@@ -20,77 +27,30 @@ def alignTo(pos, align):
     npos = ((pos + align -1 ) // align) * align
     return npos, npos-pos
 
-def intList2Str(vlist, s=None):
-    if s:
-        fmt = '0x%%0%dx' % s
+def intList2Str(vlist, l=None):
+    if l:
+        fmt = f'%#{l+2}x'
     else:
-        fmt = '0x%x'
+        fmt = '%#x'
     return '['+ (', '.join([fmt%v for v in vlist])) +']'
 
-def binstr(v, l=128, w=4, sp=' '):
+def binstr(v, bitlen=128, width=4, sp=' '):
     bv = bin(v)[2:]
     lb = len(bv)
-    if lb<l:
-        bv = '0' * (l-lb) + bv
+    if lb<bitlen:
+        bv = '0' * (bitlen-lb) + bv
 
-    return sp.join([bv[i:i+w] for i in range(0, l, w)])
+    return sp.join([bv[i:i+width] for i in range(0, bitlen, width)])
 
-def hexstr(v, l=128, w=1, sp=' '*4):
+def hexstr(v, bitlen=128, width=4, sp=' '):
     hv = '%x'%v
-    lhex = l//4
+    lhex = bitlen//4
     lb = len(hv)
 
     if lb<lhex:
         hv = '0' * (lhex-lb) + hv
 
-    return sp.join([hv[i:i+w] for i in range(0, lhex, w)])
-
-def decodeCtrlCodes(code):
-    # c.f. : https://github.com/NervanaSystems/maxas/wiki/Control-Codes
-    #      : https://arxiv.org/abs/1903.07486
-    # reuse  waitbar  rbar  wbar  yield   stall
-    #  0000   000000   000   000      0    0000
-    #
-    c_stall    = (code & 0x0000f) >> 0
-    c_yield    = (code & 0x00010) >> 4
-    c_writebar = (code & 0x000e0) >> 5  # write dependency barrier
-    c_readbar  = (code & 0x00700) >> 8  # read  dependency barrier
-    c_waitbar  = (code & 0x1f800) >> 11 # wait on dependency barrier
-    c_reuse    =  code >> 17
-
-    s_yield = '-' if c_yield !=0 else 'Y'
-    s_writebar = '-' if c_writebar == 7 else '%d'%c_writebar
-    s_readbar = '-' if c_readbar == 7 else '%d'%c_readbar
-    s_waitbar = ''.join(['-' if (c_waitbar & (2**i)) == 0 else '%d'%i for i in range(6)])
-    s_stall = '%02d' % c_stall
-    s_reuse = ''.join(['R' if (c_reuse&(2**i)) else '-' for i in range(4)])
-
-    return '%s:B%s:R%s:W%s:%s:S%s' % (s_reuse, s_waitbar, s_readbar, s_writebar, s_yield, s_stall)
-
-def encodeCtrlCodes(s):
-    if not c_ControlCodesPattern.match(s):
-        raise ValueError('Invalid control code strings: %s !!!'%s)
-
-    s_reuse, s_waitbar, s_readbar, s_writebar, s_yield, s_stall = tuple(s.split(':'))
-
-    reuse_tr = str.maketrans('R-','10')
-    waitbar_tr = str.maketrans('012345-','1111110')
-
-    c_reuse = int(s_reuse[::-1].translate(reuse_tr), 2)
-    c_waitbar = int(s_waitbar[:0:-1].translate(waitbar_tr), 2)
-    c_readbar = int(s_readbar[1].replace('-', '7'))
-    c_writebar = int(s_writebar[1].replace('-','7'))
-    c_yield = int(s_yield!='Y')
-    c_stall = int(s_stall[1:])
-
-    code = c_reuse<<17
-    code += c_waitbar<<11
-    code += c_readbar<<8
-    code += c_writebar<<5
-    code += c_yield<<4
-    code += c_stall
-
-    return code
+    return sp.join([hv[i:i+width] for i in range(0, lhex, width)])
 
 def splitAsmSection(lines):
     ''' Split assembly text line list into a set of sections.
@@ -213,25 +173,74 @@ def reprList(sio, l):
         cnt += 1
     sio.write(']')
 
+def reprHexMat(mat):
+    smat = mat.tolist()
+
+    colw = [0 for i in range(mat.cols)]
+    
+    for j in range(mat.cols):
+        for i in range(mat.rows):
+            if mat[i, j].is_integer:
+                s = '%#x' % mat[i, j]
+            else:
+                s = str(mat[i, j])
+                
+            smat[i][j] = s
+            colw[j] = max(colw[j], len(s))
+    
+    # print(smat)
+    
+    for i in range(mat.rows):
+        for j in range(mat.cols):
+            if len(smat[i][j]) < colw[j]:
+                d = colw[j] - len(smat[i][j])
+                smat[i][j] = (' '*d) + smat[i][j]
+    
+    # print(smat)
+    
+    sio = StringIO()
+    sio.write('Matrix([\n')
+    for i in range(mat.rows):
+        sio.write('[')
+        sio.write(', '.join(smat[i]))
+        sio.write('],\n')
+    
+    sio.write('])')
+    
+    return sio.getvalue()
+
+def getTempFileName(name='', *, prefix='cuasm', suffix=''):
+    ''' Get temporary filename in temp dir.'''
+    fpath = tempfile.gettempdir()
+    if len(prefix)>0 and not prefix.endswith('.'):
+        prefix += '.'
+    if len(suffix)>0 and not suffix.startswith('.'):
+        suffix = '.' + suffix
+    
+    if len(name)>0:
+        return os.path.join(fpath, prefix+name+suffix)
+
+    while True:
+        ttag = time.strftime('%m%d-%H%M%S', time.localtime())
+        tmpname = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz0123456789', k = 8))
+        fname = os.path.join(fpath, prefix + ttag + tmpname + suffix)
+        if not os.path.exists(fname):
+            break
+
+    return fname
+
+def stripComments(s):
+    ''' Strip comments of a line.
+
+    NOTE: cross line comments are not supported yet.
+    '''
+
+    s = p_cppcomment.subn(' ', s)[0] # replace comments as a single space, avoid unwanted concatination
+    s = p_ccomment.subn(' ', s)[0]
+    s = p_bracomment.subn(' ', s)[0]
+    s = re.subn(r'\s+', ' ', s)[0]       # replace one or more spaces/tabs into one single space
+
+    return s.strip()
 
 if __name__ == '__main__':
-    cs = ['----:B--2---:R0:W1:-:S07',
-            '----:B01--4-:R-:W-:-:S05',
-            '----:B------:R-:W0:-:S01',
-            '-R--:B------:R-:W-:-:S01',
-            '----:B------:R2:W1:-:S01',
-            '----:B0-----:R-:W-:Y:S04',
-            'R-R-:B------:R-:W-:-:S01',
-            '----:B0----5:R0:W5:Y:S05',
-            '----:B------:R-:W0:-:S02',
-            '----:B0-----:R-:W0:-:S02',
-            '----:B0-----:R-:W-:Y:S04']
-    for s in cs:
-        c = encodeCtrlCodes(s)
-        s2 = decodeCtrlCodes(c)
-
-        print('0x%06x:'%c)
-        print('    %s'%s)
-        print('    %s'%s2)
-        if s != s2:
-            print('!!! Unmatched !')
+    pass

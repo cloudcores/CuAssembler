@@ -2,7 +2,7 @@
 
 from io import BytesIO
 import struct
-from .CuSMVersion import CuSMVersion
+from CuAsm.CuSMVersion import CuSMVersion
 
 class CuNVInfo(object):
     EIFMT = {1 : 'EIFMT_NVAL', 2 : 'EIFMT_BVAL', 3 : 'EIFMT_HVAL', 4 : 'EIFMT_SVAL'}
@@ -47,7 +47,8 @@ class CuNVInfo(object):
         # (attr, val)
         self.m_AttrList = CuNVInfo.decode(bytecodes)
         self.__mEIATTR_AutoGen = CuSMVersion(arch).getNVInfoAttrAutoGenSet().copy()
-
+        self.__mEIATTR_MaunalGen = CuSMVersion(arch).getNVInfoAttrManualGenSet().copy()
+        
     def serialize(self):
         return CuNVInfo.encode(self.m_AttrList)
     
@@ -74,10 +75,10 @@ class CuNVInfo(object):
         
         new_attr_list = []
         for attr, val in self.m_AttrList:
-            if attr not in self.__mEIATTR_AutoGen: # kept as is
+            if attr not in self.__mEIATTR_AutoGen and attr not in self.__mEIATTR_MaunalGen: # kept as is
                 new_attr_list.append((attr, val))
 
-            elif attr in d: # autogen attributes, updated and remove from appended list
+            elif attr in d: # autogen/manual gen attributes, updated and remove from appended list
                 new_attr_list.append((attr, val))
                 del d[attr] 
 
@@ -86,8 +87,12 @@ class CuNVInfo(object):
         
         # Append new autogen attributes not previously defined ()
         for k, v in d.items():
-            if k in self.__mEIATTR_AutoGen: # some item in d may be not valid attributes, skipped
+            # print('Appending new ', k, '=', v)
+            # new_attr_list.append((k, v))
+            if k in self.__mEIATTR_AutoGen or k in self.__mEIATTR_MaunalGen: # some item in d may be not valid attributes, skipped
                 new_attr_list.append((k, v))
+            # else:
+            #     CuAsmLogger.logWarning(f'Ignoring unknown NVInfo attribute: {k}')
 
         self.m_AttrList = new_attr_list
 
@@ -128,6 +133,14 @@ class CuNVInfo(object):
         for v in self.m_AttrList:
             yield v
 
+    def getUnknownAttrList(self):
+        # return [('Test', 0)]
+        l = []
+        for attr, val in self.m_AttrList:
+            if attr not in CuNVInfo.EIATTRVAL:
+                l.append((attr, val))    
+        return l
+        
     @staticmethod
     def decode(bytescodes):
         attrlist = [] # cannot use dict here, since some attributes

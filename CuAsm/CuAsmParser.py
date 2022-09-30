@@ -6,17 +6,16 @@ from io import BytesIO
 from collections import OrderedDict, defaultdict
 
 from elftools.elf.elffile import ELFFile
-from elftools.elf.structs import ELFStructs
 
-from .CubinFile import CubinFile
-from .CuKernelAssembler import CuKernelAssembler
-from .CuInsAssemblerRepos import CuInsAssemblerRepos
-from .CuSMVersion import CuSMVersion
-from .CuNVInfo import CuNVInfo
-from .CuAsmLogger import CuAsmLogger
+from CuAsm.CuKernelAssembler import CuKernelAssembler
+from CuAsm.CuInsAssemblerRepos import CuInsAssemblerRepos
+from CuAsm.CuSMVersion import CuSMVersion
+from CuAsm.CuNVInfo import CuNVInfo
+from CuAsm.CuAsmLogger import CuAsmLogger
 
-from .config import Config
-from .common import c_ControlCodesPattern, encodeCtrlCodes, splitAsmSection, alignTo, bytes2Asm
+from CuAsm.config import Config
+from CuAsm.common import splitAsmSection, alignTo, bytes2Asm
+from CuAsm.CuControlCode import c_ControlCodesPattern
 
 m_hex    = re.compile(r'\b0x[a-fA-F0-9]+\b')
 m_int    = re.compile(r'\b[0-9]+\b')
@@ -81,9 +80,23 @@ class CuAsmSymbol(object):
             Elf64_Xword   st_size;  /* Size of object (e.g., common) */
         } Elf64_Sym;
 
+        //
+        typedef uint64_t	Elf64_Addr;
+        typedef uint16_t	Elf64_Half;
+        typedef uint64_t	Elf64_Off;
+        typedef int32_t		Elf64_Sword;
+        typedef int64_t		Elf64_Sxword;
+        typedef uint32_t	Elf64_Word;
+        typedef uint64_t	Elf64_Lword;
+        typedef uint64_t	Elf64_Xword;
+
+
         All internal symbols should also be defined as labels.
         The label offset is just the symbol value, and the section where the label
         is defined will affect the behavior of jump/branch instructions.
+
+        FIXME: Currently some attributes in st_other (such as "STO_CUDA_ENTRY") cannot be 
+               recognized by pyelftools, thus may be lost if parsed and built again.
     '''
 
     # TODO: Not implemented yet, just copied from cubin
@@ -119,11 +132,10 @@ class CuAsmSymbol(object):
     @staticmethod
     def buildSymbolDict(strtab, symbytes):
         symdict = OrderedDict()
-        Elf_Sym = Config.CubinELFStructs.Elf_Sym
-        symsize = Elf_Sym.sizeof()
+        symsize = Config.CubinELFStructs.Elf_Sym.sizeof()
         index = 0
         for p in range(0, len(symbytes), symsize):
-            sym = Elf_Sym.parse(symbytes[p:p+symsize])
+            sym = Config.CubinELFStructs.Elf_Sym.parse(symbytes[p:p+symsize])
             nameidx = sym['st_name']
             if nameidx not in strtab:
                 raise Exception('Unknown symbol @%#x with name string index 0x%x!'%(p, nameidx))
@@ -135,6 +147,21 @@ class CuAsmSymbol(object):
             index += 1
 
         return symdict
+
+    @staticmethod
+    def resetSymtabEntryValueSize(bio, base_offset, value, size):
+        ''' reset Symbol entry value/size in symtab byte stream. 
+
+            bio: BytesIO stream
+            base_offset: base offset of current entry
+            value/size: symbol value/size to be set
+        '''
+
+        p = bio.tell() # save current pos
+        bio.seek(base_offset + 8) # +8 is offset for the value
+        bio.write(int.to_bytes(value, 8, 'little')) 
+        bio.write(int.to_bytes(size, 8, 'little'))
+        bio.seek(p) # restore pos
 
 class CuAsmLabel(object):
     ''' A label is defined by "label:"
@@ -696,7 +723,7 @@ class CuAsmParser(object):
 
         self.__mNVInfoOffsetLabels  = {} # key:sectionname, value: tuple(NVInfo_Attr, prefix)
         self.__mInsIndex      = 0   # Current instruction index
-        self.__mCuSMVersion   = None
+        self.m_Arch   = None
 
         self.__mPadSizeBeforeSecHeader = 0 # number of padding bytes before section header
 
@@ -712,7 +739,7 @@ class CuAsmParser(object):
             General parsing work flow:
             - scan whole file, gathering file headers, section headers/contents, segment headers
               build fixup lists, split kernel text sections for kernel assembler.
-            - build internal tables, such as .shstrtab, .strtab. .symtab (Currently just copied)
+            - build internal tables, such as .shstrtab, .strtab. .symtab (Currently just copied except symbol size)
             - build kernel text sections, update .nv.info sections if necessary.
               update relocations if there are any.
             - evaluate fixups, patching the bytes of corresponding section data.
@@ -732,6 +759,8 @@ class CuAsmParser(object):
                 self.__mLines = fin.readlines()
 
         self.__preScan()
+        self.__gatherTextSectionSizeLabel()
+
         self.__buildInternalTables()
         self.__evalFixups() # 
         self.__parseKernels()
@@ -842,16 +871,28 @@ class CuAsmParser(object):
                 self.__dirDict[cmd](args)
             elif ltype == 'code':
                 # During prescan, write all zeros for placeholder
-                pos = self.__mCuSMVersion.getInsOffsetFromIndex(self.__mInsIndex)
+                pos = self.m_Arch.getInsOffsetFromIndex(self.__mInsIndex)
                 self.__mCurrSection.seek(pos)
                 
                 # all contents of .text section will be re-written 
-                self.__emitBytes(b'\x00'*self.__mCuSMVersion.getInstructionLength())
+                self.__emitBytes(b'\x00'*self.m_Arch.getInstructionLength())
                 self.__mInsIndex += 1
 
             elif ltype == 'blank':
                 continue
-        
+    
+    @CuAsmLogger.logTraceIt
+    def __gatherTextSectionSizeLabel(self):
+        self.__mSecSizeLabel = OrderedDict()
+        for label, labelobj in self.__mLabelDict.items():
+            secname = labelobj.section.name
+            if not secname.startswith('.text'):
+                continue
+
+            if labelobj.offset == self.__mSectionDict[secname].getDataSize():
+                # print(f'Size label {label} for {secname}!')
+                self.__mSecSizeLabel[secname] = labelobj
+
     @CuAsmLogger.logTraceIt
     def __parseKernels(self):
         # scan text sections to assemble kernels
@@ -871,8 +912,8 @@ class CuAsmParser(object):
         sec = self.__mSectionDict['.nv.info']
 
         # print(sec.getData().hex())
-        nvinfo = CuNVInfo(sec.getData(), self.__mCuSMVersion)
-        self.__mCuSMVersion.setRegCountInNVInfo(nvinfo, regnumdict)
+        nvinfo = CuNVInfo(sec.getData(), self.m_Arch)
+        self.m_Arch.setRegCountInNVInfo(nvinfo, regnumdict)
         sec.setData(nvinfo.serialize())
 
     @CuAsmLogger.logTraceIt    
@@ -889,7 +930,7 @@ class CuAsmParser(object):
     def __parseKernelText(self, section, line_start, line_end):
         CuAsmLogger.logProcedure('Parsing kernel text of "%s"...'%section.name)
 
-        kasm = CuKernelAssembler(ins_asm_repos=self.__mCuInsAsmRepos, version=self.__mCuSMVersion)
+        kasm = CuKernelAssembler(ins_asm_repos=self.__mCuInsAsmRepos, version=self.m_Arch)
 
         p_textline = re.compile(r'\[([\w:-]+)\](.*)')
 
@@ -911,16 +952,16 @@ class CuAsmParser(object):
             icode_s = res.groups()[1]
 
             if c_ControlCodesPattern.match(ccode_s) is None:
-                self.__assert(False, 'Illegal control code text!')
+                self.__assert(False, f'Illegal control code text "{ccode_s}"!')
 
-            addr = self.__mCuSMVersion.getInsOffsetFromIndex(ins_idx)
+            addr = self.m_Arch.getInsOffsetFromIndex(ins_idx)
             c_icode_s = self.__evalInstructionFixup(section, addr, icode_s)
             
             #print("Parsing %s : %s"%(ccode_s, c_icode_s))
             try:
                 kasm.push(addr, c_icode_s, ccode_s)
             except Exception as e:
-                self.__assert(False, 'Error when assembling instruction "%s":%s'%(nline, e.args))
+                self.__assert(False, 'Error when assembling instruction "%s":\n        %s'%(nline, e))
             
             ins_idx += 1
         
@@ -939,7 +980,7 @@ class CuAsmParser(object):
         else:
             offset_label_dict = kasm.m_ExtraInfo.copy()
         
-        nvinfo = CuNVInfo(info_sec.getData(), self.__mCuSMVersion)
+        nvinfo = CuNVInfo(info_sec.getData(), self.m_Arch)
         nvinfo.updateNVInfoFromDict(offset_label_dict)
         info_sec.setData(nvinfo.serialize())
 
@@ -1093,24 +1134,33 @@ class CuAsmParser(object):
 
             except Exception as e:
                 self.__assert(False, 'Error when evaluating fixup @line%d: expr=%s, msg=%s'
-                                %(fixup.lineno, fixup.expr, e.args))
+                                %(fixup.lineno, fixup.expr, e))
 
     @CuAsmLogger.logTraceIt
     def __updateSymtab(self):
-        for s in self.__mSymtabDict:
+        
+        bio = BytesIO(self.__mSectionDict['.symtab'].getData())
+        symsize = Config.CubinELFStructs.Elf_Sym.sizeof()
+
+        for i, s in enumerate(self.__mSymtabDict):
             symid, syment = self.__mSymtabDict[s]
 
             if s in self.__mLabelDict:
                 syment['st_value'] = self.__mLabelDict[s].offset
-
+                
                 if s in self.__mSymbolDict: # symbols explicitly defined in assembly
                     symobj = self.__mSymbolDict[s]
                     symobj.value = self.__mLabelDict[s].offset
                     symobj.sizeval, _ = self.__evalExpr(symobj.size)
                 
                     syment['st_size'] = symobj.sizeval
+
+                    # print(syment)
+                    CuAsmSymbol.resetSymtabEntryValueSize(bio, i*symsize, symobj.value, symobj.sizeval)
+
             else: # some symbols does not have corresponding labels, such as vprintf
-                pass
+                pass        
+        self.__mSectionDict['.symtab'].setData(bio.getvalue())
 
     @CuAsmLogger.logTraceIt
     def __layoutSections(self):
@@ -1122,7 +1172,6 @@ class CuAsmParser(object):
 
         # initialize the offset as the ELF header size
         elfheadersize = Config.CubinELFStructs.Elf_Ehdr.sizeof()
-
         file_offset = elfheadersize
         mem_offset = elfheadersize
         prev_sec = None
@@ -1137,6 +1186,8 @@ class CuAsmParser(object):
 
             # print(secname)
             align = sec.addralign
+            if prev_sec is not None and prev_sec.name.startswith('.text'):
+                align = 128
             file_offset, mem_offset = self.__updateSectionPadding(prev_sec, file_offset, mem_offset, align)
 
             sec.size = sec.getDataSize()
@@ -1151,6 +1202,10 @@ class CuAsmParser(object):
             mem_offset += sec.size
             if sec.header['type'] != 'SHT_NOBITS':
                 file_offset += sec.size
+        
+        # ???
+        if prev_sec is not None and prev_sec.name.startswith('.text'):
+            file_offset, mem_offset = self.__updateSectionPadding(prev_sec, file_offset, mem_offset, 128)
         
         # Section pass to build the section edges, for locating segment range
         for secname, sec in self.__mSectionDict.items():
@@ -1221,9 +1276,6 @@ class CuAsmParser(object):
         # for implict sections, quotes are used for embracing the section name
         # mainly for the NULL section with empty name ""
         # thus the quotes will be stripped
-        
-        self.__pushSectionSizeLabel()
-
         secname = args[0].strip('"')
 
         self.__assert(secname not in self.__mSectionDict, 'Redefinition of section "%s"!'%secname)
@@ -1394,15 +1446,15 @@ class CuAsmParser(object):
         if attrname == 'flags':
             flags = int(args[0], 16)
             smversion = flags & 0xff
-            self.__mCuSMVersion = CuSMVersion(smversion)
+            self.m_Arch = CuSMVersion(smversion)
 
             if (not hasattr(self, '__mCuInsAsmRepos') 
                 or self.__mCuInsAsmRepos is None 
-                or (self.__mCuInsAsmRepos.getSMVersion() != self.__mCuSMVersion) ):
+                or (self.__mCuInsAsmRepos.getSMVersion() != self.m_Arch) ):
 
                 CuAsmLogger.logSubroutine('Setting CuInsAsmRepos to default dict...')
                 
-                self.__mCuInsAsmRepos = CuInsAssemblerRepos(arch=self.__mCuSMVersion)
+                self.__mCuInsAsmRepos = CuInsAssemblerRepos(arch=self.m_Arch)
                 self.__mCuInsAsmRepos.setToDefaultInsAsmDict()
 
     def __dir_sectionheader(self, attrname, args):
@@ -1410,8 +1462,6 @@ class CuAsmParser(object):
         self.__mCurrSection.header[attrname] = self.__cvtValue(args[0])
 
     def __dir_segment(self, args):
-        self.__pushSectionSizeLabel()
-
         self.__assertArgc('.__segment', args, 2, allowMore=False)
         segment = CuAsmSegment(args[0].strip('"'), args[1])
         self.__mSegmentList.append(segment)
@@ -1425,7 +1475,10 @@ class CuAsmParser(object):
 #### Subroutines
     def __assert(self, flag, msg=''):
         if not flag:
-            full_msg = "File %s:%d: Assertion failed!\n  Message:\n    %s" % (self.__mFilename, self.__mLineNo, msg)
+            full_msg  =  'Assertion failed in:\n'
+            full_msg += f'    File {self.__mFilename}:{self.__mLineNo} :\n'
+            full_msg += f'        {self.__mLines[self.__mLineNo-1].strip()}\n'
+            full_msg += f'    {msg}'
             CuAsmLogger.logError(full_msg)
             raise Exception(full_msg)
 
@@ -1570,7 +1623,7 @@ class CuAsmParser(object):
             symname = val_sep[0]
             symidx = self.__getSymbolIdx(val_sep[0])
             relkey = r1.groups()[0]
-            reltype = self.__mCuSMVersion.getInsRelocationType(relkey)
+            reltype = self.m_Arch.getInsRelocationType(relkey)
 
             if val_sep[1] is not None:
                 rela = CuAsmRelocation(section, offset, symname, symidx, reltype=reltype, reladd=val_sep[2])
@@ -1595,7 +1648,7 @@ class CuAsmParser(object):
                 # print(s)
                 symname = label
                 symidx = self.__getSymbolIdx(symname)
-                reltype = self.__mCuSMVersion.getInsRelocationType('target')
+                reltype = self.m_Arch.getInsRelocationType('target')
                 rel = CuAsmRelocation(section, offset, symname, symidx, reltype=reltype, reladd=None)
                 self.__mRelList.append(rel)
                 ns = p_ins_label.sub('0x0', s)
@@ -1609,7 +1662,7 @@ class CuAsmParser(object):
             else: # relocations, since the target is in another section
                 symname = label
                 symidx = self.__getSymbolIdx(symname)
-                reltype = self.__mCuSMVersion.getInsRelocationType('target')
+                reltype = self.m_Arch.getInsRelocationType('target')
                 rel = CuAsmRelocation(section, offset, symname, symidx, reltype=reltype, reladd=None)
                 self.__mRelList.append(rel)
                 ns = p_ins_label.sub('0x0', s)
@@ -1690,7 +1743,12 @@ class CuAsmParser(object):
             return s
     
     def __pushSectionSizeLabel(self):
-        '''Identify the last label that marks the end of a text section. '''
+        '''Identify the last label that marks the end of a text section. 
+        
+            DEPRECATED !!!
+
+            The text section size label will be gathered in the procedure __gatherTextSectionSizeLabel()
+        '''
         if self.__mCurrSection is not None and self.__mCurrSection.name.startswith('.text') and self.__mLabelDict is not None:
             key, lastlabel = self.__mLabelDict.popitem()
             if self.__mCurrSection.name == lastlabel.section.name and lastlabel.offset == self.__mCurrSection.tell():
@@ -1702,7 +1760,7 @@ class CuAsmParser(object):
     def __genSectionPaddingBytes(self, sec, size):
         '''Generate padding bytes for section with given size.'''
         if sec.name.startswith('.text'):
-            padbytes = self.__mCuSMVersion.getPadBytes()
+            padbytes = self.m_Arch.getPadBytes()
         else:
             padbytes = b'\x00'
 
@@ -1719,10 +1777,9 @@ class CuAsmParser(object):
             For other sections: padding to seperate padbytes, keep size unchanged
             For nobits sections: do nothing.
         '''
-
         if sec is None:
             return file_offset, mem_offset
-
+        
         if sec.name.startswith('.text'):
             align = max(align, sec.addralign)
             file_offset, fpadsize = alignTo(file_offset, align)
@@ -1738,6 +1795,8 @@ class CuAsmParser(object):
             if sec.name in self.__mSecSizeLabel:
                 sizelabel = self.__mSecSizeLabel[sec.name]
                 sizelabel.offset = sec.size
+                # print(f'Reset size label {sizelabel.name} of {sec.name} to {sec.size}!')
+
             
         elif sec.header['type'] == 'SHT_NOBITS':
             mem_offset, mpadsize = alignTo(mem_offset, align)
