@@ -1,0 +1,39 @@
+{
+	"name": "cuasm-syntax",
+	"displayName": "CUDA Assembly Syntax",
+	"description": "CUASM syntax highlighting",
+	"icon": "assets/cuasm.png",
+	"publisher": "cloudcore",
+	"version": "1.0.0",
+	"license": "MIT",
+	"engines": {
+		"vscode": "^1.49.0"
+	},
+	"categories": [
+		"Programming Languages"
+	],
+	"contributes": {
+		"languages": [
+			{
+				"id": "cuasm",
+				"aliases": [
+					"CUASM",
+					"SASS"
+				],
+				"extensions": [
+					".cuasm",
+					".asm",
+					".sass"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "cuasm",
+				"scopeName": "source.cuasm",
+				"path": "./syntaxes/cuasm.tmLanguage.json"
+			}
+		]
+	}
+}

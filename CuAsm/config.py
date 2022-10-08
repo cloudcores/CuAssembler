@@ -48,10 +48,18 @@ class Config(object):
         repos_dir = os.path.join(module_dir[0], 'InsAsmRepos')
         repos_name = 'DefaultInsAsmRepos.sm_%d.txt' % version_number
         repos_path = os.path.join(repos_dir, repos_name)
-        if not os.path.isfile(repos_path):
-            raise IOError('File %s not found!' % repos_name)
-        else:
-            return repos_path
+        return repos_path
 
-
+    @staticmethod
+    def getDefaultIOInfoFile(version_number):
+        module_dir = os.path.split(__file__)
+        fdir = os.path.join(module_dir[0], 'InsAsmRepos')
+        
+        fname = 'IOInfo.sm_%d.txt' % version_number
+        fpath = os.path.join(fdir, fname)
+        
+        if not os.path.isfile(fpath):
+            fpath = os.path.join(fdir, 'IOInfo.all.json')
+        
+        return fpath
         

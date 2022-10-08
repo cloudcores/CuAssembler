@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
 
-import re
-import struct
-from io import BytesIO
-
-from .common import *
-from .CuInsAssemblerRepos import CuInsAssemblerRepos
-from .CuInsAssembler import CuInsAssembler
-from .CuSMVersion import CuSMVersion
-from .CuInsParser import CuInsParser
+from CuAsm.CuInsAssemblerRepos import CuInsAssemblerRepos
+from CuAsm.CuInsAssembler import CuInsAssembler
+from CuAsm.CuSMVersion import CuSMVersion
+from CuAsm.CuInsParser import CuInsParser
+from CuAsm.CuAsmLogger import CuAsmLogger
+from CuAsm.CuControlCode import CuControlCode
 
 class CuKernelAssembler():
-
     # Opcodes that may have some associated attributes (NVInfo)
     # Standard form of the function: __AutoAttr_{$Opcode}({info, addr, ins_parser)
 
-    def __init__(self, ins_asm_repos=None, version='SM_75'):
+    def __init__(self, ins_asm_repos=None, version='sm_75'):
         if ins_asm_repos is None:
             self.m_InsAsmRepos = None
         elif isinstance(ins_asm_repos, str):
@@ -25,7 +21,7 @@ class CuKernelAssembler():
         else:
             raise Exception("Unknown input for CuKernelAssembler!")
         
-        self.m_CuSMVersion = CuSMVersion(version)
+        self.m_Arch = CuSMVersion(version)
         self.reset()
 
     def reset(self):
@@ -58,9 +54,9 @@ class CuKernelAssembler():
             Note fixups should be filled before pushing, including relocations.
         '''
         
-        # offset = self.m_CuSMVersion.getInsOffsetFromIndex(self.m_InsIdx)
+        # offset = self.m_Arch.getInsOffsetFromIndex(self.m_InsIdx)
 
-        ccode = encodeCtrlCodes(ccode_s)
+        ccode = CuControlCode.encode(ccode_s)
         icode = self.m_InsAsmRepos.assemble(addr, icode_s)
 
         # Generate some attributes for special set of opcodes
@@ -77,7 +73,7 @@ class CuKernelAssembler():
         self.m_ICodeList.append(icode)
 
     def genCode(self):
-        self.m_CodeBytes = self.m_CuSMVersion.mergeControlCodes(self.m_ICodeList, self.m_CCodeList)
+        self.m_CodeBytes = self.m_Arch.mergeCtrlCodes(self.m_ICodeList, self.m_CCodeList)
         return self.m_CodeBytes
         
     def getCodeBytes(self):
@@ -94,18 +90,30 @@ class CuKernelAssembler():
             info[attr].append(addr)
 
     @staticmethod
-    def __AutoAttr_S2R(info, addr, ins_parser):
+    def __AutoAttr_S2R(info, addr, ins_parser:CuInsParser):
         ''' EIATTR_S2RCTAID_INSTR_OFFSETS
             EIATTR_CTAIDZ_USED '''
 
-        if ins_parser.m_InsKey.startswith('S2R_R_SR_CTAID'):
+        if ins_parser.m_InsKey == 'S2R_R_L':
+            sreg = None
+            for modi in ins_parser.m_InsModifier:
+                if modi.startswith('2_'):
+                    sreg = modi[2:]
+            
+            if sreg is None:
+                CuAsmLogger.logWarning('Unknown SREG for S2R_R_L!!!')
+                return
+
+            if not sreg.startswith('SR_CTAID'):
+                return
+
             attr = 'EIATTR_S2RCTAID_INSTR_OFFSETS'
             if attr not in info:
                 info[attr] = [addr]
             else:
                 info[attr].append(addr)
 
-            if ins_parser.m_InsKey == 'S2R_R_SR_CTAID.Z':
+            if sreg == 'SR_CTAID.Z':
                 zattr = 'EIATTR_CTAIDZ_USED'
                 if zattr not in info:
                     info[zattr] = 0

@@ -5,7 +5,8 @@ import logging.handlers
 import sys
 import time
 import os
-
+import tempfile
+import random
 
 class CuAsmLogger(object):
     ''' A logger private to current module.
@@ -16,6 +17,7 @@ class CuAsmLogger(object):
     '''
     __LoggerRepos = {}
     __CurrLogger = None
+    __LogFileRepos = {}
     __IndentLevel = 0
     __IndentString = ''
 
@@ -35,33 +37,94 @@ class CuAsmLogger(object):
 
     @staticmethod
     def getDefaultLoggerFile(name):
-        return '%s.log'%name
+        ''' Default log file in temp dir.
+        
+            NOTE: this is not safe, since several instances may run simultaneously.
+        '''
+        fpath = tempfile.gettempdir()
+        return os.path.join(fpath, name + '.log')
 
     @staticmethod
-    def initLogger(name='cuasm', log_file=None, file_level=logging.DEBUG, file_backup_count=3, stdout_level=25):
-        if name in CuAsmLogger.__LoggerRepos:
-            CuAsmLogger.__CurrLogger = CuAsmLogger.__LoggerRepos[name]
-            print('CuAsmLogger %s already exists! Skipping init...' % name)
-            return
+    def getTemporaryLoggerFile(name):
+        ''' Temporary logfile in temp dir.'''
+        fpath = tempfile.gettempdir()
+        while True:
+            ttag = time.strftime('.%m%d-%H%M%S.', time.localtime())
+            tmpname = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz0123456789', k = 8))
+            fname = os.path.join(fpath, name + ttag + tmpname + '.log')
+            if not os.path.exists(fname):
+                break
+
+        return fname
+
+    @staticmethod
+    def initLogger(log_file='', *, name='cuasm', file_level=logging.DEBUG, file_max_bytes=1<<30, file_backup_count=3, stdout_level=25):
+        ''' Init a logger with given name and logfile.
+
+            log_file: set to None for no file log;
+                      set to '' for default temporary log file; (DEFAULT)
+                      set to filename for user specified log file;
+
+                      CuAsmLogger uses RotatingFileHandler for logging, thus if given log_file exists or file size exceeds the max_bytes,
+                      it will roll over and rename previous files to logfile.log.1, logfile.log.2, etc...
+                
+                NOTE: Temporary logfiles will not be deleted automatically, since we usually need to check the log after running a program.
+
+            name    : logger instance name, default to 'cuasm'
+                      several loggers may exist simultaneously, use setActiveLogger(name) to switch between them.
+            file_level : log level of file
+            file_max_bytes: max size of logfile(in bytes), default to 1GB.
+            file_backup_count: number of maximum rolling over files, default to 3.
+            stdout_level: log level for standard output.
+        '''
+        # if name in CuAsmLogger.__LoggerRepos:
+        #    CuAsmLogger.__CurrLogger = CuAsmLogger.__LoggerRepos[name]
+        #    print('CuAsmLogger %s already exists! Skipping init...' % name)
+        #    return
         
         logger = logging.getLogger(name)
+        hs = [h for h in logger.handlers]
+        for h in hs:
+            logger.removeHandler(h)
+
         logger.setLevel(logging.DEBUG)
 
         fmt = logging.Formatter('%(asctime)s - %(message)s')
         if log_file is not None:
             if len(log_file) == 0:
-                log_file = CuAsmLogger.getDefaultLoggerFile(name)
+                full_log_file = CuAsmLogger.getTemporaryLoggerFile(name)
+            else:
+                # fpath, fbase = os.path.split(log_file)
 
-            rfh = logging.handlers.RotatingFileHandler(log_file, mode='a', backupCount=file_backup_count)
+                # if fbase.lower().endswith('.log'):
+                #     full_log_file = os.path.join(fpath, name + '.' + fbase)
+                # else:
+                #     full_log_file = os.path.join(fpath, name + '.' + fbase + '.log')
+                if log_file.endswith('.log'):
+                    full_log_file = log_file
+                else:
+                    full_log_file = log_file + '.log'
+            
+            # fh = logging.FileHandler(full_log_file, mode='a')
+            print(f'InitLogger({name}) with logfile "{full_log_file}"...')
+            
+            # once RotatingFileHandler is created, the log file will be created at the same time
+            # thus we need to detect whether the logfile needs to be rolled over before handler creation
+            needsRollOver = os.path.exists(full_log_file)
+            fh = logging.handlers.RotatingFileHandler(full_log_file, mode='a', maxBytes=file_max_bytes, backupCount=file_backup_count)
 
             # default mode is 'a', but we may want a new log for every run, but still keeping old logs as backup.
-            if os.path.exists(log_file):
-                rfh.doRollover()
+            if needsRollOver:
+                print(f'Logfile {full_log_file} already exists! Rolling over...')
+                fh.doRollover()
 
-            rfh.setFormatter(fmt)
-            rfh.setLevel(file_level)
+            fh.setFormatter(fmt)
+            fh.setLevel(file_level)
             
-            logger.addHandler(rfh)
+            logger.addHandler(fh)
+            CuAsmLogger.__LogFileRepos[name] = full_log_file
+        else:
+            CuAsmLogger.__LogFileRepos[name] = None
 
         if stdout_level is not None:
             sh = logging.StreamHandler(sys.stdout)
@@ -79,6 +142,10 @@ class CuAsmLogger(object):
             CuAsmLogger.__CurrLogger = CuAsmLogger.__LoggerRepos[name]
         else:
             print('CuAsmLogger %s does not exist! Keeping current logger...' % name)
+
+    @staticmethod
+    def getCurrentLogFile():
+        return CuAsmLogger.__LogFileRepos[CuAsmLogger.__CurrLogger.name]
 
     @staticmethod
     def logDebug(msg, *args, **kwargs):
@@ -206,4 +273,4 @@ class CuAsmLogger(object):
         CuAsmLogger.__CurrLogger.setLevel(logging.ERROR)
 
 # Init a default logger when the module is imported
-CuAsmLogger.initLogger()
+CuAsmLogger.initLogger(log_file=None)
