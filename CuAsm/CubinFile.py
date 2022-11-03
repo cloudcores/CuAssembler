@@ -20,6 +20,9 @@ import re
 import struct
 import os
 
+# tags for determining the range of segments containing program headers
+PROGRAM_HEADER_TAG = '@PROGRAM_HEADER'
+
 class CubinFile():
     ''' CubinFile class for cubin files, mainly used for saving as cuasm.
 
@@ -107,27 +110,49 @@ class CubinFile():
                 sec_start_dict[sh_start] = sname
                 sec_end_dict[sh_end] = sname
 
+            # Add segment header to start/end dict
+            if self.__mELFFileHeader['e_phnum'] > 0:
+                poff = self.__mELFFileHeader['e_phoff']
+                sec_start_dict[poff] = PROGRAM_HEADER_TAG
+                pend = poff + self.__mELFFileHeader['e_phnum'] * self.__mELFFileHeader['e_phentsize']
+                sec_end_dict[pend] = PROGRAM_HEADER_TAG
+
             for seg in ef.iter_segments():
                 self.__mELFSegments.append(seg.header)
                 
-        for segh in self.__mELFSegments:
+        for iseg, segh in enumerate(self.__mELFSegments):
             if segh['p_type'] == 'PT_LOAD': # only P_LOAD type needs range
                 p0 = segh['p_offset']
                 p1 = p0 + segh['p_memsz'] # filesz will not count NOBITS sections
 
                 if p0 not in sec_start_dict:
-                    raise Exception('The segment start (0x%x, 0x%x) doesnot align with sections!'%(p0, p1))
-                
-                sec_start = sec_start_dict[p0]
+                    CuAsmLogger.logWarning(f'The segment start ({p0:#x}, {p1:#x}) doesnot align with sections!')
+                    CuAsmLogger.logWarning('Try to seek the nearest one...')
+
+                    max_d = max([k if k<p0 else -10 for k in sec_start_dict])  # find last section start before current bound
+                    if max_d == -10:
+                        msg = f'Cannot locate start position for segment {iseg} with range ({p0:#x}, {p1:#x})!'
+                        CuAsmLogger.logCritical(msg)
+                        raise Exception(msg)
+
+                    sec_start = sec_start_dict[max_d]
+                else:
+                    sec_start = sec_start_dict[p0]
 
                 if p1 not in sec_end_dict:
-                    CuAsmLogger.logWarning('The segment end (0x%x, 0x%x) doesnot align with sections!'%(p0, p1))
+                    CuAsmLogger.logWarning(f'The segment end ({p0:#x}, {p1:#x}) doesnot align with sections!')
                     CuAsmLogger.logWarning('Try to seek the nearest one...')
                     
-                    min_d = min([k if k>p1 else 2**32 for k in sec_end_dict])
+                    min_d = min([k if k>p1 else 2**32 for k in sec_end_dict]) # find first section end after current bound
+                    if min_d == 2**32:
+                        msg = f'Cannot locate end position for segment {iseg} with range ({p0:#x}, {p1:#x})!'
+                        CuAsmLogger.logCritical(msg)
+                        raise Exception(msg)
+
                     sec_end = sec_end_dict[min_d]
                 else:
                     sec_end = sec_end_dict[p1]
+
                 self.__mELFSegmentRange.append((sec_start, sec_end))
             else:
                 self.__mELFSegmentRange.append((None,None))
