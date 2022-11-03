@@ -133,6 +133,24 @@ public:
         }
     }
 
+    void DumpFormatted(size_t len=0, int elem_per_line=8, const char* format="%#8x ")
+    {
+        if(len==0)
+            len = m_Size;
+
+        for(size_t i=0; i<len; i++)
+        {
+            // disp index in front of every line
+            if(i%elem_per_line==0)
+                printf("%4zu : ", i);
+
+            printf(format, m_Ptr[i]);
+
+            if ((i+1)%elem_per_line==0)
+                printf("\n");
+        }
+    }
+
     ~HostPtr<T>()
     {
         if (m_Size > 0)

@@ -12,6 +12,7 @@ from CuAsm.CuInsAssemblerRepos import CuInsAssemblerRepos
 from CuAsm.CuSMVersion import CuSMVersion
 from CuAsm.CuNVInfo import CuNVInfo
 from CuAsm.CuAsmLogger import CuAsmLogger
+from CuAsm.CubinFile import PROGRAM_HEADER_TAG
 
 from CuAsm.config import Config
 from CuAsm.common import splitAsmSection, alignTo, bytes2Asm
@@ -1233,8 +1234,14 @@ class CuAsmParser(object):
         # Other orders may be possible, but not supported yet.
 
         SecHeaderLen = len(self.__mSectionDict) * Config.CubinELFStructs.Elf_Shdr.sizeof()
+
         self.__mCuAsmFile.fileHeader['shoff'] = file_offset
-        self.__mCuAsmFile.fileHeader['phoff'] = file_offset + SecHeaderLen
+
+        phoff = file_offset + SecHeaderLen
+        phlen = self.__mCuAsmFile.fileHeader['phentsize'] * self.__mCuAsmFile.fileHeader['phnum']
+        self.__mCuAsmFile.fileHeader['phoff'] = phoff
+
+        sh_edges[PROGRAM_HEADER_TAG] = phoff, phoff+phlen, phoff, phoff+phlen
 
         for seg in self.__mSegmentList:
             if seg.header['type'] == 'PT_PHDR':

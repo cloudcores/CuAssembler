@@ -5,6 +5,14 @@ import re
 
 p_QNAN = re.compile(r'(\+|-)QNAN\b')
 
+def makeVersionDict(vlist):
+    d = {}
+    for v in vlist:
+        d[f'SM{v:d}'] = v
+        d[f'SM_{v:d}'] = v
+        d[f'{v:d}'] = v
+        d[v] = v
+    return d
 
 class CuSMVersion(object):
     ''' CuSMVersion will handle most of sm version related features, thus it's used everywhere.
@@ -17,26 +25,23 @@ class CuSMVersion(object):
 
     __InstanceRepos = {}
 
-    SMVersionDict = {
-                    'SM35':35, 'SM_35':35, '35':35, 35:35,
-                    'SM37':37, 'SM_37':37, '37':37, 37:37,
-                    'SM50':50, 'SM_50':50, '50':50, 50:50,
-                    'SM52':52, 'SM_52':52, '52':52, 52:52,
-                    'SM53':53, 'SM_53':53, '53':53, 53:53,
-                    'SM60':60, 'SM_60':60, '60':60, 60:60,
-                    'SM61':61, 'SM_61':61, '61':61, 61:61,
-                    'SM62':62, 'SM_62':62, '62':62, 62:62,
-                    'SM70':70, 'SM_70':70, '70':70, 70:70,
-                    'SM72':72, 'SM_72':72, '72':72, 72:72,
-                    'SM75':75, 'SM_75':75, '75':75, 75:75,
-                    'SM80':80, 'SM_80':80, '80':80, 80:80,
-                    'SM86':86, 'SM_86':86, '86':86, 86:86
-                    }
+    SMVersionDict = makeVersionDict([35, 37, 
+                                     50, 52, 53, 
+                                     60, 61, 62, 
+                                     70, 72, 75, 
+                                     80, 86, 87, 89, 
+                                     90])
+
+    # Some versions do not have pre-gathered InsAsmRepos, but since the encoding may be almost identical
+    # we may just copy the InsAsmRepos from another version     
+    InsAsmReposAliasDict = {62:61, 72:75, 87:86}
+
     SMCodeNameDict = { 35:'Kepler',  37:'Kepler',
                        50:'Maxwell', 52:'Maxwell', 53:'Maxwell',
                        60:'Pascal',  61:'Pascal',  62:'Pascal',
                        70:'Volta',   72:'Turing',  75:'Turing',
-                       80:'Ampere',  86:'Ampere'}
+                       80:'Ampere',  86:'Ampere',  87:'Ampere',
+                       89:'Adalovelace', 90:'Hopper'}
 
     PadBytes_5x_6x  = bytes.fromhex('e00700fc00801f00 000f07000000b050 000f07000000b050 000f07000000b050')
     Pad_CCode_5x_6x = 0x7e0               # [----:B------:R-:W-:Y:S00]

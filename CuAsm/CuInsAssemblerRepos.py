@@ -43,12 +43,32 @@ class CuInsAssemblerRepos():
             self.m_Arch = None
             self.m_InsParser = None
 
+    def convertArch(self, arch):
+        dst_arch = CuSMVersion(arch)
+        if dst_arch == self.m_Arch:
+            return
+        
+        self.resetArch(dst_arch)
+        for k, v in self.m_InsAsmDict.items():
+            v.m_Arch = dst_arch
+
     def setToDefaultInsAsmDict(self):
-        fname = Config.getDefaultInsAsmReposFile(self.m_Arch.getVersionNumber())
+        vnum = self.m_Arch.getVersionNumber()
+        fname = Config.getDefaultInsAsmReposFile(vnum)
         if os.path.isfile(fname):
             self.initFromFile(fname)
         else:
-            CuAsmLogger.logWarning('No default InsAsmRepos found! Use empty repos...')
+            # No default InsAsmRepos, but the encoding can be copied from another version
+            if vnum in CuSMVersion.InsAsmReposAliasDict:
+                anum = CuSMVersion.InsAsmReposAliasDict[vnum]
+                aname = Config.getDefaultInsAsmReposFile(anum)
+                if os.path.isfile(aname):
+                    CuAsmLogger.logWarning(f'No default InsAsmRepos for SM_{vnum} found! Use SM_{anum} instead...')
+                    self.initFromFile(aname)
+                    self.convertArch(anum)
+                    return
+            
+            CuAsmLogger.logError(f'No default or alias InsAsmRepos for SM_{vnum} found! Use empty repos ...')
             self.reset()
 
     @staticmethod
@@ -56,6 +76,19 @@ class CuInsAssemblerRepos():
         repos = CuInsAssemblerRepos(arch=arch)
         repos.setToDefaultInsAsmDict()
         return repos
+
+    @staticmethod
+    def getStaticRepos(arch) -> 'CuInsAssemblerRepos':
+        ''' Get a static repos for arch.
+        
+            NOTE: The purpose of this method is to avoid multiple instantiation.
+                  Usually static repos will be read-only.
+                  If it's read/write, be cautious for alias.  
+        '''
+        if arch not in CuInsAssemblerRepos.StaticRepos:
+            CuInsAssemblerRepos.StaticRepos[arch] = CuInsAssemblerRepos.getDefaultRepos(arch)
+        
+        return CuInsAssemblerRepos.StaticRepos[arch]
 
     def reset(self, InsAsmDict=None):
         if InsAsmDict is None:
@@ -371,15 +404,3 @@ class CuInsAssemblerRepos():
         else:
             return '\n'.join([' '*8+s for s in cs])
     
-    @staticmethod
-    def getStaticRepos(arch) -> 'CuInsAssemblerRepos':
-        ''' Get a static repos for arch.
-        
-            NOTE: The purpose of this method is to avoid multiple instantiation.
-                  Usually static repos will be read-only.
-                  If it's read/write, be cautious for alias.  
-        '''
-        if arch not in CuInsAssemblerRepos.StaticRepos:
-            CuInsAssemblerRepos.StaticRepos[arch] = CuInsAssemblerRepos.getDefaultRepos(arch)
-        
-        return CuInsAssemblerRepos.StaticRepos[arch]
