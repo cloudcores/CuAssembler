@@ -1801,9 +1801,9 @@ class CuAsmParser(object):
             # I don't quite understand why it's this way, but let's just keep it as is.
             if sec.name in self.__mSecSizeLabel:
                 sizelabel = self.__mSecSizeLabel[sec.name]
-                sizelabel.offset = sec.size
-                # print(f'Reset size label {sizelabel.name} of {sec.name} to {sec.size}!')
-
+                # NOTE: donot use sec.size here
+                sizelabel.offset = sec.getDataSize()
+                CuAsmLogger.logSubroutine(f'Reset size label "{sizelabel.name}" of {sec.name} to {sec.getDataSize()}!')
             
         elif sec.header['type'] == 'SHT_NOBITS':
             mem_offset, mpadsize = alignTo(mem_offset, align)
