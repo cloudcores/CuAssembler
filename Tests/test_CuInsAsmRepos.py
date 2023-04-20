@@ -6,7 +6,7 @@ from CuAsm.CuInsFeeder import CuInsFeeder
 
 def constructReposFromFile(sassname, savname=None, arch='sm_75'):
     # initialize a feeder with sass
-    feeder = CuInsFeeder(sassname, arch=arch)
+    feeder = CuInsFeeder(sassname, archfilter=arch)
 
     # initialize an empty repos
     repos = CuInsAssemblerRepos(arch=arch)#
@@ -29,7 +29,7 @@ def constructReposFromFile(sassname, savname=None, arch='sm_75'):
 def verifyReposFromFile(sassname, reposfile, arch='sm_75'):
 
     # initialize a feeder with sass
-    feeder = CuInsFeeder(sassname, arch=arch)
+    feeder = CuInsFeeder(sassname, archfilter=arch)
 
     # initialize an empty repos
     repos = CuInsAssemblerRepos(reposfile, arch=arch)#
