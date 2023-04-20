@@ -9,7 +9,7 @@ def constructReposFromFile(sassname, savname=None, arch='sm_75'):
     feeder = CuInsFeeder(sassname, archfilter=arch)
 
     # initialize an empty repos
-    repos = CuInsAssemblerRepos(archfilter=arch)#
+    repos = CuInsAssemblerRepos(arch=arch)#
 
     # Update the repos with instructions from feeder
     repos.update(feeder)
@@ -32,7 +32,7 @@ def verifyReposFromFile(sassname, reposfile, arch='sm_75'):
     feeder = CuInsFeeder(sassname, archfilter=arch)
 
     # initialize an empty repos
-    repos = CuInsAssemblerRepos(reposfile, archfilter=arch)#
+    repos = CuInsAssemblerRepos(reposfile, arch=arch)#
 
     # verify the repos
     repos.verify(feeder)
